@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import ConsultSubjectsView from '@/views/ConsultSubjectsView.vue'
-import DashboardView from '@/views/DashboardView.vue'
-import CompletedProfileView from '@/views/CompletedProfileView.vue'
-import FriendsView from '@/views/FriendsView.vue'
+import ConsultSubjectsView from '../pages/ConsultSubjects/ConsultSubjectsView.vue'
+import DashboardView from '../pages/Dashboard/DashboardView.vue'
+import FriendsView from '../pages/Friends/FriendsView.vue'
+import HomeView from '../pages/Home/HomeView.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,11 +27,6 @@ const router = createRouter({
       path: '/amigos',
       name: 'friends',
       component: FriendsView
-    },
-    {
-      path: '/completar-perfil',
-      name: 'completed-profile',
-      component: CompletedProfileView
     }
   ]
 })
