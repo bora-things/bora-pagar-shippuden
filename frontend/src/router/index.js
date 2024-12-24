@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import ConsultSubjectsView from '../pages/ConsultSubjects/ConsultSubjectsView.vue'
+import ConsultSubjectsView from '../pages/ConsultSubjetcs/ConsultSubjectsView.vue'
 import DashboardView from '../pages/Dashboard/DashboardView.vue'
 import FriendsView from '../pages/Friends/FriendsView.vue'
 import HomeView from '../pages/Home/HomeView.vue'

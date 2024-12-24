@@ -1,12 +1,10 @@
 <script setup>
-import InputSearch from '@/components/InputSearch.vue'
-import CardSubjects from '@/components/CardSubjects.vue'
-import NavBar from '@/components/NavBar.vue'
+import CardSubjects from '@/components/CardSubjects.vue';
+import InputSearch from '@/components/InputSearch.vue';
 </script>
 
 <template>
   <div class="h-full w-full">
-    <NavBar />
     <main class="h-full container mx-auto p-6 xl:max-w-7xl bg-bp_neutral-900 space-y-6">
       <p class="text-bp_neutral-50 text-3xl font-bold">consultar-disciplinas</p>
       <hr class="border-bp_neutral-700" />

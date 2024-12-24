@@ -1,9 +1,8 @@
 <script setup>
-import NavBar from '@/components/NavBar.vue'
-import ListItemFriend from '@/components/ListItemFriend.vue'
-import { ref, onMounted } from 'vue'
 import BpButton from '@/components/BpButton.vue'
 import BpPagination from '@/components/BpPagination.vue'
+import ListItemFriend from '@/components/ListItemFriend.vue'
+import { onMounted, ref } from 'vue'
 
 const allFriends = ref([
   {
@@ -74,8 +73,6 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen bg-bp_neutral-900 text-bp_neutral-50">
-    <NavBar />
-
     <main class="pl-16 pr-16">
       <div class="container-search-friends ml-[60px] mr-[60px]">
         <h2 class="text-3xl font-bold border-b border-bp_neutral-800 pb-6 mb-6">amigos</h2>

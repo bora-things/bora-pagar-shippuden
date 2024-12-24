@@ -1,18 +1,12 @@
 <script setup>
+import BpButton from '@/components/BpButton.vue'
 import PeriodCard from '@/components/PeriodCard.vue'
 import RadialProgress from '@/components/RadialProgress.vue'
 import SubjectCard from '@/components/SubjectCard.vue'
-import NavBar from '@/components/NavBar.vue'
-import BpButton from '@/components/BpButton.vue'
-import SimboraChat from '@/components/chat/SimboraChat.vue'
 </script>
 
 <template>
   <div class="h-full w-full">
-    <SimboraChat />
-
-    <NavBar />
-
     <main class="h-full container mx-auto p-6 xl:max-w-7xl">
       <header class="flex items-center justify-between border-b border-bp_neutral-700 pb-4">
         <h1 class="title-h1">período-atual · 5º</h1>
