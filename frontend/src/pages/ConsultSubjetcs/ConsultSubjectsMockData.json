@@ -1,0 +1,82 @@
+[
+    {
+      "code": "IMD0126",
+      "workload": "60",
+      "name": "Matemática Elementar",
+      "difficulty": "MEDIA",
+      "department": "Instituto Metrópole Digital",
+      "course": "Tecnologia da Informação"
+    },
+    {
+      "code": "IMD0127",
+      "workload": "45",
+      "name": "Programação Básica",
+      "difficulty": "BAIXA",
+      "department": "Instituto Metrópole Digital",
+      "course": "Tecnologia da Informação"
+    },
+    {
+      "code": "IMD0128",
+      "workload": "75",
+      "name": "Algoritmos Avançados",
+      "difficulty": "ALTA",
+      "department": "Instituto Metrópole Digital",
+      "course": "Tecnologia da Informação"
+    },
+    {
+      "code": "IMD0129",
+      "workload": "50",
+      "name": "Estruturas de Dados",
+      "difficulty": "MEDIA",
+      "department": "Instituto Metrópole Digital",
+      "course": "Tecnologia da Informação"
+    },
+    {
+      "code": "IMD0130",
+      "workload": "40",
+      "name": "Banco de Dados",
+      "difficulty": "BAIXA",
+      "department": "Instituto Metrópole Digital",
+      "course": "Tecnologia da Informação"
+    },
+    {
+      "code": "IMD0131",
+      "workload": "55",
+      "name": "Engenharia de Software",
+      "difficulty": "MEDIA",
+      "department": "Instituto Metrópole Digital",
+      "course": "Tecnologia da Informação"
+    },
+    {
+      "code": "IMD0132",
+      "workload": "65",
+      "name": "Redes de Computadores",
+      "difficulty": "ALTA",
+      "department": "Instituto Metrópole Digital",
+      "course": "Tecnologia da Informação"
+    },
+    {
+      "code": "IMD0133",
+      "workload": "70",
+      "name": "Inteligência Artificial",
+      "difficulty": "ALTA",
+      "department": "Instituto Metrópole Digital",
+      "course": "Tecnologia da Informação"
+    },
+    {
+      "code": "IMD0134",
+      "workload": "50",
+      "name": "Sistemas Operacionais",
+      "difficulty": "MEDIA",
+      "department": "Instituto Metrópole Digital",
+      "course": "Tecnologia da Informação"
+    },
+    {
+      "code": "IMD0135",
+      "workload": "45",
+      "name": "Segurança da Informação",
+      "difficulty": "BAIXA",
+      "department": "Instituto Metrópole Digital",
+      "course": "Tecnologia da Informação"
+    }
+  ]

@@ -1,6 +1,14 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import CardSubjects from '@/components/CardSubjects.vue';
 import InputSearch from '@/components/InputSearch.vue';
+import { getSubjects } from './ConsultSubjectsController';
+
+const subjects = ref([]);
+
+onMounted(async () => {
+  subjects.value = await getSubjects();
+});
 </script>
 
 <template>
@@ -22,45 +30,26 @@ import InputSearch from '@/components/InputSearch.vue';
           <div class="flex items-center space-x-2">
             <select class="card-options text-lg">
               <option hidden value="">Dificuldade</option>
-              <option value="imd">Baixa</option>
-              <option value="c&t">Média</option>
-              <option value="dimap">Alta</option>
+              <option value="low">Baixa</option>
+              <option value="medium">Média</option>
+              <option value="high">Alta</option>
             </select>
           </div>
           <div class="flex items-center space-x-2">
             <select class="card-options text-lg">
               <option hidden value="">Horas</option>
-              <option value="imd">30h</option>
-              <option value="c&t">60h</option>
-              <option value="dimap">90h</option>
+              <option value="30">30h</option>
+              <option value="60">60h</option>
+              <option value="90">90h</option>
             </select>
           </div>
         </div>
       </div>
       <div class="space-y-4">
         <CardSubjects
-          code="IMD0126"
-          workload="60"
-          name="Matemática Elementar"
-          dificulty="MEDIA"
-          departament="Intituto Metrópole Digital"
-          course="Tecnologia da Informação"
-        />
-        <CardSubjects
-          code="IMD0127"
-          workload="90"
-          name="Fundamentos da Matemática Computacional"
-          dificulty="ALTA"
-          departament="Intituto Metrópole Digital"
-          course="Tecnologia da Informação"
-        />
-        <CardSubjects
-          code="IMD0128"
-          workload="60"
-          name="Pensamento Computacional"
-          dificulty="BAIXA"
-          departament="Intituto Metrópole Digital"
-          course="Tecnologia da Informação"
+          v-for="subject in subjects"
+          :key="subject.code"
+          :subject="subject"
         />
       </div>
     </main>

@@ -2,10 +2,11 @@
 import { computed } from 'vue'
 import BpButton from './BpButton.vue'
 
-const props = defineProps(['code', 'workload', 'name', 'departament', 'course', 'dificulty'])
+const props = defineProps(['subject']);
+const { code, workload, name, departament, course, difficulty } = props.subject;
 
 const difficultyClass = computed(() => {
-  switch (props.dificulty) {
+  switch (difficulty) {
     case 'ALTA':
       return 'bg-bp_danger'
     case 'MEDIA':
@@ -29,7 +30,7 @@ const difficultyClass = computed(() => {
       <div class="flex justify-between items-center w-full gap-4">
         <div class="">
           <div class="flex items-center space-x-2 lg:space-x-4">
-            <p class="text-base sm:text-lg font-semibold">{{ props.name }}</p>
+            <p class="text-base sm:text-lg font-semibold">{{ name }}</p>
             <div :class="difficultyClass" class="w-2 h-2 sm:w-5 sm:h-5 rounded-full"></div>
           </div>
           <div class="flex items-center space-x-2 lg:space-x-4">
