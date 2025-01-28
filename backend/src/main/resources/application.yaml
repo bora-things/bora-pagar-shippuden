@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: borapagar
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        boot:
+          allow_jdbc_metadata_access: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: '${GOOGLE_CLIENT_ID}'
+            client-secret: '${GOOGLE_CLIENT_SECRET}'
+            scope: 'openid, profile, email'
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'https://www.googleapis.com/oauth2/v3/certs'
+          issuer-uri: 'https://accounts.google.com'
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
