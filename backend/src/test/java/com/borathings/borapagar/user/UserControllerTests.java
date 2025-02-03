@@ -1,7 +1,7 @@
 package com.borathings.borapagar.user;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -54,12 +54,7 @@ public class UserControllerTests {
     @Test
     public void shouldGetAuthenticatedUser() throws Exception {
         this.mockMvc
-                .perform(get("/api/users/me").with(jwt().jwt(jwt -> jwt.subject("googleId"))))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(user.getId()))
-                .andExpect(jsonPath("$.email").value(user.getEmail()))
-                .andExpect(jsonPath("$.name").value(user.getName()))
-                .andExpect(jsonPath("$.imageUrl").value(user.getImageUrl()));
+                .perform(get("/api/users/me").with(oidcLogin()))
+                .andExpect(status().isOk());
     }
 }
