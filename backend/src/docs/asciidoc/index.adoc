@@ -1,3 +1,0 @@
-# Documentação do backend
-
-link:auth.adoc[Autorização & Autenticação]
