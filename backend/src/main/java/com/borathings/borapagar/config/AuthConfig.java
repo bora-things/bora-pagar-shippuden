@@ -1,7 +1,5 @@
 package com.borathings.borapagar.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import com.borathings.borapagar.auth.CustomOAuth2AuthorizationRequestResolver;
 import com.borathings.borapagar.auth.CustomOidcUserService;
 import com.borathings.borapagar.auth.OAuth2AuthenticationSuccessHandler;
@@ -61,7 +59,6 @@ public class AuthConfig {
                                         .authenticated()
                                         .anyRequest()
                                         .permitAll())
-                .oauth2ResourceServer(resourceServer -> resourceServer.jwt(withDefaults()))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .oauth2Login(
                         oauthLogin ->
