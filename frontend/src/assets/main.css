@@ -11,6 +11,10 @@
     @apply flex items-center gap-4 relative;
   }
 
+  .nav-item{
+    @apply font-bold relative p-2 before:content-[''] before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[4px] before:bg-bp_primary-300  before:transition-all duration-1000 hover:before:w-full;
+  }
+
   .card-options {
     @apply bg-bp_neutral-800 text-bp_neutral-50  border border-bp_neutral-600 rounded-md p-2;
   }
