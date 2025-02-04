@@ -1,6 +1,5 @@
 package com.borathings.borapagar.user;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,10 +41,7 @@ public class UserControllerTests {
                         .name("Isaac")
                         .email("isaac.lourenco.704@ufrn.edu.br")
                         .imageUrl("https://lindao.com")
-                        .googleId("googleId")
                         .build();
-
-        when(userService.findByGoogleIdOrError("googleId")).thenReturn(user);
     }
 
     @Test

@@ -21,7 +21,7 @@ public class UserService {
      */
     public void upsertFromOidcUser(OidcUser oidcUser) {
         String oidcUserGoogleId = oidcUser.getSubject();
-        Optional<UserEntity> user = userRepository.findByGoogleId(oidcUserGoogleId);
+        Optional<UserEntity> user = userRepository.findByIdUsuario(oidcUserGoogleId);
         user.ifPresentOrElse(
                 existingUser -> this.updateExistingOidcUser(existingUser, oidcUser),
                 () -> insertNewOidcUser(oidcUser));
@@ -34,19 +34,17 @@ public class UserService {
      */
     private void insertNewOidcUser(OidcUser oidcUser) {
         String oidcUserEmail = oidcUser.getEmail();
-        String oidcUserGoogleId = oidcUser.getSubject();
+        String oidcUserSigaaID = oidcUser.getSubject();
 
         logger.info(
-                "Novo usuário logado, criando conta para o email {} com googleId {}",
+                "Novo usuário logado, criando conta para o email {} com SIGAA ID {}",
                 oidcUserEmail,
-                oidcUserGoogleId);
+                oidcUserSigaaID);
         UserEntity userEntity =
                 UserEntity.builder()
                         .email(oidcUserEmail)
                         .name(oidcUser.getFullName())
-                        .googleId(oidcUserGoogleId)
                         .imageUrl(oidcUser.getPicture())
-                        .profileComplete(false)
                         .build();
         userRepository.save(userEntity);
     }
@@ -54,7 +52,7 @@ public class UserService {
     /** Atualiza as informações que podem ter mudado do OidcUser */
     private void updateExistingOidcUser(UserEntity existingUser, OidcUser oidcUser) {
         logger.info(
-                "Usuário com googleId {} de email {} já existe no sistema, atualizando dados",
+                "Usuário com SIGAA ID {} de email {} já existe no sistema, atualizando dados",
                 existingUser.getId(),
                 existingUser.getEmail());
 
@@ -63,16 +61,16 @@ public class UserService {
     }
 
     /**
-     * Recupera um usuário do banco de dados pelo id da sua conta do google. Retorna <code>
+     * Recupera um usuário do banco de dados pelo id da sua conta do SIGAA. Retorna <code>
      * EntityNotFoundException</code> caso o usuário não seja encontrado
      *
-     * @param googleId - String - ID da conta do google
+     * @param idUsuario - String - ID da conta do google
      * @return UserEntity - Usuário encontrado
      * @throws EntityNotFoundException - Se o usuário não for encontrado
      */
-    public UserEntity findByGoogleIdOrError(String googleId) {
+    public UserEntity findByIdUsuarioOrError(String idUsuario) {
         return userRepository
-                .findByGoogleId(googleId)
+                .findByIdUsuario(idUsuario)
                 .orElseThrow(
                         () -> {
                             return new EntityNotFoundException("Usuário não encontrado");

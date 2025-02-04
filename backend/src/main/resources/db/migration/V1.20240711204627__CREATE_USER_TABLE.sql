@@ -1,8 +1,13 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
 	id BIGSERIAL PRIMARY KEY,
-	google_id VARCHAR(255) NOT NULL,
-	email VARCHAR(255) NOT NULL,
-	name VARCHAR(255) NOT NULL,
+	id_usuario TEXT NOT NULL,
+	id_discente TEXT NOT NULL,
+	id_institucional  TEXT NOT NULL,
+	cpf TEXT NOT NULL,
+	email TEXT NOT NULL,
+	name  TEXT NOT NULL,
 	image_url VARCHAR,
-	deleted BOOLEAN DEFAULT FALSE
+	created_at TIMESTAMPTZ,
+	updated_at TIMESTAMPTZ,
+	deleted_at TIMESTAMPTZ,
 );

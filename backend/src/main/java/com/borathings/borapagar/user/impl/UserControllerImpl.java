@@ -19,8 +19,8 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<UserResponseDTO> getCurrentUser(Authentication currentUser) {
-        String currentUserGoogleId = currentUser.getName();
-        UserEntity loggedUser = userService.findByGoogleIdOrError(currentUserGoogleId);
+        String currentUserUsuarioId = currentUser.getName();
+        UserEntity loggedUser = userService.findByIdUsuarioOrError(currentUserUsuarioId);
         return ResponseEntity.ok(userMapper.toUserResponseDTO(loggedUser));
     }
 }
