@@ -13,6 +13,8 @@ import org.springframework.web.context.WebApplicationContext;
 public class AuthenticatedMockMvc {
     @Bean
     public MockMvc buildMockMvc(WebApplicationContext wac) {
-        return MockMvcBuilders.webAppContextSetup(wac).defaultRequest(get("/").with(oidcLogin())).build();
+        return MockMvcBuilders.webAppContextSetup(wac)
+                .defaultRequest(get("/").with(oidcLogin()))
+                .build();
     }
 }
