@@ -26,21 +26,29 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 
 public class CustomOidcUserServiceTests {
 
-    @Mock private UserRepository userRepository;
+    @Mock
+    private UserRepository userRepository;
 
-    @Mock private UserService userService;
+    @Mock
+    private UserService userService;
 
-    @Mock private OidcUserService oidcUserService;
+    @Mock
+    private OidcUserService oidcUserService;
 
-    @Mock private ClientRegistration clientRegistration;
+    @Mock
+    private ClientRegistration clientRegistration;
 
-    @Mock private ProviderDetails providerDetails;
+    @Mock
+    private ProviderDetails providerDetails;
 
-    @Mock private OAuth2AccessToken accessToken;
+    @Mock
+    private OAuth2AccessToken accessToken;
 
-    @Mock private UserInfoEndpoint userInfoEndpoint;
+    @Mock
+    private UserInfoEndpoint userInfoEndpoint;
 
-    @InjectMocks private CustomOidcUserService customOidcUserService;
+    @InjectMocks
+    private CustomOidcUserService customOidcUserService;
 
     private OidcUserRequest oidcUserRequest;
 
@@ -50,12 +58,9 @@ public class CustomOidcUserServiceTests {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        OidcIdToken idToken =
-                new OidcIdToken("idToken", null, null, Collections.singletonMap("sub", "123456"));
+        OidcIdToken idToken = new OidcIdToken("idToken", null, null, Collections.singletonMap("sub", "123456"));
 
-        oidcUser =
-                new DefaultOidcUser(
-                        Collections.singletonList(new OidcUserAuthority(idToken)), idToken);
+        oidcUser = new DefaultOidcUser(Collections.singletonList(new OidcUserAuthority(idToken)), idToken);
 
         when(clientRegistration.getRegistrationId()).thenReturn("google");
         when(clientRegistration.getProviderDetails()).thenReturn(providerDetails);

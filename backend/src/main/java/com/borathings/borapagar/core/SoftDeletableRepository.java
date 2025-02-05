@@ -8,8 +8,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 /** SoftDeletableRepository */
 @NoRepositoryBean
-public interface SoftDeletableRepository<M extends SoftDeletableModel>
-        extends AbstractRepository<M> {
+public interface SoftDeletableRepository<M extends SoftDeletableModel> extends AbstractRepository<M> {
 
     @Modifying
     @Transactional

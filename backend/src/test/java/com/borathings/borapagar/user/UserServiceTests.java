@@ -7,9 +7,11 @@ import org.mockito.MockitoAnnotations;
 
 public class UserServiceTests {
 
-    @InjectMocks UserService userService;
+    @InjectMocks
+    UserService userService;
 
-    @Mock UserRepository userRepository;
+    @Mock
+    UserRepository userRepository;
 
     @BeforeEach
     public void setUp() {

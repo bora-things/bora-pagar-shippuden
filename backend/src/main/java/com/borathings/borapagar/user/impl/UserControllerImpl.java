@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserControllerImpl implements UserController {
 
-    @Autowired UserMapper userMapper;
-    @Autowired UserService userService;
+    @Autowired
+    UserMapper userMapper;
+
+    @Autowired
+    UserService userService;
 
     @Override
     public ResponseEntity<UserResponseDTO> getCurrentUser(Authentication currentUser) {

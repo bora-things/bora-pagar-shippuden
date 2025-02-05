@@ -18,10 +18,18 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 class OAuth2AuthenticationSuccessHandlerTest {
 
     private OAuth2AuthenticationSuccessHandler successHandler;
-    @Mock private HttpServletRequest request;
-    @Mock private HttpServletResponse response;
-    @Mock private HttpSession session;
-    @Mock private OAuth2AuthenticationToken authentication;
+
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private HttpServletResponse response;
+
+    @Mock
+    private HttpSession session;
+
+    @Mock
+    private OAuth2AuthenticationToken authentication;
 
     @BeforeEach
     void setUp() {

@@ -169,12 +169,11 @@
 					</formats>
 					<java>
 						<formatAnnotations />
-						<googleJavaFormat>
-							<version>1.22.0</version>
-							<style>AOSP</style>
-							<reflowLongStrings>true</reflowLongStrings>
+						<palantirJavaFormat>
+							<version>2.39.0</version>
+							<style>PALANTIR</style>
 							<formatJavadoc>true</formatJavadoc>
-						</googleJavaFormat>
+						</palantirJavaFormat>
 					</java>
 				</configuration>
 			</plugin>

@@ -9,17 +9,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class UserMapperTest {
-    @Autowired UserMapper userMapper;
+    @Autowired
+    UserMapper userMapper;
 
     @Test
     void testToDTO() {
-        UserEntity userEntity =
-                UserEntity.builder()
-                        .id(1L)
-                        .email("ramon.jales.cr7@ufrn.edu.br")
-                        .name("Ramon Jales")
-                        .imageUrl("cr7.jpeg")
-                        .build();
+        UserEntity userEntity = UserEntity.builder()
+                .id(1L)
+                .email("ramon.jales.cr7@ufrn.edu.br")
+                .name("Ramon Jales")
+                .imageUrl("cr7.jpeg")
+                .build();
 
         UserResponseDTO userDTO = userMapper.toUserResponseDTO(userEntity);
 

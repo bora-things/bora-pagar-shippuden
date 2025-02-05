@@ -20,13 +20,33 @@ import org.hibernate.annotations.NaturalId;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class UserEntity extends SoftDeletableModel {
-    @Column @NotNull private String email;
-    @Column @NotNull private String name;
-    @Column @NotNull @NaturalId private String idUsuario;
-    @Column @NotNull private String idDiscente;
-    @Column @NotNull private String idInstitucional;
-    @Column @NotNull private String cpf;
-    @Column private String imageUrl;
+    @Column
+    @NotNull
+    private String email;
+
+    @Column
+    @NotNull
+    private String name;
+
+    @Column
+    @NotNull
+    @NaturalId
+    private String idUsuario;
+
+    @Column
+    @NotNull
+    private String idDiscente;
+
+    @Column
+    @NotNull
+    private String idInstitucional;
+
+    @Column
+    @NotNull
+    private String cpf;
+
+    @Column
+    private String imageUrl;
 
     @Override
     public boolean equals(Object o) {

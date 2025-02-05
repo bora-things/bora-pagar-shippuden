@@ -18,8 +18,7 @@ import org.springframework.stereotype.Component;
  */
 /** OAuth2AuthenticationSuccessHandler */
 @Component
-public class OAuth2AuthenticationSuccessHandler
-        extends SavedRequestAwareAuthenticationSuccessHandler {
+public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

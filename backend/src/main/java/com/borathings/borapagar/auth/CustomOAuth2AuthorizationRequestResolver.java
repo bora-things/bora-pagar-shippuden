@@ -16,16 +16,13 @@ import org.springframework.stereotype.Component;
  */
 /** CustomOAuth2AuthorizationRequestResolver */
 @Component
-public class CustomOAuth2AuthorizationRequestResolver
-        implements OAuth2AuthorizationRequestResolver {
+public class CustomOAuth2AuthorizationRequestResolver implements OAuth2AuthorizationRequestResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final OAuth2AuthorizationRequestResolver defaultResolver;
 
-    public CustomOAuth2AuthorizationRequestResolver(
-            ClientRegistrationRepository clientRegistrationRepository) {
+    public CustomOAuth2AuthorizationRequestResolver(ClientRegistrationRepository clientRegistrationRepository) {
         this.defaultResolver =
-                new DefaultOAuth2AuthorizationRequestResolver(
-                        clientRegistrationRepository, "/oauth2/authorization");
+                new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, "/oauth2/authorization");
     }
 
     /**
@@ -39,24 +36,21 @@ public class CustomOAuth2AuthorizationRequestResolver
     }
 
     @Override
-    public OAuth2AuthorizationRequest resolve(
-            HttpServletRequest originalRequest, String clientRegistrationId) {
-        OAuth2AuthorizationRequest resolvedRequest =
-                defaultResolver.resolve(originalRequest, clientRegistrationId);
+    public OAuth2AuthorizationRequest resolve(HttpServletRequest originalRequest, String clientRegistrationId) {
+        OAuth2AuthorizationRequest resolvedRequest = defaultResolver.resolve(originalRequest, clientRegistrationId);
         return requestResolvedWithReferer(resolvedRequest, originalRequest);
     }
 
     /**
      * @param resolvedRequest Requisição já resolvida pelo Spring Security
      * @param originalRequest Requisição antes do redirect para authorization server (Google)
-     *     <p>Segundo o protocolo do OAuth2, o argumento <code>state</code> que vem como query param
-     *     pode ser utilizado para passar informações extras. Porém o spring-security optou por não
-     *     implementar esse comportamento, portanto ao invés de utilizar state, o Referer (Header de
-     *     onde a requisição foi feita) É adicionado à sessão atual
+     *     <p>Segundo o protocolo do OAuth2, o argumento <code>state</code> que vem como query param pode ser utilizado
+     *     para passar informações extras. Porém o spring-security optou por não implementar esse comportamento,
+     *     portanto ao invés de utilizar state, o Referer (Header de onde a requisição foi feita) É adicionado à sessão
+     *     atual
      * @see <a href=https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.1>RFC OAuth2</a>
-     * @see <a
-     *     href=https://github.com/spring-projects/spring-security/issues/7808#issuecomment-704548457>Sugestão
-     *     do maintainer do Spring-Security</a>
+     * @see <a href=https://github.com/spring-projects/spring-security/issues/7808#issuecomment-704548457>Sugestão do
+     *     maintainer do Spring-Security</a>
      */
     private OAuth2AuthorizationRequest requestResolvedWithReferer(
             OAuth2AuthorizationRequest resolvedRequest, HttpServletRequest originalRequest) {

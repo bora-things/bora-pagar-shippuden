@@ -11,21 +11,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class PatcherTests {
-    @Autowired Patcher<UserEntity> patcher;
-    @Autowired UserMapper mapper;
+    @Autowired
+    Patcher<UserEntity> patcher;
+
+    @Autowired
+    UserMapper mapper;
 
     @Test
     public void testPatcher() {
-        UserEntity target =
-                UserEntity.builder()
-                        .id(1L)
-                        .email("teste@gmail.com")
-                        .name("Ian Gabriel")
-                        .imageUrl("teste.com")
-                        .build();
+        UserEntity target = UserEntity.builder()
+                .id(1L)
+                .email("teste@gmail.com")
+                .name("Ian Gabriel")
+                .imageUrl("teste.com")
+                .build();
 
-        UserEntity source =
-                UserEntity.builder().email("editado@gmail.com").imageUrl("editado.com").build();
+        UserEntity source = UserEntity.builder()
+                .email("editado@gmail.com")
+                .imageUrl("editado.com")
+                .build();
         assertDoesNotThrow(() -> patcher.patch(target, source));
         assertEquals(target.getEmail(), source.getEmail());
         assertEquals(target.getImageUrl(), source.getImageUrl());
