@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS users (
 	image_url VARCHAR,
 	created_at TIMESTAMPTZ,
 	updated_at TIMESTAMPTZ,
-	deleted_at TIMESTAMPTZ,
+	deleted_at TIMESTAMPTZ
 );

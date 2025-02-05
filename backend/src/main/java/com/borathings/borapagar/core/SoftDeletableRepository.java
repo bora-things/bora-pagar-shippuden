@@ -19,6 +19,4 @@ public interface SoftDeletableRepository<M extends SoftDeletableModel>
     @Query("SELECT e FROM #{#entityName} e WHERE e.deletedAt IS NULL")
     public List<M> findAll();
 
-    @Query("SELECT e FROM #{#entityName} e")
-    public List<M> findAllWithDeleted();
 }
