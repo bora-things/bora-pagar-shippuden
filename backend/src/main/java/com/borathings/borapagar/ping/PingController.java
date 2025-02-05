@@ -11,18 +11,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * Este é um exemplo de Controller a ser seguido no projeto. Adotamos o padrão descrito em
- * https://www.baeldung.com/spring-interface-driven-controllers, no qual as annotations necessárias
- * são colocadas na interface.
+ * https://www.baeldung.com/spring-interface-driven-controllers, no qual as annotations necessárias são colocadas na
+ * interface.
  *
- * <p>Esse padrão permite que a implementação dos Controllers seja mais "limpa" e focada apenas nos
- * detalhes técnicos, promovendo uma separação clara entre a definição da API e sua implementação.
+ * <p>Esse padrão permite que a implementação dos Controllers seja mais "limpa" e focada apenas nos detalhes técnicos,
+ * promovendo uma separação clara entre a definição da API e sua implementação.
  */
 @RestControllerAdvice
 public interface PingController {
 
-    /**
-     * @return Uma response com código HTTP 200 e o body "pong"
-     */
+    /** @return Uma response com código HTTP 200 e o body "pong" */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/ping")
     public ResponseEntity<String> ping();
@@ -34,6 +32,5 @@ public interface PingController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/pings")
     public ResponseEntity<List<String>> pings(
-            @Parameter(description = "quantity of pongs to be delivered") @RequestParam
-                    int quantity);
+            @Parameter(description = "quantity of pongs to be delivered") @RequestParam int quantity);
 }

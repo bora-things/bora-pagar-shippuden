@@ -14,12 +14,11 @@ public class SwaggerConfig {
     OpenAPI openAPI() {
 
         return new OpenAPI()
-                .info(
-                        new Info()
-                                .title("Bora Pagar")
-                                .description("Ferramenta de auxílio ao perído de matrícula")
-                                .contact(new Contact().email("boraPagar@gmail.com"))
-                                .license(new License().name("License"))
-                                .version("v2"));
+                .info(new Info()
+                        .title("Bora Pagar")
+                        .description("Ferramenta de auxílio ao perído de matrícula")
+                        .contact(new Contact().email("boraPagar@gmail.com"))
+                        .license(new License().name("License"))
+                        .version("v2"));
     }
 }

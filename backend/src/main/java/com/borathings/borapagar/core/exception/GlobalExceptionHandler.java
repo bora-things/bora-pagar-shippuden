@@ -43,8 +43,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGenericException(Exception ex) {
         logger.error("Erro inesperado", ex);
-        ApiException apiException =
-                new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado", ex);
+        ApiException apiException = new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado", ex);
         return buildResponseEntityFromException(apiException);
     }
 
@@ -61,8 +60,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Handle genérico para exceções menos comuns mas que ainda é necessário um pouco de
-     * customização na serialização.
+     * Handle genérico para exceções menos comuns mas que ainda é necessário um pouco de customização na serialização.
      *
      * @param ex - ApiException - Exceção lançada
      * @return ResponseEntity<Object> - Exceção serializada
@@ -73,8 +71,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Trata exceções lançadas pela aplicação quando o usuário não tem permissão para acessar uma
-     * entidade.
+     * Trata exceções lançadas pela aplicação quando o usuário não tem permissão para acessar uma entidade.
      *
      * @param ex - AccessDeniedException - Exceção lançada
      * @return ResponseEntity<Object> - Exceção serializada
@@ -98,39 +95,31 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Trata exceções lançadas pela aplicação quando uma entidade falha na validação. Este método
-     * constrói uma instância da classe <code>ApiFieldException</code> extende a classe <code>
+     * Trata exceções lançadas pela aplicação quando uma entidade falha na validação. Este método constrói uma instância
+     * da classe <code>ApiFieldException</code> extende a classe <code>
      * ApiException</code> com os erros de validação.
      *
-     * <p>Os erros são representados pelo atributo fieldErrors, que é um mapa onde a chave é o nome
-     * do campo que falhou na validação e o valor é um vetor contendo as mensagens de todos os erros
-     * relacionados àquele campo.
+     * <p>Os erros são representados pelo atributo fieldErrors, que é um mapa onde a chave é o nome do campo que falhou
+     * na validação e o valor é um vetor contendo as mensagens de todos os erros relacionados àquele campo.
      *
      * @param ex - MethodArgumentNotValidException - Exceção lançada
      * @param headers - HttpHeaders - Cabeçalhos da requisição que falhou na validação
      * @param status - HttpStatusCode - Status HTTP da resposta
      * @param request - WebRequest - Requisição que falhou na validação
-     * @return ResponseEntity<ApiFieldException> - Instância de ApiFieldException serializada para
-     *     JSON
+     * @return ResponseEntity<ApiFieldException> - Instância de ApiFieldException serializada para JSON
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            HttpHeaders headers,
-            HttpStatusCode status,
-            WebRequest request) {
+            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         Map<String, List<String>> fieldErrors = new HashMap<>();
-        ex.getBindingResult()
-                .getFieldErrors()
-                .forEach(
-                        (error) -> {
-                            String errorMessage = error.getDefaultMessage();
+        ex.getBindingResult().getFieldErrors().forEach((error) -> {
+            String errorMessage = error.getDefaultMessage();
 
-                            if (!fieldErrors.containsKey(error.getField())) {
-                                fieldErrors.put(error.getField(), new ArrayList<>());
-                            }
-                            fieldErrors.get(error.getField()).add(errorMessage);
-                        });
+            if (!fieldErrors.containsKey(error.getField())) {
+                fieldErrors.put(error.getField(), new ArrayList<>());
+            }
+            fieldErrors.get(error.getField()).add(errorMessage);
+        });
         ApiFieldException apiException = new ApiFieldException(HttpStatus.BAD_REQUEST, fieldErrors);
         return buildResponseEntityFromException(apiException);
     }

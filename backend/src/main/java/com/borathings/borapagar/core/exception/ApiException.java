@@ -9,8 +9,8 @@ import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
 
 /**
- * ApiException Esta classe serve como 'wrapper' das exceções lançadas pela aplicação. Padronizando
- * a resposta de erro da API.
+ * ApiException Esta classe serve como 'wrapper' das exceções lançadas pela aplicação. Padronizando a resposta de erro
+ * da API.
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -26,9 +26,7 @@ public class ApiException extends RuntimeException {
         timestamp = LocalDateTime.now(ZoneOffset.UTC);
     }
 
-    /**
-     * @param status - HttpStatus - Status do erro
-     */
+    /** @param status - HttpStatus - Status do erro */
     public ApiException(HttpStatus status) {
         this();
         this.status = status;

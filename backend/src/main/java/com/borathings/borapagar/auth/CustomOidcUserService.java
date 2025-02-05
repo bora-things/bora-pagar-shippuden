@@ -13,7 +13,8 @@ import org.springframework.stereotype.Service;
 /** CustomOidcUserService */
 @Service
 public class CustomOidcUserService extends OidcUserService {
-    @Autowired UserService userService;
+    @Autowired
+    UserService userService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -21,9 +22,7 @@ public class CustomOidcUserService extends OidcUserService {
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
         OidcUser oidcUser = super.loadUser(userRequest);
         logger.info(
-                "Usuário com ID SIGAA {} e email {} carregado com sucesso",
-                oidcUser.getSubject(),
-                oidcUser.getEmail());
+                "Usuário com ID SIGAA {} e email {} carregado com sucesso", oidcUser.getSubject(), oidcUser.getEmail());
         userService.upsertFromOidcUser(oidcUser);
         return oidcUser;
     }

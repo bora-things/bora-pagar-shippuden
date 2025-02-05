@@ -12,9 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
     @Override
-    /**
-     * Adiciona o prefixo "/api" à todos os controllers que utilizam da annotation @RestController
-     */
+    /** Adiciona o prefixo "/api" à todos os controllers que utilizam da annotation @RestController */
     public void configurePathMatch(PathMatchConfigurer configurer) {
         configurer.addPathPrefix("api", HandlerTypePredicate.forAnnotation(RestController.class));
     }

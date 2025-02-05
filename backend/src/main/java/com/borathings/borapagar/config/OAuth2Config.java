@@ -34,9 +34,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class OAuth2Config {
-    @Autowired CustomOidcUserService customOidcUserService;
-    @Autowired CustomOAuth2AuthorizationRequestResolver customOAuth2AuthorizationRequestResolver;
-    @Autowired OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    @Autowired
+    CustomOidcUserService customOidcUserService;
+
+    @Autowired
+    CustomOAuth2AuthorizationRequestResolver customOAuth2AuthorizationRequestResolver;
+
+    @Autowired
+    OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Value("${frontend.url}")
     String frontendUrl;
@@ -46,53 +51,38 @@ public class OAuth2Config {
 
     @Bean
     /**
-     * Pipeline usada pelo Spring Security, exige autenticação em todos os endpoints que tenham
-     * <code>/api</code> como prefixo (Exceto a URL das docs do swagger, podemos alterar ela depois)
-     * <code>oauth2Login()</code> Adiciona endpoints de autenticação com o google <code>
-     * oauth2ResourceServer()</code> Configura que nossa API será um resource server na arquitetura
-     * OAuth2, exigindo um token para que os dados sejam retornados Com a união desses dois métodos,
-     * ao logar na url do backend, o cliente (frontend, app, bot) terá um cookie que será utilizado
-     * como sessão, com isso enviar o token em toda request não é necessário
+     * Pipeline usada pelo Spring Security, exige autenticação em todos os endpoints que tenham <code>/api</code> como
+     * prefixo (Exceto a URL das docs do swagger, podemos alterar ela depois) <code>oauth2Login()</code> Adiciona
+     * endpoints de autenticação com o google <code>
+     * oauth2ResourceServer()</code> Configura que nossa API será um resource server na arquitetura OAuth2, exigindo um
+     * token para que os dados sejam retornados Com a união desses dois métodos, ao logar na url do backend, o cliente
+     * (frontend, app, bot) terá um cookie que será utilizado como sessão, com isso enviar o token em toda request não é
+     * necessário
      *
      * @param HttpSecurity Classe usada para configurar o Spring Security
      * @throws Exception
      * @return SecurityFilterChain - Pipeline de segurança utilizada pelo Spring Security
-     * @see <a
-     *     href="https://docs.spring.io/spring-security/reference/servlet/oauth2/login/core.html">OAuth2
-     *     Login</a>
-     * @see <a
-     *     href="https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html"/>OAuth2
+     * @see <a href="https://docs.spring.io/spring-security/reference/servlet/oauth2/login/core.html">OAuth2 Login</a>
+     * @see <a href="https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html"/>OAuth2
      *     Resource Server</a>
      */
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(
-                        authorize ->
-                                authorize
-                                        .requestMatchers("/api/v3/api-docs/**")
-                                        .permitAll()
-                                        .requestMatchers("/api/**")
-                                        .authenticated()
-                                        .anyRequest()
-                                        .permitAll())
+        http.authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/v3/api-docs/**")
+                        .permitAll()
+                        .requestMatchers("/api/**")
+                        .authenticated()
+                        .anyRequest()
+                        .permitAll())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .oauth2Login(
-                        oauthLogin ->
-                                oauthLogin
-                                        .userInfoEndpoint(
-                                                userInfo ->
-                                                        userInfo.oidcUserService(
-                                                                        customOidcUserService)
-                                                                .userService(userService()))
-                                        .authorizationEndpoint(
-                                                authorization ->
-                                                        authorization.authorizationRequestResolver(
-                                                                customOAuth2AuthorizationRequestResolver))
-                                        .successHandler(oAuth2AuthenticationSuccessHandler))
-                .exceptionHandling(
-                        ex ->
-                                ex.defaultAuthenticationEntryPointFor(
-                                        new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
-                                        new AntPathRequestMatcher("/api/**")));
+                .oauth2Login(oauthLogin -> oauthLogin
+                        .userInfoEndpoint(userInfo ->
+                                userInfo.oidcUserService(customOidcUserService).userService(userService()))
+                        .authorizationEndpoint(authorization ->
+                                authorization.authorizationRequestResolver(customOAuth2AuthorizationRequestResolver))
+                        .successHandler(oAuth2AuthenticationSuccessHandler))
+                .exceptionHandling(ex -> ex.defaultAuthenticationEntryPointFor(
+                        new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED), new AntPathRequestMatcher("/api/**")));
 
         return http.build();
     }
@@ -117,8 +107,7 @@ public class OAuth2Config {
         config.setAllowedMethods(List.of("*"));
         config.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource =
-                new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/api/**", config);
         return urlBasedCorsConfigurationSource;
     }
@@ -132,8 +121,7 @@ class AddApiKeyInterceptor implements ClientHttpRequestInterceptor {
     }
 
     @Override
-    public ClientHttpResponse intercept(
-            HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
         request.getHeaders().set("X-API-KEY", apiKey);
         return execution.execute(request, body);

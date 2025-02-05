@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Implementação do @PingController, Controller utilizado para fins de demonstração dos padrões a
- * serem seguidos
- */
+/** Implementação do @PingController, Controller utilizado para fins de demonstração dos padrões a serem seguidos */
 @RestController
 public class PingControllerImpl implements PingController {
     @Override

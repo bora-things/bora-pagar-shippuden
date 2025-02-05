@@ -17,7 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @Import(AuthenticatedMockMvc.class)
 public class PingControllerTests {
 
-    @Autowired private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
     public void shouldReturnPong() throws Exception {

@@ -16,11 +16,14 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.test.util.ReflectionTestUtils;
 
 class CustomOAuth2AuthorizationRequestResolverTest {
-    @Mock private ClientRegistrationRepository clientRegistrationRepository;
+    @Mock
+    private ClientRegistrationRepository clientRegistrationRepository;
 
-    @Mock private OAuth2AuthorizationRequestResolver defaultResolver;
+    @Mock
+    private OAuth2AuthorizationRequestResolver defaultResolver;
 
-    @InjectMocks private CustomOAuth2AuthorizationRequestResolver customResolver;
+    @InjectMocks
+    private CustomOAuth2AuthorizationRequestResolver customResolver;
 
     @BeforeEach
     void setUp() {

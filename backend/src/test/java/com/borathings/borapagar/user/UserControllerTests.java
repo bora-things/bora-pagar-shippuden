@@ -19,8 +19,11 @@ import org.springframework.test.web.servlet.MockMvc;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureWebMvc
 public class UserControllerTests {
-    @Autowired private MockMvc mockMvc;
-    @MockBean private UserService userService;
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private UserService userService;
 
     @TestConfiguration
     static class TestConfig {
@@ -35,13 +38,12 @@ public class UserControllerTests {
     @BeforeEach
     public void setUp() {
 
-        user =
-                UserEntity.builder()
-                        .id(1L)
-                        .name("Isaac")
-                        .email("isaac.lourenco.704@ufrn.edu.br")
-                        .imageUrl("https://lindao.com")
-                        .build();
+        user = UserEntity.builder()
+                .id(1L)
+                .name("Isaac")
+                .email("isaac.lourenco.704@ufrn.edu.br")
+                .imageUrl("https://lindao.com")
+                .build();
     }
 
     @Test
