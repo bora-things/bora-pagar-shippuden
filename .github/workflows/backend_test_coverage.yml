@@ -8,6 +8,9 @@ on:
 defaults:
   run:
     working-directory: ./backend
+  
+env:
+  SIGAA_API_KEY: ${{secrets.SIGAA_API_KEY}}
 
 jobs:
   
