@@ -22,22 +22,22 @@ import org.hibernate.annotations.NaturalId;
 public class UserEntity extends SoftDeletableModel {
     @Column @NotNull private String email;
     @Column @NotNull private String name;
-    @Column @NotNull @NaturalId private String googleId;
+    @Column @NotNull @NaturalId private String idUsuario;
+    @Column @NotNull private String idDiscente;
+    @Column @NotNull private String idInstitucional;
+    @Column @NotNull private String cpf;
     @Column private String imageUrl;
-    @Column @NotNull private boolean profileComplete;
-    @Column private Integer current_period;
-    @Column private Float iea;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserEntity)) return false;
         UserEntity other = (UserEntity) o;
-        return Objects.equals(getGoogleId(), other.getGoogleId());
+        return Objects.equals(getIdUsuario(), other.getIdUsuario());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getGoogleId());
+        return Objects.hashCode(getIdUsuario());
     }
 }
