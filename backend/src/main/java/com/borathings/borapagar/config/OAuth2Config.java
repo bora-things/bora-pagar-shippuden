@@ -41,7 +41,7 @@ public class OAuth2Config {
     @Value("${frontend.url}")
     String frontendUrl;
 
-    @Value("${SIGAA_API_KEY}")
+    @Value("${sigaa.api-key}")
     private String apiKey;
 
     @Bean

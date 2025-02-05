@@ -33,5 +33,5 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
-
-SIGAA_API_KEY: ${SIGAA_API_KEY}
+sigaa:
+  api-key: ${SIGAA_API_KEY}
