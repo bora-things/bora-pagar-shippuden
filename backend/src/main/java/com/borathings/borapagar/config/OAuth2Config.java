@@ -1,31 +1,19 @@
 package com.borathings.borapagar.config;
 
 import com.borathings.borapagar.auth.CustomOAuth2AuthorizationRequestResolver;
-import com.borathings.borapagar.auth.CustomOidcUserService;
+import com.borathings.borapagar.auth.CustomOAuth2UserService;
 import com.borathings.borapagar.auth.OAuth2AuthenticationSuccessHandler;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.client.ClientHttpRequestExecution;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -35,7 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class OAuth2Config {
     @Autowired
-    CustomOidcUserService customOidcUserService;
+    CustomOAuth2UserService customOAuth2UserService;
 
     @Autowired
     CustomOAuth2AuthorizationRequestResolver customOAuth2AuthorizationRequestResolver;
@@ -45,9 +33,6 @@ public class OAuth2Config {
 
     @Value("${frontend.url}")
     String frontendUrl;
-
-    @Value("${sigaa.api-key}")
-    private String apiKey;
 
     @Bean
     /**
@@ -76,8 +61,7 @@ public class OAuth2Config {
                         .permitAll())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .oauth2Login(oauthLogin -> oauthLogin
-                        .userInfoEndpoint(userInfo ->
-                                userInfo.oidcUserService(customOidcUserService).userService(userService()))
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .authorizationEndpoint(authorization ->
                                 authorization.authorizationRequestResolver(customOAuth2AuthorizationRequestResolver))
                         .successHandler(oAuth2AuthenticationSuccessHandler))
@@ -85,17 +69,6 @@ public class OAuth2Config {
                         new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED), new AntPathRequestMatcher("/api/**")));
 
         return http.build();
-    }
-
-    private OAuth2UserService<OAuth2UserRequest, OAuth2User> userService() {
-        RestTemplate client = new RestTemplate();
-        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
-        interceptors.add(new AddApiKeyInterceptor(apiKey));
-        client.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
-        client.setInterceptors(interceptors);
-        var service = new DefaultOAuth2UserService();
-        service.setRestOperations(client);
-        return service;
     }
 
     @Bean
@@ -110,20 +83,5 @@ public class OAuth2Config {
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/api/**", config);
         return urlBasedCorsConfigurationSource;
-    }
-}
-
-class AddApiKeyInterceptor implements ClientHttpRequestInterceptor {
-    private String apiKey;
-
-    public AddApiKeyInterceptor(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
-    @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
-            throws IOException {
-        request.getHeaders().set("X-API-KEY", apiKey);
-        return execution.execute(request, body);
     }
 }

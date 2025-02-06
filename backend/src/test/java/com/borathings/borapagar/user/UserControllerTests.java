@@ -22,6 +22,9 @@ public class UserControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @MockBean
     private UserService userService;
 

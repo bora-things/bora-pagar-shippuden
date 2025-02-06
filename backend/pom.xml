@@ -221,6 +221,7 @@
 					<excludes>
                 		<exclude>src\main\java\com\borathings\borapagar\BoraPagarApplication.class</exclude>
 										<exclude>com/borathings/borapagar/core/**</exclude>
+										<exclude>com/borathings/borapagar/**/*DTO.*</exclude>
             		</excludes>
 				</configuration>
 				

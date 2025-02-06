@@ -30,20 +30,24 @@ public class UserEntity extends SoftDeletableModel {
 
     @Column
     @NotNull
+    private String login;
+
+    @Column
+    @NotNull
     @NaturalId
-    private String idUsuario;
+    private int idUsuario;
 
     @Column
     @NotNull
-    private String idDiscente;
+    private int idDiscente;
 
     @Column
     @NotNull
-    private String idInstitucional;
+    private Long idInstitucional;
 
     @Column
     @NotNull
-    private String cpf;
+    private Long cpf;
 
     @Column
     private String imageUrl;
