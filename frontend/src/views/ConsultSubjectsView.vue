@@ -11,7 +11,7 @@ import NavBar from '@/components/NavBar.vue'
       <p class="text-bp_neutral-50 text-3xl font-bold">consultar-disciplinas</p>
       <hr class="border-bp_neutral-700" />
       <div class="flex flex-col lg:flex-row lg:space-x-6">
-        <InputSearch class="w-full lg:w-2/3 mb-4 lg:mb-0" />
+        <InputSearch class="w-full lg:w-2/3 mb-4 lg:mb-0" input-placeholder="requisitos de fmc" input-id="search-discipline" />
         <div class="flex flex-wrap justify-end lg:w-1/2 space-x-4">
           <div class="flex items-center space-x-2">
             <select class="card-options text-lg">
