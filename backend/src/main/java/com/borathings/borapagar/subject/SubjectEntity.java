@@ -3,13 +3,12 @@ package com.borathings.borapagar.subject;
 import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.core.AbstractModel;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 @Entity(name = "componentes")
 @Getter
@@ -79,5 +78,4 @@ public class SubjectEntity extends AbstractModel {
 
     @OneToMany(mappedBy = "componente")
     private List<ClassroomEntity> turmas;
-
 }

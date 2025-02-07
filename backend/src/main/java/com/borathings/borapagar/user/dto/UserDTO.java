@@ -51,8 +51,7 @@ public record UserDTO(
                 user.getAttribute("instituicao-ensino"),
                 getIntAttribute(user, "id-polo"),
                 user.getAttribute("polo"),
-                false
-        );
+                false);
     }
 
     private static Long getLongAttribute(OAuth2User user, String key) {

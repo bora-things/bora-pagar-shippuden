@@ -8,11 +8,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,9 +18,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.NaturalId;
 
-/**
- * UserEntity
- */
+/** UserEntity */
 @Entity(name = "users")
 @Getter
 @Setter

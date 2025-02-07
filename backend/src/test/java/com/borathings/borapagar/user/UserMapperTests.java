@@ -105,8 +105,7 @@ class UserMapperTest {
                 "Universidade XPTO",
                 99,
                 "Polo Central",
-                false
-        );
+                false);
         UserEntity entity = userMapper.toEntity(dto);
 
         assertThat(entity).isNotNull();

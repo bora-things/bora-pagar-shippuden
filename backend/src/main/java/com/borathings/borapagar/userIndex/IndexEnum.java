@@ -1,10 +1,9 @@
 package com.borathings.borapagar.userIndex;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
@@ -16,7 +15,7 @@ public enum IndexEnum {
     IEPL(5),
     IEA(6),
     IEAN(7),
-    CR(8),   // Apenas pós-graduação
+    CR(8), // Apenas pós-graduação
     ISPL(9),
     IECHP(10);
 
@@ -29,7 +28,6 @@ public enum IndexEnum {
     }
 
     private final int id;
-
 
     public static IndexEnum fromId(int id) {
         IndexEnum indice = ID_MAP.get(id);

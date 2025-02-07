@@ -20,6 +20,7 @@ public class UserIndexEntity extends AbstractModel {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
+
     private IndexEnum indice;
     private String valor;
 }

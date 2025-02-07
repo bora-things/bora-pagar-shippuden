@@ -18,11 +18,14 @@ import lombok.experimental.SuperBuilder;
 public class WorkloadEntity extends AbstractModel {
     @Column(name = "ch_total_integralizada")
     private Integer chTotalIntegralizada;
+
     @Column(name = "ch_total_min")
     private Integer chTotalMin;
+
     @Column(name = "ch_total_pendente")
     private Integer chTotalPendente;
-    @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 }
