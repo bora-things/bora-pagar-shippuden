@@ -1,0 +1,25 @@
+CREATE TABLE IF NOT EXISTS componentes
+(
+    id                       BIGSERIAL PRIMARY KEY,
+    carga_horaria_total      INTEGER,
+    co_requisitos            TEXT,
+    codigo                   VARCHAR(255) NOT NULL,
+    departamento             TEXT,
+    descricao_tipo_atividade TEXT,
+    disciplina_obrigatoria   BOOLEAN,
+    ementa                   TEXT,
+    equivalentes             TEXT,
+    id_componente            INTEGER      NOT NULL,
+    id_matriz_curricular     INTEGER,
+    id_tipo_atividade        INTEGER,
+    id_tipo_componente       INTEGER,
+    id_unidade               INTEGER,
+    nivel                    VARCHAR(100),
+    nome                     VARCHAR(255) NOT NULL,
+    num_unidades             INTEGER,
+    pre_requisitos           TEXT,
+    semestre_oferta          INTEGER,
+    created_at               TIMESTAMPTZ DEFAULT NOW(),
+    updated_at               TIMESTAMPTZ DEFAULT NOW(),
+    deleted_at               TIMESTAMPTZ
+);

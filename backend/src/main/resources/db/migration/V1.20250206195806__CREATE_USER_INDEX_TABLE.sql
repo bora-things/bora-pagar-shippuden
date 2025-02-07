@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS indices
+(
+    id         BIGSERIAL PRIMARY KEY,
+    indice     VARCHAR NOT NULL,
+    valor      VARCHAR NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMPTZ,
+    user_id    BIGINT  NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+)

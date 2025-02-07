@@ -89,10 +89,24 @@ class UserMapperTest {
                 123,
                 111L,
                 123456789L,
-                12345678901L,
+                987654321L,
+                3010230123L,
                 "http://example.com/image.jpg",
-                false);
-
+                true,
+                "Engenharia de Software",
+                "Bacharelado",
+                2022,
+                1,
+                5,
+                "Vestibular",
+                10,
+                3,
+                50,
+                "Universidade XPTO",
+                99,
+                "Polo Central",
+                false
+        );
         UserEntity entity = userMapper.toEntity(dto);
 
         assertThat(entity).isNotNull();
