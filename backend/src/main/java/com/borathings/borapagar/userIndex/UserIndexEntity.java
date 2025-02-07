@@ -17,10 +17,17 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class UserIndexEntity extends AbstractModel {
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
-
-    private IndexEnum indice;
-    private String valor;
+    private String mc;
+    private String ira;
+    private String mcn;
+    private String iech;
+    private String iepl;
+    private String iea;
+    private String iean;
+    private String cr;
+    private String ispl;
+    private String iechp;
 }

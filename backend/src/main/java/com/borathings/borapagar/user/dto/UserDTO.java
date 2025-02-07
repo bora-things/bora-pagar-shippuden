@@ -36,7 +36,7 @@ public record UserDTO(
                 getLongAttribute(user, "id-discente"),
                 getLongAttribute(user, "id-institucional"),
                 getLongAttribute(user, "id-unidade"),
-                parseCpf(user.getAttribute("cpf-cnpj")),
+                user.getAttribute("cpf-cnpj"),
                 user.getAttribute("url-foto"),
                 user.getAttribute("ativo") != null ? Boolean.TRUE.equals(user.getAttribute("ativo")) : false,
                 user.getAttribute("nome-curso"),

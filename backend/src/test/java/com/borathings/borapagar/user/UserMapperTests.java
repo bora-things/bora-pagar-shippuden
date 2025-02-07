@@ -121,7 +121,7 @@ class UserMapperTest {
         Mockito.when(mockUser.getAttribute("nome-pessoa")).thenReturn("User");
         Mockito.when(mockUser.getAttribute("id-usuario")).thenReturn(123);
         Mockito.when(mockUser.getAttribute("id-institucional")).thenReturn(123456789L);
-        Mockito.when(mockUser.getAttribute("cpf-cnpj")).thenReturn("12345678901");
+        Mockito.when(mockUser.getAttribute("cpf-cnpj")).thenReturn(12345678901L);
         Mockito.when(mockUser.getAttribute("url-foto")).thenReturn("http://example.com/image.jpg");
 
         UserDTO dto = UserDTO.fromSigaaUser(mockUser);

@@ -3,10 +3,7 @@ package com.borathings.borapagar.user;
 import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.core.SoftDeletableModel;
 import com.borathings.borapagar.userIndex.UserIndexEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,8 +130,8 @@ public class UserEntity extends SoftDeletableModel {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClassroomEntity> classrooms = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserIndexEntity> indexes = new ArrayList<>();
+    @OneToOne(mappedBy = "user")
+    private UserIndexEntity index;
 
     @Override
     public boolean equals(Object o) {
