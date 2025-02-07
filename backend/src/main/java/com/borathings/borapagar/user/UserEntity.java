@@ -26,107 +26,107 @@ import org.hibernate.annotations.NaturalId;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class UserEntity extends SoftDeletableModel {
-    @Column
+    @Column(name = "email", nullable = false)
     @NotNull
     private String email;
 
-    @Column
+    @Column(name = "nome", nullable = false)
     @NotNull
     private String name;
 
-    @Column
+    @Column(name = "login", nullable = false)
     @NotNull
     private String login;
 
-    @Column
+    @Column(name = "id_usuario", nullable = false, unique = true)
     @NotNull
     @NaturalId
     private int idUsuario;
 
-    @Column
+    @Column(name = "id_discente", nullable = false)
     @NotNull
     private int idDiscente;
 
-    @Column
+    @Column(name = "id_institucional", nullable = false)
     @NotNull
     private Long idInstitucional;
 
-    @Column
+    @Column(name = "cpf", nullable = false)
     @NotNull
     private Long cpf;
 
-    @Column
+    @Column(name = "image_url")
     private String imageUrl;
 
-    @Column
+    @Column(name = "id_unidade", nullable = false)
     @NotNull
     private int idUnidade;
 
-    @Column
+    @Column(name = "ativo", nullable = false)
     @NotNull
     private boolean ativo;
 
-    @Column
+    @Column(name = "matricula", nullable = false)
     @NotNull
     private String matricula;
 
-    @Column
+    @Column(name = "id_situacao_discente", nullable = false)
     @NotNull
     private int idSituacaoDiscente;
 
-    @Column
+    @Column(name = "id_tipo_discente", nullable = false)
     @NotNull
     private int idTipoDiscente;
 
-    @Column
+    @Column(name = "id_curso", nullable = false)
     @NotNull
     private int idCurso;
 
-    @Column
+    @Column(name = "nome_curso", nullable = false)
     @NotNull
     private String nomeCurso;
 
-    @Column
+    @Column(name = "sigla_nivel", nullable = false)
     @NotNull
     private String siglaNivel;
 
-    @Column
+    @Column(name = "ano_ingresso", nullable = false)
     @NotNull
     private int anoIngresso;
 
-    @Column
+    @Column(name = "periodo_ingresso", nullable = false)
     @NotNull
     private int periodoIngresso;
 
-    @Column
+    @Column(name = "id_forma_ingresso", nullable = false)
     @NotNull
     private int idFormaIngresso;
 
-    @Column
+    @Column(name = "descricao_forma_ingresso", nullable = false)
     @NotNull
     private String descricaoFormaIngresso;
 
-    @Column
+    @Column(name = "id_gestora_academica", nullable = false)
     @NotNull
     private int idGestoraAcademica;
 
-    @Column
+    @Column(name = "id_tipo_participante", nullable = false)
     @NotNull
     private int idTipoParticipante;
 
-    @Column
+    @Column(name = "id_instituicao_ensino", nullable = false)
     @NotNull
     private int idInstituicaoEnsino;
 
-    @Column
+    @Column(name = "instituicao_ensino", nullable = false)
     @NotNull
     private String instituicaoEnsino;
 
-    @Column
+    @Column(name = "id_polo", nullable = false)
     @NotNull
     private int idPolo;
 
-    @Column
+    @Column(name = "polo", nullable = false)
     @NotNull
     private String polo;
 
