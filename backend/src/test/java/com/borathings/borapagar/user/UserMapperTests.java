@@ -5,23 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.borathings.borapagar.user.dto.UserDTO;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-@SpringBootTest
 class UserMapperTest {
-    @Autowired
-    UserMapper userMapper;
-
-    @BeforeEach
-    void setUp() {
-        userMapper = Mappers.getMapper(UserMapper.class);
-    }
+    private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
     @Test
     void testToDTO() {
