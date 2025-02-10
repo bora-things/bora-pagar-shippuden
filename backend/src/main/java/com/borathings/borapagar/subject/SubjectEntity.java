@@ -4,13 +4,15 @@ import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.core.AbstractModel;
 import jakarta.persistence.*;
 import java.util.List;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Entity(name = "componentes")
+@Entity(name = "components")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,64 +20,80 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class SubjectEntity extends AbstractModel {
 
-    @Column(name = "carga_horaria_total")
-    private Integer cargaHorariaTotal;
+    @Column(name = "total_workload",nullable=false)
+    @NotNull
+    private Integer totalWorkload;
 
-    @Column(name = "co_requisitos")
-    private String coRequisitos;
+    @Column(name = "co_requisites",nullable=false)
+    @NotNull
+    private String coRequisites;
 
-    @Column(name = "codigo")
-    private String codigo;
+    @Column(name = "code",nullable = false)
+    @NotNull
+    private String code;
 
-    @ElementCollection
-    @CollectionTable(name = "componentes_bloco")
-    private List<String> componentesBloco; // Ajustado para lista de strings (se necessário, pode mudar)
+    @Column(name = "block_components")
+    private String blockComponents;
 
-    @Column(name = "departamento")
-    private String departamento;
+    @Column(name = "department",nullable=false)
+    @NotNull
+    private String department;
 
-    @Column(name = "descricao_tipo_atividade")
-    private String descricaoTipoAtividade;
+    @Column(name = "activity_type_description",nullable=false)
+    @NotNull
+    private String activityTypeDescription;
 
-    @Column(name = "disciplina_obrigatoria")
-    private Boolean disciplinaObrigatoria;
+    @Column(name = "mandatory_subject",nullable=false)
+    @NotNull
+    private Boolean mandatorySubject;
 
-    @Column(name = "ementa")
-    private String ementa;
+    @Column(name = "description",nullable=false)
+    @NotNull
+    private String description;
 
-    @Column(name = "equivalentes")
-    private String equivalentes;
+    @Column(name = "equivalent",nullable=false)
+    @NotNull
+    private String equivalent;
 
-    @Column(name = "id_componente")
-    private Integer idComponente;
+    @Column(name = "component_id",nullable=false)
+    @NotNull
+    private Integer componentId;
 
-    @Column(name = "id_matriz_curricular")
-    private Integer idMatrizCurricular;
+    @Column(name = "curricular_matrix_id",nullable=false)
+    @NotNull
+    private Integer curricularMatrixId;
 
-    @Column(name = "id_tipo_atividade")
-    private Integer idTipoAtividade;
+    @Column(name = "activity_type_id",nullable=false)
+    @NotNull
+    private Integer activityTypeId;
 
-    @Column(name = "id_tipo_componente")
-    private Integer idTipoComponente;
+    @Column(name = "component_type_id",nullable=false)
+    @NotNull
+    private Integer componentTypeId;
 
-    @Column(name = "id_unidade")
-    private Integer idUnidade;
+    @Column(name = "unit_id",nullable=false)
+    @NotNull
+    private Integer unitId;
 
-    @Column(name = "nivel")
-    private String nivel;
+    @Column(name = "level",nullable=false)
+    @NotNull
+    private String level;
 
-    @Column(name = "nome")
-    private String nome;
+    @Column(name = "name",nullable=false)
+    @NotNull
+    private String name;
 
-    @Column(name = "num_unidades")
-    private Integer numUnidades;
+    @Column(name = "number_units",nullable=false)
+    @NotNull
+    private Integer numberUnits;
 
-    @Column(name = "pre_requisitos")
-    private String preRequisitos;
+    @Column(name = "pre_requisites",nullable=false)
+    @NotNull
+    private String preRequisites;
 
-    @Column(name = "semestre_oferta")
-    private Integer semestreOferta;
-
-    @OneToMany(mappedBy = "componente")
-    private List<ClassroomEntity> turmas;
+    @Column(name = "offered_semester",nullable=false)
+    @NotNull
+    private Integer offeredSemester;
+    @OneToMany(mappedBy = "component")
+    private List<ClassroomEntity> classes;
 }
