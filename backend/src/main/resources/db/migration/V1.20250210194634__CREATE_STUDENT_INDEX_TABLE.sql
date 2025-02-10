@@ -11,9 +11,9 @@ CREATE TABLE IF NOT EXISTS indices
     cr         VARCHAR,
     ispl       VARCHAR,
     iechp      VARCHAR,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
     deleted_at TIMESTAMPTZ,
-    student_id    BIGSERIAL NOT NULL,
-    FOREIGN KEY (student_id) REFERENCES student (id) ON DELETE CASCADE
+    student_id BIGSERIAL NOT NULL,
+    CONSTRAINT fk_student FOREIGN KEY (student_id) REFERENCES student (id) ON DELETE CASCADE
 )

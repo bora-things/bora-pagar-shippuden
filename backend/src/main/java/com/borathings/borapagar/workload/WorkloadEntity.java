@@ -1,6 +1,7 @@
 package com.borathings.borapagar.workload;
 
 import com.borathings.borapagar.core.AbstractModel;
+import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,23 +10,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Entity(name = "carga_horaria")
+@Entity(name = "workload")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class WorkloadEntity extends AbstractModel {
-    @Column(name = "ch_total_integralizada")
-    private Integer chTotalIntegralizada;
+    @Column(name = "total_workload_completed")
+    private Integer totalWorkloadCompleted;
 
-    @Column(name = "ch_total_min")
-    private Integer chTotalMin;
+    @Column(name = "total_min_workload")
+    private Integer totalMinimumWorkload;
 
-    @Column(name = "ch_total_pendente")
-    private Integer chTotalPendente;
+    @Column(name = "pending_workload")
+    private Integer pendingWorkload;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    @OneToOne(mappedBy = "workload")
+    private StudentEntity student;
 }

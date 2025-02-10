@@ -18,8 +18,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class StudentIndexEntity extends AbstractModel {
 
-    @OneToOne
-    @JoinColumn(name = "student_id", nullable = false)
+    @OneToOne(mappedBy = "indexes")
     private StudentEntity student;
     private String mc;
     private String ira;
