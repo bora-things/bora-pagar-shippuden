@@ -1,14 +1,16 @@
 package com.borathings.borapagar.classroom;
 
 import com.borathings.borapagar.core.AbstractModel;
-import com.borathings.borapagar.subject.SubjectEntity;
-import com.borathings.borapagar.teacher.DocentEntity;
-import com.borathings.borapagar.user.UserEntity;
+
+import com.borathings.borapagar.student.StudentEntity;
+import com.borathings.borapagar.subject.ComponentEntity;
+import com.borathings.borapagar.docent.DocentEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@Entity(name = "turma")
+@Entity(name = "classrooms")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,72 +18,87 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class ClassroomEntity extends AbstractModel {
 
-    @Column(name = "id_turma", nullable = false, unique = true)
-    private Long idTurma;
+    @Column(name = "classroom_id", nullable = false, unique = true)
+    @NotNull
+    private Long classroomId;
 
     @Column(nullable = false)
-    private int ano;
+    @NotNull
+    private int year;
 
-    @Column(name = "capacidade_aluno", nullable = false)
-    private int capacidadeAluno;
+    @Column(name = "student_capacity", nullable = false)
+    @NotNull
+    private int studentCapacity;
 
-    @Column(name = "codigo_componente", nullable = false)
-    private String codigoComponente;
+    @Column(name = "component_code", nullable = false)
+    @NotNull
+    private String componentCode;
 
-    @Column(name = "codigo_turma", nullable = false)
-    private String codigoTurma;
+    @Column(name = "classroom_code", nullable = false)
+    @NotNull
+    private String classroomCode;
 
-    @Column(name = "descricao_horario")
-    private String descricaoHorario;
+    @Column(name = "schedule_description")
+    @NotNull
+    private String scheduleDescription;
 
-    @Column(name = "id_discente")
-    private Long idDiscente;
+    @Column(name = "external_teacher_id")
+    @NotNull
+    private Long externalTeacherId;
 
-    @Column(name = "id_docente_externo")
-    private Long idDocenteExterno;
+    @Column(name = "education_mode_id")
+    @NotNull
+    private Long educationModeId;
 
-    @Column(name = "id_modalidade_educacao")
-    private Long idModalidadeEducacao;
+    @Column(name = "classroom_status_id")
+    @NotNull
+    private Long classroomStatusId;
 
-    @Column(name = "id_situacao_turma")
-    private Long idSituacaoTurma;
+    @Column(name = "grouping_classroom_id")
+    @NotNull
+    private Long groupingClassroomId;
 
-    @Column(name = "id_turma_agrupadora")
-    private Long idTurmaAgrupadora;
-
-    @Column(name = "id_unidade")
-    private Long idUnidade;
+    @Column(name = "unit_id")
+    @NotNull
+    private Long unitId;
 
     @Column
-    private String local;
+    @NotNull
+    private String location;
 
-    @Column(name = "nome_componente")
-    private String nomeComponente;
-
-    @Column(nullable = false)
-    private int periodo;
-
-    @Column(name = "sigla_nivel")
-    private String siglaNivel;
+    @Column(name = "component_name")
+    @NotNull
+    private String componentName;
 
     @Column(nullable = false)
-    private boolean subturma;
+    @NotNull
+    private int semester;
+
+    @Column(name = "level_abbreviation")
+    @NotNull
+    private String levelAbbreviation;
 
     @Column(nullable = false)
-    private int tipo;
+    @NotNull
+    private boolean subgroup;
 
-    @Column(name = "utiliza_nova_turma_virtual", nullable = false)
-    private boolean utilizaNovaTurmaVirtual;
+    @Column(nullable = false)
+    @NotNull
+    private int type;
+
+    @Column(name = "uses_new_virtual_classroom", nullable = false)
+    @NotNull
+    private boolean usesNewVirtualClassroom;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    @JoinColumn(name = "student_id", nullable = false)
+    private StudentEntity student;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "docente_id")
-    private DocentEntity docente;
+    @JoinColumn(name = "docent_id")
+    private DocentEntity docent;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "componente_id")
-    private SubjectEntity componente;
+    @JoinColumn(name = "component_id")
+    private ComponentEntity component;
 }

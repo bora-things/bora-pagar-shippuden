@@ -18,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class SubjectEntity extends AbstractModel {
+public class ComponentEntity extends AbstractModel {
 
     @Column(name = "total_workload",nullable=false)
     @NotNull

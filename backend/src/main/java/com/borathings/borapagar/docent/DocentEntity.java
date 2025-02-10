@@ -1,4 +1,4 @@
-package com.borathings.borapagar.teacher;
+package com.borathings.borapagar.docent;
 
 import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.core.AbstractModel;
