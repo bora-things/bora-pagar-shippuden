@@ -1,4 +1,4 @@
-package com.borathings.borapagar.userIndex;
+package com.borathings.borapagar.student.index;
 
 import java.util.HashMap;
 import java.util.Map;

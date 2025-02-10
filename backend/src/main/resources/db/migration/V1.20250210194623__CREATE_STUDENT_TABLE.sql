@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS students
+(
+    id                          BIGSERIAL PRIMARY KEY,
+    student_id                  INTEGER NOT NULL,
+    student_name                TEXT NOT NULL,
+    enrollment_id               TEXT NOT NULL,
+    situation                   VARCHAR(255) NOT NULL,
+    type                        VARCHAR(255) NOT NULL,
+    course_id                   INTEGER NOT NULL,
+    course_name                 TEXT NOT NULL,
+    level                       VARCHAR(100) NOT NULL,
+    admission_year              INTEGER NOT NULL,
+    admission_semester          INTEGER NOT NULL,
+    ingress_method_id           INTEGER NOT NULL,
+    ingress_method_description  TEXT NOT NULL,
+    academic_manager_id         INTEGER NOT NULL,
+    participant_type_id         INTEGER NOT NULL,
+    educational_institution_id  INTEGER NOT NULL,
+    educational_institution     TEXT NOT NULL,
+    id_polo                     INTEGER NOT NULL,
+    polo                        TEXT NOT NULL,
+    created_at                  TIMESTAMPTZ DEFAULT NOW(),
+    updated_at                  TIMESTAMPTZ DEFAULT NOW(),
+    deleted_at                  TIMESTAMPTZ,
+    user_id                     BIGSERIAL NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
