@@ -2,7 +2,7 @@ package com.borathings.borapagar.classroom;
 
 import com.borathings.borapagar.core.AbstractModel;
 import com.borathings.borapagar.subject.SubjectEntity;
-import com.borathings.borapagar.teacher.DocenteEntity;
+import com.borathings.borapagar.teacher.DocentEntity;
 import com.borathings.borapagar.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -79,7 +79,7 @@ public class ClassroomEntity extends AbstractModel {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "docente_id")
-    private DocenteEntity docente;
+    private DocentEntity docente;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "componente_id")
