@@ -14,8 +14,11 @@ class IndexEnumTest {
     @Test
     void testFromIdInvalidIndex() {
         int invalidId = 999; // ID inexistente
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            IndexEnum.fromId(invalidId);
-        }, "Deveria lançar exceção para ID inválido.");
+        Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    IndexEnum.fromId(invalidId);
+                },
+                "Deveria lançar exceção para ID inválido.");
     }
 }

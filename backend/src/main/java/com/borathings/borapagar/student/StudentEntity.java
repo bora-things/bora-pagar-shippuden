@@ -9,15 +9,14 @@ import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.workload.WorkloadEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.NaturalId;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity(name = "students")
 @Getter

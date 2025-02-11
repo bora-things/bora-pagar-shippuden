@@ -1,10 +1,9 @@
 package com.borathings.borapagar.classroom;
 
 import com.borathings.borapagar.core.AbstractModel;
-
+import com.borathings.borapagar.docent.DocentEntity;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.subject.ComponentEntity;
-import com.borathings.borapagar.docent.DocentEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

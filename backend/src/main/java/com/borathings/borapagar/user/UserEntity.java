@@ -3,7 +3,6 @@ package com.borathings.borapagar.user;
 import com.borathings.borapagar.core.SoftDeletableModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

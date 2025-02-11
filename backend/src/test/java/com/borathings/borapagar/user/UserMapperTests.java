@@ -26,7 +26,7 @@ class UserMapperTest {
 
         assertEquals(userEntity.getId(), userDTO.id());
         assertEquals(userEntity.getEmail(), userDTO.email());
-//        assertEquals(userEntity.getPersonName(), userDTO.name());
+        //        assertEquals(userEntity.getPersonName(), userDTO.name());
         assertEquals(userEntity.getImageUrl(), userDTO.imageUrl());
     }
 
@@ -46,7 +46,7 @@ class UserMapperTest {
 
         assertThat(responseDTO).isNotNull();
         assertThat(responseDTO.email()).isEqualTo(user.getEmail());
-//        assertThat(responseDTO.name()).isEqualTo(user.getPersonName());
+        //        assertThat(responseDTO.name()).isEqualTo(user.getPersonName());
     }
 
     @Test
@@ -71,14 +71,7 @@ class UserMapperTest {
     @Test
     void testToEntity() {
         UserDTO dto = new UserDTO(
-                "user123",
-                "user@example.com",
-                "User",
-                123,
-                111L,
-                "123456789",
-                "http://example.com/image.jpg",
-                false);
+                "user123", "user@example.com", "User", 123, 111L, "123456789", "http://example.com/image.jpg", false);
         UserEntity entity = userMapper.toEntity(dto);
 
         assertThat(entity).isNotNull();
@@ -101,7 +94,7 @@ class UserMapperTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.email()).isEqualTo("user@example.com");
-//        assertThat(dto.personName()).isEqualTo("User");
+        //        assertThat(dto.personName()).isEqualTo("User");
         assertThat(dto.deleted()).isFalse();
     }
 }

@@ -23,7 +23,6 @@ public record UserDTO(
                 false);
     }
 
-
     private static Long getLongAttribute(OAuth2User user, String key) {
         Object value = user.getAttribute(key);
         return (value instanceof Number) ? ((Number) value).longValue() : 0L;

@@ -2,7 +2,6 @@ package com.borathings.borapagar.student.index;
 
 import com.borathings.borapagar.core.AbstractModel;
 import com.borathings.borapagar.student.StudentEntity;
-import com.borathings.borapagar.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +19,7 @@ public class StudentIndexEntity extends AbstractModel {
 
     @OneToOne(mappedBy = "indexes")
     private StudentEntity student;
+
     private String mc;
     private String ira;
     private String mcn;
