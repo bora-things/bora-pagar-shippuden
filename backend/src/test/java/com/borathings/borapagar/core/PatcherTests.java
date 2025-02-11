@@ -7,6 +7,7 @@ import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
@@ -15,6 +16,7 @@ public class PatcherTests {
     Patcher<UserEntity> patcher;
 
     @Autowired
+    @Qualifier("userMapperImpl")
     UserMapper mapper;
 
     @Test
@@ -22,7 +24,7 @@ public class PatcherTests {
         UserEntity target = UserEntity.builder()
                 .id(1L)
                 .email("teste@gmail.com")
-                .name("Ian Gabriel")
+                .personName("Ian Gabriel")
                 .imageUrl("teste.com")
                 .build();
 
