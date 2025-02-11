@@ -18,7 +18,7 @@ class UserMapperTest {
         UserEntity userEntity = UserEntity.builder()
                 .id(1L)
                 .email("ramon.jales.cr7@ufrn.edu.br")
-                .name("Ramon Jales")
+                .personName("Ramon Jales")
                 .imageUrl("cr7.jpeg")
                 .build();
 
@@ -26,20 +26,19 @@ class UserMapperTest {
 
         assertEquals(userEntity.getId(), userDTO.id());
         assertEquals(userEntity.getEmail(), userDTO.email());
-        assertEquals(userEntity.getName(), userDTO.name());
+        assertEquals(userEntity.getPersonName(), userDTO.name());
         assertEquals(userEntity.getImageUrl(), userDTO.imageUrl());
     }
 
     @Test
     void testToUserResponseDTO() {
         UserEntity user = UserEntity.builder()
-                .idUsuario(123)
+                .userId(123)
                 .email("user@example.com")
-                .name("User")
+                .personName("User")
                 .login("user123")
-                .idDiscente(111)
-                .idInstitucional(123456789L)
-                .cpf(12345678901L)
+                .institutionalId(123456789L)
+                .cpf("12345678901")
                 .imageUrl("http://example.com/image.jpg")
                 .build();
 
@@ -47,19 +46,18 @@ class UserMapperTest {
 
         assertThat(responseDTO).isNotNull();
         assertThat(responseDTO.email()).isEqualTo(user.getEmail());
-        assertThat(responseDTO.name()).isEqualTo(user.getName());
+        assertThat(responseDTO.name()).isEqualTo(user.getPersonName());
     }
 
     @Test
     void testToDto() {
         UserEntity user = UserEntity.builder()
-                .idUsuario(123)
+                .userId(123)
                 .email("user@example.com")
-                .name("User")
+                .personName("User")
                 .login("user123")
-                .idDiscente(111)
-                .idInstitucional(123456789L)
-                .cpf(12345678901L)
+                .institutionalId(123456789L)
+                .cpf("12345678901")
                 .imageUrl("http://example.com/image.jpg")
                 .build();
 
@@ -67,7 +65,7 @@ class UserMapperTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.email()).isEqualTo(user.getEmail());
-        assertThat(dto.name()).isEqualTo(user.getName());
+        assertThat(dto.name()).isEqualTo(user.getPersonName());
     }
 
     @Test
@@ -100,7 +98,7 @@ class UserMapperTest {
 
         assertThat(entity).isNotNull();
         assertThat(entity.getEmail()).isEqualTo(dto.email());
-        assertThat(entity.getName()).isEqualTo(dto.name());
+        assertThat(entity.getPersonName()).isEqualTo(dto.name());
     }
 
     @Test
