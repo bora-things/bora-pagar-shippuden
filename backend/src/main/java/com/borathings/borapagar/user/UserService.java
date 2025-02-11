@@ -64,7 +64,7 @@ public class UserService {
      * @return UserEntity - Usuário encontrado
      * @throws EntityNotFoundException - Se o usuário não for encontrado
      */
-    public UserEntity findByIdUsuarioOrError(int idUsuario) {
+    public UserEntity findByIdUserOrError(int idUsuario) {
         return userRepository.findByUserId(idUsuario).orElseThrow(() -> {
             return new EntityNotFoundException("Usuário não encontrado");
         });
