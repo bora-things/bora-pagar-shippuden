@@ -1,8 +1,7 @@
 package com.borathings.borapagar.user;
 
 import com.borathings.borapagar.core.SoftDeletableModel;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
@@ -20,48 +19,52 @@ import org.hibernate.annotations.NaturalId;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class UserEntity extends SoftDeletableModel {
-    @Column
+    @Column(nullable = false)
     @NotNull
     private String email;
 
-    @Column
+    @Column(name = "person_name", nullable = false)
     @NotNull
-    private String name;
+    private String personName;
 
-    @Column
+    @Column(nullable = false)
     @NotNull
     private String login;
 
-    @Column
+    @Column(name = "user_id", nullable = false, unique = true)
     @NotNull
     @NaturalId
-    private int idUsuario;
+    private int userId;
 
-    @Column
+    @Column(name = "institutional_id", nullable = false)
     @NotNull
-    private int idDiscente;
+    private Long institutionalId;
 
-    @Column
+    @Column(nullable = false)
     @NotNull
-    private Long idInstitucional;
+    private String cpf;
 
-    @Column
-    @NotNull
-    private Long cpf;
-
-    @Column
+    @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "unit_id", nullable = false)
+    @NotNull
+    private int unitId;
+
+    @Column(nullable = false)
+    @NotNull
+    private boolean active;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserEntity)) return false;
         UserEntity other = (UserEntity) o;
-        return Objects.equals(getIdUsuario(), other.getIdUsuario());
+        return Objects.equals(getUserId(), other.getUserId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getIdUsuario());
+        return Objects.hashCode(getUserId());
     }
 }

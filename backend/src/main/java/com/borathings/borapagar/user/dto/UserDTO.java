@@ -5,11 +5,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 public record UserDTO(
         String login,
         String email,
-        String name,
-        int idUsuario,
-        Long idDiscente,
-        Long idInstitucional,
-        Long cpf,
+        String personName,
+        int userId,
+        Long institutionalId,
+        String cpf,
         String imageUrl,
         boolean deleted) {
     public static UserDTO fromSigaaUser(OAuth2User user) {
@@ -18,10 +17,27 @@ public record UserDTO(
                 user.getAttribute("email"),
                 user.getAttribute("nome-pessoa"),
                 user.getAttribute("id-usuario"),
-                0L, // user.getAttribute("id-discente"),
                 user.getAttribute("id-institucional"),
                 user.getAttribute("cpf-cnpj"),
                 user.getAttribute("url-foto"),
                 false);
+    }
+
+    private static Long getLongAttribute(OAuth2User user, String key) {
+        Object value = user.getAttribute(key);
+        return (value instanceof Number) ? ((Number) value).longValue() : 0L;
+    }
+
+    private static int getIntAttribute(OAuth2User user, String key) {
+        Object value = user.getAttribute(key);
+        return (value instanceof Number) ? ((Number) value).intValue() : 0;
+    }
+
+    private static Long parseCpf(String cpf) {
+        try {
+            return cpf != null ? Long.parseLong(cpf.replaceAll("\\D", "")) : 0L;
+        } catch (NumberFormatException e) {
+            return 0L;
+        }
     }
 }

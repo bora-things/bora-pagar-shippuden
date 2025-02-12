@@ -14,35 +14,32 @@ class UserEntityTest {
     @BeforeEach
     void setUp() {
         user1 = UserEntity.builder()
-                .idUsuario(123)
+                .userId(123)
                 .email("user1@example.com")
-                .name("User One")
+                .personName("User One")
                 .login("user1")
-                .idDiscente(111)
-                .idInstitucional(123456789L)
-                .cpf(12345678901L)
+                .institutionalId(123456789L)
+                .cpf("12345678901")
                 .imageUrl("http://example.com/image1.jpg")
                 .build();
 
         user2 = UserEntity.builder()
-                .idUsuario(123) // Same ID as user1
+                .userId(123) // Same ID as user1
                 .email("user2@example.com")
-                .name("User Two")
+                .personName("User Two")
                 .login("user2")
-                .idDiscente(222)
-                .idInstitucional(987654321L)
-                .cpf(10987654321L)
+                .institutionalId(987654321L)
+                .cpf("10987654321")
                 .imageUrl("http://example.com/image2.jpg")
                 .build();
 
         user3 = UserEntity.builder()
-                .idUsuario(456) // Different ID
+                .userId(456) // Different ID
                 .email("user3@example.com")
-                .name("User Three")
+                .personName("User Three")
                 .login("user3")
-                .idDiscente(333)
-                .idInstitucional(192837465L)
-                .cpf(19283746509L)
+                .institutionalId(192837465L)
+                .cpf("19283746509")
                 .imageUrl("http://example.com/image3.jpg")
                 .build();
     }

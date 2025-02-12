@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 /** UserRepository */
 @Repository
 public interface UserRepository extends SoftDeletableRepository<UserEntity> {
-    Optional<UserEntity> findByIdUsuario(int idUsuario);
+    Optional<UserEntity> findByUserId(int idUser);
 
     Optional<UserEntity> findByLogin(String login);
 }

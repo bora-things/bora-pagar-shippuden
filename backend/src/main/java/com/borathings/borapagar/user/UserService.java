@@ -28,7 +28,7 @@ public class UserService {
     public void upsert(OAuth2User user) {
         logger.info("Recebido login de usuário {}", user.getName());
         String oidcUserGoogleId = user.getName();
-        Optional<UserEntity> maybeUser = userRepository.findByIdUsuario(user.getAttribute("id-usuario"));
+        Optional<UserEntity> maybeUser = userRepository.findByUserId(user.getAttribute("id-usuario"));
         maybeUser.ifPresentOrElse(
                 existingUser -> this.updateExistingOidcUser(existingUser, user), () -> insertNewUser(user));
     }
@@ -64,8 +64,8 @@ public class UserService {
      * @return UserEntity - Usuário encontrado
      * @throws EntityNotFoundException - Se o usuário não for encontrado
      */
-    public UserEntity findByIdUsuarioOrError(int idUsuario) {
-        return userRepository.findByIdUsuario(idUsuario).orElseThrow(() -> {
+    public UserEntity findByIdUserOrError(int idUsuario) {
+        return userRepository.findByUserId(idUsuario).orElseThrow(() -> {
             return new EntityNotFoundException("Usuário não encontrado");
         });
     }
