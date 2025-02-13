@@ -3,6 +3,7 @@ package com.borathings.borapagar.student.index;
 import com.borathings.borapagar.core.AbstractModel;
 import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,17 +18,20 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class StudentIndexEntity extends AbstractModel {
 
-    @OneToOne(mappedBy = "indexes")
+    @ManyToOne
+    @JoinColumn(name = "student_id", nullable = false)
     private StudentEntity student;
 
-    private String mc;
-    private String ira;
-    private String mcn;
-    private String iech;
-    private String iepl;
-    private String iea;
-    private String iean;
-    private String cr;
-    private String ispl;
-    private String iechp;
+    @NotNull
+    @Column
+    private String value;
+
+    @NotNull
+    @Column
+    private String name;
+
+    @NotNull
+    @Column(name = "index_id")
+    // ID do indice mapeado no SIGAA
+    private Long indexId;
 }
