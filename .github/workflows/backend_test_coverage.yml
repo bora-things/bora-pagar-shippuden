@@ -11,7 +11,9 @@ defaults:
   
 env:
   SIGAA_API_KEY: ${{secrets.SIGAA_API_KEY}}
-
+  FRONTEND_URL: ""
+  FRONTEND_REDIRECT: ${FRONTEND_URL}/dashboard
+  
 jobs:
   
  test-coverage:
