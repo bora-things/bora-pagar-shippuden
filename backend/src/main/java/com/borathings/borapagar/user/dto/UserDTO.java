@@ -33,15 +33,15 @@ public record UserDTO(
         return (value instanceof Number) ? ((Number) value).intValue() : 0;
     }
 
-//    private static Long parseCpf(String cpf) {
-//        try {
-//            return cpf != null ? Long.parseLong(cpf.replaceAll("\\D", "")) : 0L;
-//        } catch (NumberFormatException e) {
-//            return 0L;
-//        }
-//    }
+    //    private static Long parseCpf(String cpf) {
+    //        try {
+    //            return cpf != null ? Long.parseLong(cpf.replaceAll("\\D", "")) : 0L;
+    //        } catch (NumberFormatException e) {
+    //            return 0L;
+    //        }
+    //    }
 
-    private static String parseCpf(Long cpf){
+    private static String parseCpf(Long cpf) {
         return cpf != null ? String.format("%011d", cpf) : "";
     }
 }

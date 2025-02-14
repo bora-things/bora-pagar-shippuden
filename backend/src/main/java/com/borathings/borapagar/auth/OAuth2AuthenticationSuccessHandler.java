@@ -22,8 +22,9 @@ import org.springframework.stereotype.Component;
 public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Value("${frontend.url}")
-    String frontendUrl;
+
+    @Value("${frontend.redirect}")
+    String frontendRedirect;
 
     /** Redireciona de volta o usuário para onde a requisição original foi feita */
     @Override
@@ -34,13 +35,8 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
         if (authentication instanceof OAuth2AuthenticationToken) {
             String originalReferer = (String) request.getSession().getAttribute("original_referer");
             request.getSession().removeAttribute("original_referer");
-            response.sendRedirect(frontendUrl+"/dashboard");
+            response.sendRedirect(frontendRedirect);
             return;
-            //            if (originalReferer != null) {
-//                logger.info("Original referer is {}", originalReferer);
-//                response.sendRedirect(originalReferer);
-//                return;
-//            }
         }
         super.onAuthenticationSuccess(request, response, authentication);
     }
