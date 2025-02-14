@@ -29,76 +29,66 @@ public class StudentEntity extends SoftDeletableModel {
     @NaturalId
     @Column(name = "student_id", nullable = false)
     @NotNull
-    private int studentId;
+    private Long studentId;
 
     @Column(name = "student_name", nullable = false)
     @NotNull
     private String studentName;
 
-    @Column(name = "enrollment_id", nullable = false)
-    @NotNull
+    @Column(name = "enrollment_id")
     private String enrollmentId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "situation", nullable = false)
-    @NotNull
+    @Column(name = "situation")
     private StudentSituation studentSituation;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    @NotNull
+    @Column(name = "type")
     private StudentType studentType;
 
-    @Column(name = "course_id", nullable = false)
-    @NotNull
+    @Column(name = "course_id")
     private int courseId;
 
-    @Column(name = "course_name", nullable = false)
-    @NotNull
+    @Column(name = "course_name")
     private String courseName;
 
-    @Column(name = "level", nullable = false)
+    @Column(name = "level")
     @NotNull
     private String level;
 
-    @Column(name = "admission_year", nullable = false)
+    @Column(name = "admission_year")
     @NotNull
     private int admissionYear;
 
-    @Column(name = "admission_semester", nullable = false)
+    @Column(name = "admission_semester")
     @NotNull
     private int admissionSemester;
 
-    @Column(name = "ingress_method_id", nullable = false)
-    @NotNull
+    @Column(name = "ingress_method_id")
     private int ingressMethodId;
 
-    @Column(name = "ingress_method_description", nullable = false)
-    @NotNull
+    @Column(name = "ingress_method_description")
     private String ingressMethodDescription;
 
-    @Column(name = "academic_manager_id", nullable = false)
+    @Column(name = "academic_manager_id")
     @NotNull
     private int academicManagerId;
 
-    @Column(name = "participant_type_id", nullable = false)
+    @Column(name = "participant_type_id")
     @NotNull
     private int participantTypeId;
 
-    @Column(name = "educational_institution_id", nullable = false)
-    @NotNull
+    @Column(name = "educational_institution_id")
     private int educationalInstitutionId;
 
-    @Column(name = "educational_institution", nullable = false)
-    @NotNull
+    @Column(name = "educational_institution")
     private String educationalInstitution;
 
-    @Column(name = "id_polo", nullable = false)
-    @NotNull
-    private int idPolo;
+    @Column(name = "id_polo")
+    private int campusId;
 
-    @NotNull
-    private String polo;
+    @Column(name = "campus")
+    private String campus;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClassroomEntity> classrooms = new ArrayList<>();

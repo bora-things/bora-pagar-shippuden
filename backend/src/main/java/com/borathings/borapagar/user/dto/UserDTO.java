@@ -18,7 +18,7 @@ public record UserDTO(
                 user.getAttribute("nome-pessoa"),
                 user.getAttribute("id-usuario"),
                 user.getAttribute("id-institucional"),
-                user.getAttribute("cpf-cnpj"),
+                user.getAttribute("cpf-cnpj").toString(),
                 user.getAttribute("url-foto"),
                 false);
     }
