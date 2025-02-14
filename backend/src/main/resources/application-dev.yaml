@@ -4,4 +4,5 @@ spring:
     username: postgres
     password: password
 frontend:
-  url: 'http://localhost:5173'
+  url: ${FRONTEND_URL}
+  redirect: '${FRONTEND_URL}/dashboard'

@@ -37,15 +37,17 @@ class OAuth2AuthenticationSuccessHandlerTest {
         successHandler = new OAuth2AuthenticationSuccessHandler();
     }
 
-    @Test
-    void testOnAuthenticationSuccessWithOriginalReferer() throws IOException, ServletException {
-        when(request.getSession()).thenReturn(session);
-        when(request.getSession().getAttribute("original_referer")).thenReturn("borapagar.com");
+    // Teste não é mais necessário pois será redirecionado para a variavel ${frontend.redirect}
 
-        successHandler.onAuthenticationSuccess(request, response, authentication);
-
-        verify(response).sendRedirect("borapagar.com");
-    }
+    //    @Test
+    //    void testOnAuthenticationSuccessWithOriginalReferer() throws IOException, ServletException {
+    //        when(request.getSession()).thenReturn(session);
+    //        when(request.getSession().getAttribute("original_referer")).thenReturn("borapagar.com");
+    //
+    //        successHandler.onAuthenticationSuccess(request, response, authentication);
+    //
+    //        verify(response).sendRedirect("borapagar.com");
+    //    }
 
     @Test
     void testOnAuthenticationSuccessWithoutOriginalReferer() throws IOException, ServletException {

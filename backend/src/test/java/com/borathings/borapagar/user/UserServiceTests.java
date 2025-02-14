@@ -39,7 +39,7 @@ class UserServiceTest {
                 .personName("Test User")
                 .login("testuser")
                 .institutionalId(67890L)
-                .cpf("12345678901L")
+                .cpf("12345678901")
                 .imageUrl("http://image.url")
                 .build();
     }
