@@ -34,4 +34,8 @@ public class StudentIndexEntity extends AbstractModel {
     @Column(name = "index_id")
     // ID do indice mapeado no SIGAA
     private Long indexId;
+
+    @NotNull
+    @Column(name = "siga_student_index_id")
+    private Long studentIndexId;
 }
