@@ -2,13 +2,8 @@ name: Backend CI
 run-name: Running all verifications of backend
 on: [push]
 
-defaults:
-  run:
-    working-directory: ./backend
-
 env:
   SIGAA_API_KEY: ${{secrets.SIGAA_API_KEY}}
-
 
 jobs:
   check:
