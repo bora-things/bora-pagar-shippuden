@@ -22,74 +22,72 @@ import org.springframework.web.client.RestClient;
 
 @Service
 public class StudentService {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	RestClient restClient;
+    @Autowired
+    RestClient restClient;
 
-	@Autowired
-	StudentRepository studentRepository;
+    @Autowired
+    StudentRepository studentRepository;
 
-	@Autowired
-	UserService userService;
+    @Autowired
+    UserService userService;
 
-	@Autowired
-	StudentMapper studentMapper;
+    @Autowired
+    StudentMapper studentMapper;
 
-	@Autowired
-	StudentIndexRepository studentIndexRepository;
+    @Autowired
+    StudentIndexRepository studentIndexRepository;
 
-	public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
-		Optional<StudentEntity> student = studentRepository.findByUserId(userId);
-		if (student.isEmpty()) {
-			UserEntity userEntity = userService.findByIdUserOrError(userId);
-			logger.info("Creating Student from User {}", userEntity);
-			List<StudentDTO> students = restClient
-					.get()
-					.uri("/discente/v1/discentes?id-institucional=" + institutionalId)
-					.attributes(clientRegistrationId("sigaa"))
-					.retrieve()
-					.body(new ParameterizedTypeReference<>() {
-					});
+    public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
+        Optional<StudentEntity> student = studentRepository.findByUserId(userId);
+        if (student.isEmpty()) {
+            UserEntity userEntity = userService.findByIdUserOrError(userId);
+            logger.info("Creating Student from User {}", userEntity);
+            List<StudentDTO> students = restClient
+                    .get()
+                    .uri("/discente/v1/discentes?id-institucional=" + institutionalId)
+                    .attributes(clientRegistrationId("sigaa"))
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {});
 
-			StudentDTO studentDto = students.getFirst();
+            StudentDTO studentDto = students.getFirst();
 
-			StudentEntity studentEntity = studentMapper.toEntity(studentDto);
+            StudentEntity studentEntity = studentMapper.toEntity(studentDto);
 
-			studentEntity.setUser(userEntity);
-			return studentRepository.save(studentEntity);
-		}
-		return student.get();
-	}
+            studentEntity.setUser(userEntity);
+            return studentRepository.save(studentEntity);
+        }
+        return student.get();
+    }
 
-	@Async
-	public CompletableFuture<Void> fetchIndexes(StudentEntity student) {
-		try {
+    @Async
+    public CompletableFuture<Void> fetchIndexes(StudentEntity student) {
+        try {
 
-			List<IndexDTO> indexes = restClient
-					.get()
-					.uri("/discente/v1/indices-discentes?id-discente=" + student.getStudentId())
-					.attributes(clientRegistrationId("sigaa"))
-					.retrieve()
-					.body(new ParameterizedTypeReference<List<IndexDTO>>() {
-					});
+            List<IndexDTO> indexes = restClient
+                    .get()
+                    .uri("/discente/v1/indices-discentes?id-discente=" + student.getStudentId())
+                    .attributes(clientRegistrationId("sigaa"))
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<List<IndexDTO>>() {});
 
-			List<StudentIndexEntity> studentIndexEntities = indexes.stream()
-					.map(idx -> StudentIndexEntity.builder()
-							.student(student)
-							.value(idx.value())
-							.name("name")
-							.indexId(idx.indexId())
-							.studentIndexId(idx.studentIndexId())
-							.build())
-					.collect(Collectors.toList());
+            List<StudentIndexEntity> studentIndexEntities = indexes.stream()
+                    .map(idx -> StudentIndexEntity.builder()
+                            .student(student)
+                            .value(idx.value())
+                            .name("name")
+                            .indexId(idx.indexId())
+                            .studentIndexId(idx.studentIndexId())
+                            .build())
+                    .collect(Collectors.toList());
 
-			studentIndexRepository.saveAll(studentIndexEntities);
+            studentIndexRepository.saveAll(studentIndexEntities);
 
-		} catch (Exception ex) {
-			logger.error("Exception at fetchIndexes: {}", ex.getMessage());
-		}
+        } catch (Exception ex) {
+            logger.error("Exception at fetchIndexes: {}", ex.getMessage());
+        }
 
-		return CompletableFuture.completedFuture(null);
-	}
+        return CompletableFuture.completedFuture(null);
+    }
 }

@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AfterLoginService {
 
-	@Autowired
-	private StudentService studentService;
+    @Autowired
+    private StudentService studentService;
 
-	@Async
-	public void completeProfileAfterLogin(StudentEntity student) {
-		CompletableFuture.allOf(studentService.fetchIndexes(student));
-	}
+    @Async
+    public void completeProfileAfterLogin(StudentEntity student) {
+        CompletableFuture.allOf(studentService.fetchIndexes(student));
+    }
 }

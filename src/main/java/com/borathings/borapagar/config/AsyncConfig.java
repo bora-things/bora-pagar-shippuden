@@ -12,28 +12,28 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Configuration
 @EnableAsync
 public class AsyncConfig {
-	@Bean
-	public Executor backgroundExecutor() {
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(5);
-		executor.setMaxPoolSize(10);
-		executor.setQueueCapacity(100);
-		executor.setThreadNamePrefix("AsyncThread-");
-		executor.setTaskDecorator(addSecurityContext());
-		return executor;
-	}
+    @Bean
+    public Executor backgroundExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("AsyncThread-");
+        executor.setTaskDecorator(addSecurityContext());
+        return executor;
+    }
 
-	TaskDecorator addSecurityContext() {
-		return runnable -> {
-			SecurityContext context = SecurityContextHolder.getContext();
-			return () -> {
-				try {
-					SecurityContextHolder.setContext(context);
-					runnable.run();
-				} finally {
-					SecurityContextHolder.clearContext();
-				}
-			};
-		};
-	}
+    TaskDecorator addSecurityContext() {
+        return runnable -> {
+            SecurityContext context = SecurityContextHolder.getContext();
+            return () -> {
+                try {
+                    SecurityContextHolder.setContext(context);
+                    runnable.run();
+                } finally {
+                    SecurityContextHolder.clearContext();
+                }
+            };
+        };
+    }
 }

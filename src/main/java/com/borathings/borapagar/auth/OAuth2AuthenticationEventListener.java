@@ -14,26 +14,26 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OAuth2AuthenticationEventListener {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	StudentService studentService;
+    @Autowired
+    StudentService studentService;
 
-	@Autowired
-	AfterLoginService afterLoginService;
+    @Autowired
+    AfterLoginService afterLoginService;
 
-	@EventListener
-	public void onAuthenticationSuccess(InteractiveAuthenticationSuccessEvent event) {
-		Authentication authentication = event.getAuthentication();
-		if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
-			Long institutionalId = oauth2User.getAttribute("id-institucional");
-			int userId = oauth2User.getAttribute("id-usuario");
-			String username = oauth2User.getName();
-			StudentEntity student = studentService.createFromInstitutionalId(institutionalId, userId);
+    @EventListener
+    public void onAuthenticationSuccess(InteractiveAuthenticationSuccessEvent event) {
+        Authentication authentication = event.getAuthentication();
+        if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
+            Long institutionalId = oauth2User.getAttribute("id-institucional");
+            int userId = oauth2User.getAttribute("id-usuario");
+            String username = oauth2User.getName();
+            StudentEntity student = studentService.createFromInstitutionalId(institutionalId, userId);
 
-			logger.info("Completing profile of student {}", username);
+            logger.info("Completing profile of student {}", username);
 
-			afterLoginService.completeProfileAfterLogin(student);
-		}
-	}
+            afterLoginService.completeProfileAfterLogin(student);
+        }
+    }
 }
