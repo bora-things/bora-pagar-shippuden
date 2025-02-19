@@ -4,7 +4,6 @@ import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.core.SoftDeletableModel;
 import com.borathings.borapagar.student.IdMappers.StudentSituation;
 import com.borathings.borapagar.student.IdMappers.StudentType;
-import com.borathings.borapagar.student.index.StudentIndexEntity;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.workload.WorkloadEntity;
 import jakarta.persistence.*;
@@ -92,10 +91,6 @@ public class StudentEntity extends SoftDeletableModel {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClassroomEntity> classrooms = new ArrayList<>();
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "index_id", unique = true)
-    private StudentIndexEntity indexes;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

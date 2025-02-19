@@ -1,6 +1,8 @@
 package com.borathings.borapagar.auth;
 
+import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
+import com.borathings.borapagar.task.AfterLoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,21 @@ public class OAuth2AuthenticationEventListener {
     @Autowired
     StudentService studentService;
 
+    @Autowired
+    AfterLoginService afterLoginService;
+
     @EventListener
     public void onAuthenticationSuccess(InteractiveAuthenticationSuccessEvent event) {
         Authentication authentication = event.getAuthentication();
         if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
             Long institutionalId = oauth2User.getAttribute("id-institucional");
             int userId = oauth2User.getAttribute("id-usuario");
-            studentService.createFromInstitutionalId(institutionalId, userId);
+            String username = oauth2User.getName();
+            StudentEntity student = studentService.createFromInstitutionalId(institutionalId, userId);
+
+            logger.info("Completing profile of student {}", username);
+
+            afterLoginService.completeProfileAfterLogin(student);
         }
     }
 }
