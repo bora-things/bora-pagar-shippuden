@@ -4,6 +4,7 @@ import static org.springframework.security.oauth2.client.web.client.RequestAttri
 
 import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.student.index.IndexDTO;
+import com.borathings.borapagar.student.index.IndexEnum;
 import com.borathings.borapagar.student.index.StudentIndexEntity;
 import com.borathings.borapagar.student.index.StudentIndexRepository;
 import com.borathings.borapagar.user.UserEntity;
@@ -76,7 +77,7 @@ public class StudentService {
                     .map(idx -> StudentIndexEntity.builder()
                             .student(student)
                             .value(idx.value())
-                            .name("name")
+                            .name(IndexEnum.fromId(idx.indexId().intValue()).name())
                             .indexId(idx.indexId())
                             .studentIndexId(idx.studentIndexId())
                             .build())
