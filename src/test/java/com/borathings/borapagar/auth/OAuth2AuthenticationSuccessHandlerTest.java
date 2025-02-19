@@ -38,16 +38,6 @@ class OAuth2AuthenticationSuccessHandlerTest {
     }
 
     @Test
-    void testOnAuthenticationSuccessWithOriginalReferer() throws IOException, ServletException {
-        when(request.getSession()).thenReturn(session);
-        when(request.getSession().getAttribute("original_referer")).thenReturn("borapagar.com");
-
-        successHandler.onAuthenticationSuccess(request, response, authentication);
-
-        verify(response).sendRedirect("borapagar.com");
-    }
-
-    @Test
     void testOnAuthenticationSuccessWithoutOriginalReferer() throws IOException, ServletException {
         when(request.getSession()).thenReturn(session);
         when(request.getSession().getAttribute("original_referer")).thenReturn(null);

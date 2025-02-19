@@ -5,3 +5,4 @@ spring:
     password: password
 frontend:
   url: 'http://localhost:5173'
+  redirect: '${FRONTEND_URL}/dashboard'

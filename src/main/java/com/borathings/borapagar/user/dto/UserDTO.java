@@ -32,12 +32,4 @@ public record UserDTO(
         Object value = user.getAttribute(key);
         return (value instanceof Number) ? ((Number) value).intValue() : 0;
     }
-
-    private static Long parseCpf(String cpf) {
-        try {
-            return cpf != null ? Long.parseLong(cpf.replaceAll("\\D", "")) : 0L;
-        } catch (NumberFormatException e) {
-            return 0L;
-        }
-    }
 }
