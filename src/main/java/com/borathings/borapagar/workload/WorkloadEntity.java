@@ -1,6 +1,6 @@
 package com.borathings.borapagar.workload;
 
-import com.borathings.borapagar.core.AbstractModel;
+import com.borathings.borapagar.core.SoftDeletableModel;
 import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class WorkloadEntity extends AbstractModel {
+public class WorkloadEntity extends SoftDeletableModel {
     @Column(name = "total_workload_completed")
     private Integer totalWorkloadCompleted;
 
@@ -25,6 +25,7 @@ public class WorkloadEntity extends AbstractModel {
     @Column(name = "pending_workload")
     private Integer pendingWorkload;
 
-    @OneToOne(mappedBy = "workload")
+    @OneToOne
+    @JoinColumn(name = "student_id", nullable = false)
     private StudentEntity student;
 }

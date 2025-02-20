@@ -8,6 +8,9 @@ import com.borathings.borapagar.student.index.StudentIndexEntity;
 import com.borathings.borapagar.student.index.StudentIndexRepository;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserService;
+import com.borathings.borapagar.workload.WorkloadDto;
+import com.borathings.borapagar.workload.WorkloadEntity;
+import com.borathings.borapagar.workload.WorkloadRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -38,6 +41,9 @@ public class StudentService {
 
     @Autowired
     StudentIndexRepository studentIndexRepository;
+
+    @Autowired
+    private WorkloadRepository workloadRepository;
 
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
         Optional<StudentEntity> student = studentRepository.findByUserId(userId);
@@ -86,6 +92,34 @@ public class StudentService {
 
         } catch (Exception ex) {
             logger.error("Exception at fetchIndexes: {}", ex.getMessage());
+        }
+
+        return CompletableFuture.completedFuture(null);
+    }
+
+    @Async
+    public CompletableFuture<Void> fetchWorkload(StudentEntity student) {
+        try {
+
+            WorkloadDto workloadDto = restClient
+                    .get()
+                    .uri("https://api.info.ufrn.br/discente/v1/discentes/" + student.getStudentId() + "/carga-horaria")
+                    .attributes(clientRegistrationId("sigaa"))
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<WorkloadDto>() {});
+
+            if (workloadDto != null) {
+                WorkloadEntity workload = WorkloadEntity.builder()
+                        .pendingWorkload(workloadDto.pendingWorkload())
+                        .totalMinimumWorkload(workloadDto.totalMinimumWorkload())
+                        .totalWorkloadCompleted(workloadDto.totalWorkloadCompleted())
+                        .student(student)
+                        .build();
+                workloadRepository.save(workload);
+            }
+
+        } catch (Exception ex) {
+            logger.error("Exception at fetchWorkload: {}", ex.getMessage());
         }
 
         return CompletableFuture.completedFuture(null);
