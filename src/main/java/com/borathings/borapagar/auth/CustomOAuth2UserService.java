@@ -30,6 +30,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
     public CustomOAuth2UserService(@Value("${sigaa.api-key}") String apiKey) {
+        if (apiKey == null) {
+            throw new Error("Missing SIGAA API Key");
+        }
+
         RestTemplate client = new RestTemplate();
         List<ClientHttpRequestInterceptor> interceptors = List.of(new AddApiKeyInterceptor(apiKey));
         client.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
