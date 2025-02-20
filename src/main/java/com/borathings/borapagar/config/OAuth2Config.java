@@ -1,6 +1,5 @@
 package com.borathings.borapagar.config;
 
-import com.borathings.borapagar.auth.CustomOAuth2AuthorizationRequestResolver;
 import com.borathings.borapagar.auth.CustomOAuth2UserService;
 import com.borathings.borapagar.auth.OAuth2AuthenticationSuccessHandler;
 import java.util.List;
@@ -26,9 +25,6 @@ public class OAuth2Config {
     CustomOAuth2UserService customOAuth2UserService;
 
     @Autowired
-    CustomOAuth2AuthorizationRequestResolver customOAuth2AuthorizationRequestResolver;
-
-    @Autowired
     OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Value("${frontend.url}")
@@ -47,9 +43,10 @@ public class OAuth2Config {
      * @param HttpSecurity Classe usada para configurar o Spring Security
      * @throws Exception
      * @return SecurityFilterChain - Pipeline de segurança utilizada pelo Spring Security
-     * @see <a href="https://docs.spring.io/spring-security/reference/servlet/oauth2/login/core.html">OAuth2 Login</a>
-     * @see <a href="https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html"/>OAuth2
-     *     Resource Server</a>
+     * @see <a href= "https://docs.spring.io/spring-security/reference/servlet/oauth2/login/core.html">OAuth2 Login</a>
+     * @see <a href=
+     *     "https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html"/>OAuth2 Resource
+     *     Server</a>
      */
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
@@ -62,8 +59,6 @@ public class OAuth2Config {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .oauth2Login(oauthLogin -> oauthLogin
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        .authorizationEndpoint(authorization ->
-                                authorization.authorizationRequestResolver(customOAuth2AuthorizationRequestResolver))
                         .successHandler(oAuth2AuthenticationSuccessHandler))
                 .exceptionHandling(ex -> ex.defaultAuthenticationEntryPointFor(
                         new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED), new AntPathRequestMatcher("/api/**")));

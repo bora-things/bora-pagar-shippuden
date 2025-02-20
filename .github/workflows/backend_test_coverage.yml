@@ -2,9 +2,6 @@ name: Test Coverage
 
 on: [pull_request]
 
-env:
-  SIGAA_API_KEY: ${{secrets.SIGAA_API_KEY}}
-
 jobs:
   
  test-coverage:

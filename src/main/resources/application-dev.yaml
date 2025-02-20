@@ -3,5 +3,3 @@ spring:
     url: 'jdbc:postgresql://localhost:5432/borapagar'
     username: postgres
     password: password
-frontend:
-  url: 'http://localhost:5173'
