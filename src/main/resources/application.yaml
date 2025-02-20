@@ -33,3 +33,7 @@ springdoc:
 
 sigaa:
   api-key: ${SIGAA_API_KEY}
+
+frontend:
+  url: ${FRONTEND_URL:localhost:8080}
+  redirect: ${FRONTEND_URL:localhost:8080}/dashboard
