@@ -15,6 +15,12 @@ public class AfterLoginService {
 
     @Async
     public void completeProfileAfterLogin(StudentEntity student) {
-        CompletableFuture.allOf(studentService.fetchIndexes(student), studentService.fetchWorkload(student));
+        CompletableFuture.allOf(
+                        studentService.fetchIndexes(student),
+                        studentService.fetchWorkload(student),
+                        studentService.fetchAcademicRecord(student))
+                .exceptionally(ex -> {
+                    throw new Error(ex);
+                });
     }
 }

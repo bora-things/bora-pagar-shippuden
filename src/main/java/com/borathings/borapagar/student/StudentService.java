@@ -7,6 +7,8 @@ import com.borathings.borapagar.student.index.IndexDTO;
 import com.borathings.borapagar.student.index.IndexEnum;
 import com.borathings.borapagar.student.index.StudentIndexEntity;
 import com.borathings.borapagar.student.index.StudentIndexRepository;
+import com.borathings.borapagar.student.transcript.TranscriptComponentService;
+import com.borathings.borapagar.student.transcript.dto.TranscriptComponentDTO;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserService;
 import com.borathings.borapagar.workload.WorkloadDto;
@@ -41,10 +43,13 @@ public class StudentService {
     StudentMapper studentMapper;
 
     @Autowired
-    StudentIndexRepository studentIndexRepository;
+    private StudentIndexRepository studentIndexRepository;
 
     @Autowired
     private WorkloadRepository workloadRepository;
+
+    @Autowired
+    private TranscriptComponentService transcriptComponentService;
 
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
         Optional<StudentEntity> student = studentRepository.findByUserId(userId);
@@ -124,5 +129,26 @@ public class StudentService {
         }
 
         return CompletableFuture.completedFuture(null);
+    }
+
+    @Async
+    public CompletableFuture<Void> fetchAcademicRecord(StudentEntity student) {
+        try {
+
+            List<TranscriptComponentDTO> components = restClient
+                    .get()
+                    .uri("/matricula/v1/matriculas-componentes?id-discente=" + student.getStudentId())
+                    .attributes(clientRegistrationId("sigaa"))
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<List<TranscriptComponentDTO>>() {});
+
+            transcriptComponentService.batchInsertDTOs(components, student);
+            return CompletableFuture.completedFuture(null);
+
+        } catch (Exception ex) {
+            logger.error("Exception at fetchAcademicRecord {}", ex.getMessage());
+
+            return CompletableFuture.failedFuture(ex);
+        }
     }
 }
