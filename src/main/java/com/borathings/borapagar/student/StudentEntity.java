@@ -5,7 +5,6 @@ import com.borathings.borapagar.core.SoftDeletableModel;
 import com.borathings.borapagar.student.IdMappers.StudentSituation;
 import com.borathings.borapagar.student.IdMappers.StudentType;
 import com.borathings.borapagar.user.UserEntity;
-import com.borathings.borapagar.workload.WorkloadEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -95,8 +94,4 @@ public class StudentEntity extends SoftDeletableModel {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity user;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "workload_id", unique = true)
-    private WorkloadEntity workload;
 }

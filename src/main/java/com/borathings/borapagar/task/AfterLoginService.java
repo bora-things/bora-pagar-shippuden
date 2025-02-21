@@ -15,6 +15,6 @@ public class AfterLoginService {
 
     @Async
     public void completeProfileAfterLogin(StudentEntity student) {
-        CompletableFuture.allOf(studentService.fetchIndexes(student));
+        CompletableFuture.allOf(studentService.fetchIndexes(student), studentService.fetchWorkload(student));
     }
 }
