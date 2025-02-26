@@ -2,14 +2,20 @@ package com.borathings.borapagar.user;
 
 import com.borathings.borapagar.user.dto.UserDTO;
 import jakarta.persistence.EntityNotFoundException;
+
+import java.util.List;
 import java.util.Optional;
+
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-/** UserService */
+/**
+ * UserService
+ */
 @Service
 public class UserService {
     @Autowired
@@ -45,7 +51,9 @@ public class UserService {
         userRepository.save(userMapper.toEntity(u));
     }
 
-    /** Atualiza as informações que podem ter mudado do OidcUser */
+    /**
+     * Atualiza as informações que podem ter mudado do OidcUser
+     */
     private void updateExistingOidcUser(UserEntity existingUser, OAuth2User oidcUser) {
         logger.info(
                 "Usuário com SIGAA ID {} de email {} já existe no sistema, atualizando dados",
@@ -66,13 +74,21 @@ public class UserService {
      */
     public UserEntity findByIdUserOrError(int idUsuario) {
         return userRepository.findByUserId(idUsuario).orElseThrow(() -> {
-            return new EntityNotFoundException("Usuário não encontrado");
+            return new EntityNotFoundException("Usuário com ID : " + idUsuario + " não encontrado");
         });
     }
 
     public UserEntity findByLoginOrError(String login) {
         return userRepository.findByLogin(login).orElseThrow(() -> {
-            return new EntityNotFoundException("Usuário não encontrado");
+            return new EntityNotFoundException("Usuário com Login : " + login + " não encontrado");
         });
     }
+
+    @Transactional
+    public void createFriendship(UserEntity user1, UserEntity user2) {
+        user1.addFriend(user2);
+        userRepository.saveAll(List.of(user1, user2));
+    }
+
+
 }
