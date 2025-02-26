@@ -125,4 +125,10 @@ public class StudentService {
 
         return CompletableFuture.completedFuture(null);
     }
+
+
+    public List<StudentEntity> findAllStudentsById(List<UserEntity> users ){
+        return studentRepository.findAllByUserIn(users);
+
+    }
 }
