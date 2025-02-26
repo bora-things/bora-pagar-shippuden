@@ -79,4 +79,20 @@ public class UserEntity extends SoftDeletableModel {
     public int hashCode() {
         return Objects.hashCode(getUserId());
     }
+
+
+    public void addFriend(UserEntity friend) {
+        if (!friends.contains(friend)) {
+            friends.add(friend);
+            friend.getFriends().add(this);
+        }
+    }
+
+    public void removeFriend(UserEntity friend) {
+        if (friends.contains(friend)) {
+            friends.remove(friend);
+            friend.getFriends().remove(this);
+        }
+    }
+
 }
