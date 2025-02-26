@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record TranscriptComponentDTO(
         @JsonProperty("ano") int year,
         @JsonProperty("periodo") int period,
-        @JsonProperty("conceito") boolean concept,
         @JsonProperty("data-cadastro") long registerDate,
         @JsonProperty("faltas") int absences,
         @JsonProperty("id-componente") int componentId,
