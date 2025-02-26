@@ -2,9 +2,7 @@ package com.borathings.borapagar.config;
 
 import com.borathings.borapagar.auth.CustomOAuth2UserService;
 import com.borathings.borapagar.auth.OAuth2AuthenticationSuccessHandler;
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,9 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-/**
- * AuthConfig Class responsável por fazer configurações relacionadas ao spring-security
- */
+/** AuthConfig Class responsável por fazer configurações relacionadas ao spring-security */
 @Configuration
 @EnableWebSecurity
 public class OAuth2Config {
@@ -54,8 +50,7 @@ public class OAuth2Config {
      *     Server</a>
      */
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
+        http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v3/api-docs/**")
                         .permitAll()

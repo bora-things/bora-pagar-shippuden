@@ -3,11 +3,9 @@ package com.borathings.borapagar.user;
 import com.borathings.borapagar.core.SoftDeletableModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -66,7 +64,6 @@ public class UserEntity extends SoftDeletableModel {
             inverseJoinColumns = @JoinColumn(name = "friend_id"))
     private Set<UserEntity> friends = new HashSet<>();
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -79,7 +76,6 @@ public class UserEntity extends SoftDeletableModel {
     public int hashCode() {
         return Objects.hashCode(getUserId());
     }
-
 
     public void addFriend(UserEntity friend) {
         if (!friends.contains(friend)) {
@@ -94,5 +90,4 @@ public class UserEntity extends SoftDeletableModel {
             friend.getFriends().remove(this);
         }
     }
-
 }

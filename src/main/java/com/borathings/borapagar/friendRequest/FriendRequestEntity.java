@@ -27,5 +27,4 @@ public class FriendRequestEntity extends SoftDeletableModel {
 
     @Enumerated(EnumType.STRING)
     private FriendRequestStatus status;
-
 }

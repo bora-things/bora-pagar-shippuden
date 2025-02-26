@@ -5,4 +5,3 @@ public enum FriendRequestStatus {
     ACCEPTED,
     REJECTED
 }
-

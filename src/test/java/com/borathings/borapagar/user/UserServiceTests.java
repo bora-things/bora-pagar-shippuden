@@ -77,7 +77,7 @@ class UserServiceTest {
 
         assertThatThrownBy(() -> userService.findByIdUserOrError(userId))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("Usuário não encontrado");
+                .hasMessage("Usuário com ID : " + userId + " não encontrado");
     }
 
     @Test
@@ -99,6 +99,6 @@ class UserServiceTest {
 
         assertThatThrownBy(() -> userService.findByLoginOrError(login))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("Usuário não encontrado");
+                .hasMessage("Usuário com Login : " + login + " não encontrado");
     }
 }

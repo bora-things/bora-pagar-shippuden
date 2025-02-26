@@ -5,13 +5,12 @@ import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class FriendRequestService {
@@ -28,16 +27,14 @@ public class FriendRequestService {
     @Autowired
     private StudentService studentService;
 
-
     public List<FriendRequestResponseDto> findAllByToUserId(String toUserLogin) {
         UserEntity toUser = userService.findByLoginOrError(toUserLogin);
         List<FriendRequestEntity> requests = friendRequestRepository.findAllByToUser(toUser);
-        List<UserEntity> fromUsers = requests.stream()
-                .map(FriendRequestEntity::getFromUser)
-                .toList();
+        List<UserEntity> fromUsers =
+                requests.stream().map(FriendRequestEntity::getFromUser).toList();
         List<StudentEntity> students = studentService.findAllStudentsById(fromUsers);
-        Map<UserEntity, StudentEntity> studentMap = students.stream()
-                .collect(Collectors.toMap(StudentEntity::getUser, student -> student));
+        Map<UserEntity, StudentEntity> studentMap =
+                students.stream().collect(Collectors.toMap(StudentEntity::getUser, student -> student));
 
         return requests.stream()
                 .map(request -> {
@@ -46,7 +43,6 @@ public class FriendRequestService {
                 })
                 .toList();
     }
-
 
     public boolean createFriendRequest(String fromUserLogin, Integer toId) {
 
@@ -65,10 +61,9 @@ public class FriendRequestService {
         return true;
     }
 
-
     public boolean updateFriendRequest(String toUserLogin, Integer fromId, FriendRequestStatus status) {
-        UserEntity toUser = userService.findByLoginOrError(toUserLogin); //Usuario que esta aceitando
-        UserEntity fromUser = userService.findByIdUserOrError(fromId); //Usuario que enviou
+        UserEntity toUser = userService.findByLoginOrError(toUserLogin); // Usuario que esta aceitando
+        UserEntity fromUser = userService.findByIdUserOrError(fromId); // Usuario que enviou
         if (fromUser == null || toUser == null) {
             return false;
         }
@@ -83,7 +78,5 @@ public class FriendRequestService {
             return true;
         }
         return false;
-
     }
-
 }
