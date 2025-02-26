@@ -15,7 +15,7 @@ name=$1
 file_name="V1.${timestamp}__${name}.sql"
 
 # Create the file
-touch "${root_dir}/backend/src/main/resources/db/migration/${file_name}"
+touch "${root_dir}/src/main/resources/db/migration/${file_name}"
 
 # Print a success message
 echo "Created file: $file_name"
