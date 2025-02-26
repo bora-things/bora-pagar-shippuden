@@ -2,7 +2,9 @@ package com.borathings.borapagar.config;
 
 import com.borathings.borapagar.auth.CustomOAuth2UserService;
 import com.borathings.borapagar.auth.OAuth2AuthenticationSuccessHandler;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -17,7 +20,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-/** AuthConfig Class responsável por fazer configurações relacionadas ao spring-security */
+/**
+ * AuthConfig Class responsável por fazer configurações relacionadas ao spring-security
+ */
 @Configuration
 @EnableWebSecurity
 public class OAuth2Config {
@@ -49,7 +54,9 @@ public class OAuth2Config {
      *     Server</a>
      */
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorize -> authorize
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v3/api-docs/**")
                         .permitAll()
                         .requestMatchers("/api/**")

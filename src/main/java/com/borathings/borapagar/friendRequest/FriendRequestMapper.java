@@ -14,10 +14,9 @@ public interface FriendRequestMapper {
 
     @Mapping(source = "friendRequestEntity.status", target = "status")
     @Mapping(source = "friendRequestEntity.createdAt", target = "createDate")
-    @Mapping(target = "fromUser", expression = "java(toFriendRequestUserDto(friendRequestEntity.getFromUser(), student))")
+    @Mapping(target = "fromUser", expression = "java(toFriendRequestUserDto(friendRequestEntity.getFromUser(), student))") // Aqui mapeando o fromUser
     FriendRequestResponseDto toFriendRequestResponseDto(FriendRequestEntity friendRequestEntity, StudentEntity student);
 
-    // Método auxiliar para mapear o usuário e os dados do estudante
     default FriendRequestUserDto toFriendRequestUserDto(UserEntity user, StudentEntity student) {
         if (user == null) {
             return null;
@@ -26,7 +25,7 @@ public interface FriendRequestMapper {
                 user.getPersonName(),
                 user.getImageUrl(),
                 student != null ? student.getCourseName() : null,
-                student != null ? student.getAdmissionYear() : null
+                student != null ? student.getUserPeriod() : null
         );
     }
 }

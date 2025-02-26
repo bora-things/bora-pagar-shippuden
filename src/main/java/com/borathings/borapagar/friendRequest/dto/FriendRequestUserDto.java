@@ -4,6 +4,6 @@ public record FriendRequestUserDto(
         String personName,
         String imageUrl,
         String courseName,
-        Integer admissionYear
+        Integer period
 ) {
 }

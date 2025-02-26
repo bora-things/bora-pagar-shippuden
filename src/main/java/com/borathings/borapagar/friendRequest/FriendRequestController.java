@@ -26,6 +26,4 @@ public interface FriendRequestController {
     @PatchMapping("/update")
     public ResponseEntity<Void> updateFriendRequest(Authentication authentication, @RequestBody FriendRequestUpdateDto friendRequestUpdateDto);
 
-
-
 }

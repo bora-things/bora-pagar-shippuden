@@ -34,17 +34,17 @@ public class FriendRequestService {
         List<FriendRequestEntity> requests = friendRequestRepository.findAllByToUser(toUser);
         List<UserEntity> fromUsers = requests.stream()
                 .map(FriendRequestEntity::getFromUser)
-                .collect(Collectors.toList());
+                .toList();
         List<StudentEntity> students = studentService.findAllStudentsById(fromUsers);
-        Map<Long, StudentEntity> studentMap = students.stream()
-                .collect(Collectors.toMap(student -> student.getUser().getId(), student -> student));
+        Map<UserEntity, StudentEntity> studentMap = students.stream()
+                .collect(Collectors.toMap(StudentEntity::getUser, student -> student));
 
         return requests.stream()
                 .map(request -> {
-                    StudentEntity student = studentMap.get(request.getFromUser().getId());
+                    StudentEntity student = studentMap.get(request.getFromUser());
                     return friendRequestMapper.toFriendRequestResponseDto(request, student);
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
