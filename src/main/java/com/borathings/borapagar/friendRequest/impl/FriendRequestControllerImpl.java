@@ -1,4 +1,4 @@
-package com.borathings.borapagar.friendRequest.imp;
+package com.borathings.borapagar.friendRequest.impl;
 
 import com.borathings.borapagar.friendRequest.FriendRequestController;
 import com.borathings.borapagar.friendRequest.FriendRequestService;

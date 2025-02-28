@@ -78,6 +78,9 @@ public class UserEntity extends SoftDeletableModel {
     }
 
     public void addFriend(UserEntity friend) {
+        if (this == friend) {
+            throw new IllegalArgumentException("Você não pode ser amigo de si mesmo");
+        }
         if (!friends.contains(friend)) {
             friends.add(friend);
             friend.getFriends().add(this);
