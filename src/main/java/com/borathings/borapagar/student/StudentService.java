@@ -154,5 +154,6 @@ public class StudentService {
 
             return CompletableFuture.failedFuture(ex);
         }
-    };
+    }
+    ;
 }
