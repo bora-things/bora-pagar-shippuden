@@ -5,12 +5,16 @@ import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserService;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FriendRequestService {
@@ -44,21 +48,16 @@ public class FriendRequestService {
                 .toList();
     }
 
-    public boolean createFriendRequest(String fromUserLogin, Integer toId) {
+    public void createFriendRequest(String fromUserLogin, Integer toId) {
 
         UserEntity fromUser = userService.findByLoginOrError(fromUserLogin);
         UserEntity toUser = userService.findByIdUserOrError(toId);
-
-        if (fromUser == null || toUser == null) {
-            return false;
-        }
         FriendRequestEntity friendRequestEntity = FriendRequestEntity.builder()
                 .fromUser(fromUser)
                 .toUser(toUser)
                 .status(FriendRequestStatus.PENDING)
                 .build();
         friendRequestRepository.save(friendRequestEntity);
-        return true;
     }
 
     @Transactional
@@ -69,16 +68,20 @@ public class FriendRequestService {
         } else {
             throw new EntityNotFoundException("Pedido com ID:" + requestId + " não encontrado!");
         }
-        Optional<FriendRequestEntity> request = friendRequestRepository.findByFromUserAndToUser(fromUser, toUser);
+    }
+
+
+    public void updateFriendRequest(Long requestId, FriendRequestStatus status) {
+        Optional<FriendRequestEntity> request = friendRequestRepository.findById(requestId);
         if (request.isPresent()) {
             FriendRequestEntity friendRequestEntity = request.get();
             friendRequestEntity.setStatus(status);
             friendRequestRepository.save(friendRequestEntity);
             if (status == FriendRequestStatus.ACCEPTED) {
-                userService.createFriendship(toUser, fromUser);
+                userService.createFriendship(friendRequestEntity.getToUser(), friendRequestEntity.getFromUser());
             }
-            return true;
+        } else {
+            throw new EntityNotFoundException("Pedido com ID:" + requestId + "não encontrado!");
         }
-        return false;
     }
 }

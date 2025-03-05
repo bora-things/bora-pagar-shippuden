@@ -5,7 +5,10 @@ import com.borathings.borapagar.friendRequest.FriendRequestService;
 import com.borathings.borapagar.friendRequest.dto.FriendRequestCreateDto;
 import com.borathings.borapagar.friendRequest.dto.FriendRequestUpdateDto;
 import com.borathings.borapagar.friendRequest.dto.response.FriendRequestResponseDto;
+
 import java.util.List;
+
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,27 +27,17 @@ public class FriendRequestControllerImpl implements FriendRequestController {
             Authentication currentUser, @RequestBody FriendRequestCreateDto friendRequestCreateDto) {
         String fromUserLogin = currentUser.getName();
         Integer toUserId = friendRequestCreateDto.toUserId();
-
-        boolean created = friendRequestService.createFriendRequest(fromUserLogin, toUserId);
-
-        if (created) {
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        friendRequestService.createFriendRequest(fromUserLogin, toUserId);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<Void> updateFriendRequest(
             Authentication authentication, @RequestBody FriendRequestUpdateDto friendRequestUpdateDto) {
-        String toUserLogin = authentication.getName();
-        Integer fromUserId = friendRequestUpdateDto.fromUserId();
+        Long requestId = friendRequestUpdateDto.requestId();
+        friendRequestService.updateFriendRequest(requestId, friendRequestUpdateDto.status());
+        return ResponseEntity.status(HttpStatus.OK).build();
 
-        boolean accepted =
-                friendRequestService.updateFriendRequest(toUserLogin, fromUserId, friendRequestUpdateDto.status());
-        if (accepted) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @Override
@@ -56,7 +49,6 @@ public class FriendRequestControllerImpl implements FriendRequestController {
     @Override
     public ResponseEntity<List<FriendRequestResponseDto>> getFriendRequests(Authentication authentication) {
         String toUserLogin = authentication.getName();
-
         List<FriendRequestResponseDto> requests = friendRequestService.findAllByToUserId(toUserLogin);
         return ResponseEntity.status(HttpStatus.OK).body(requests);
     }
