@@ -48,6 +48,12 @@ public class FriendRequestControllerImpl implements FriendRequestController {
     }
 
     @Override
+    public ResponseEntity<Void> deleteFriendRequest(Authentication authentication, Long friendRequestId) {
+        friendRequestService.deleteFriendRequest(friendRequestId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Override
     public ResponseEntity<List<FriendRequestResponseDto>> getFriendRequests(Authentication authentication) {
         String toUserLogin = authentication.getName();
 

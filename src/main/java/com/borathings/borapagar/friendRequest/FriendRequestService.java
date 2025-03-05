@@ -61,11 +61,13 @@ public class FriendRequestService {
         return true;
     }
 
-    public boolean updateFriendRequest(String toUserLogin, Integer fromId, FriendRequestStatus status) {
-        UserEntity toUser = userService.findByLoginOrError(toUserLogin); // Usuario que esta aceitando
-        UserEntity fromUser = userService.findByIdUserOrError(fromId); // Usuario que enviou
-        if (fromUser == null || toUser == null) {
-            return false;
+    @Transactional
+    public void deleteFriendRequest(Long requestId) {
+        Optional<FriendRequestEntity> request = friendRequestRepository.findById(requestId);
+        if (request.isPresent()) {
+            friendRequestRepository.softDeleteById(request.get().getId());
+        } else {
+            throw new EntityNotFoundException("Pedido com ID:" + requestId + " não encontrado!");
         }
         Optional<FriendRequestEntity> request = friendRequestRepository.findByFromUserAndToUser(fromUser, toUser);
         if (request.isPresent()) {
