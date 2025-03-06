@@ -18,6 +18,6 @@ public interface UserController {
     public ResponseEntity<UserResponseDTO> getCurrentUser(Authentication authentication);
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/friends")
+    @GetMapping("/me/friends")
     public ResponseEntity<List<UserFriendResponseDto>> getUserFriends(Authentication authentication);
 }
