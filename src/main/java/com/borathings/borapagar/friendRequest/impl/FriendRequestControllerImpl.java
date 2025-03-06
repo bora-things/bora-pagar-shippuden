@@ -5,10 +5,7 @@ import com.borathings.borapagar.friendRequest.FriendRequestService;
 import com.borathings.borapagar.friendRequest.dto.FriendRequestCreateDto;
 import com.borathings.borapagar.friendRequest.dto.FriendRequestUpdateDto;
 import com.borathings.borapagar.friendRequest.dto.response.FriendRequestResponseDto;
-
 import java.util.List;
-
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +25,7 @@ public class FriendRequestControllerImpl implements FriendRequestController {
         String fromUserLogin = currentUser.getName();
         Integer toUserId = friendRequestCreateDto.toUserId();
         friendRequestService.createFriendRequest(fromUserLogin, toUserId);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Override
@@ -36,8 +33,7 @@ public class FriendRequestControllerImpl implements FriendRequestController {
             Authentication authentication, @RequestBody FriendRequestUpdateDto friendRequestUpdateDto) {
         Long requestId = friendRequestUpdateDto.requestId();
         friendRequestService.updateFriendRequest(requestId, friendRequestUpdateDto.status());
-        return ResponseEntity.status(HttpStatus.OK).build();
-
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Override

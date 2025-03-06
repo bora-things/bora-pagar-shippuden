@@ -5,13 +5,11 @@ import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserService;
-
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,11 +64,11 @@ public class FriendRequestService {
         if (request.isPresent()) {
             friendRequestRepository.softDeleteById(request.get().getId());
         } else {
-            throw new EntityNotFoundException("Pedido com ID:" + requestId + " não encontrado!");
+            throw new EntityNotFoundException("Pedido com ID: " + requestId + " não encontrado!");
         }
     }
 
-
+    @Transactional
     public void updateFriendRequest(Long requestId, FriendRequestStatus status) {
         Optional<FriendRequestEntity> request = friendRequestRepository.findById(requestId);
         if (request.isPresent()) {
@@ -79,6 +77,8 @@ public class FriendRequestService {
             friendRequestRepository.save(friendRequestEntity);
             if (status == FriendRequestStatus.ACCEPTED) {
                 userService.createFriendship(friendRequestEntity.getToUser(), friendRequestEntity.getFromUser());
+            } else {
+                friendRequestRepository.softDeleteById(request.get().getId());
             }
         } else {
             throw new EntityNotFoundException("Pedido com ID:" + requestId + "não encontrado!");

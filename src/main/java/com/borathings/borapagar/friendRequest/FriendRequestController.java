@@ -3,9 +3,7 @@ package com.borathings.borapagar.friendRequest;
 import com.borathings.borapagar.friendRequest.dto.FriendRequestCreateDto;
 import com.borathings.borapagar.friendRequest.dto.FriendRequestUpdateDto;
 import com.borathings.borapagar.friendRequest.dto.response.FriendRequestResponseDto;
-
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -29,5 +27,6 @@ public interface FriendRequestController {
             Authentication authentication, @RequestBody FriendRequestUpdateDto friendRequestUpdateDto);
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteFriendRequest(Authentication authentication,@RequestParam("id") Long friendRequestId);
+    public ResponseEntity<Void> deleteFriendRequest(
+            Authentication authentication, @RequestParam("id") Long friendRequestId);
 }

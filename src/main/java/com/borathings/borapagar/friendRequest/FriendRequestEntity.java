@@ -3,10 +3,7 @@ package com.borathings.borapagar.friendRequest;
 import com.borathings.borapagar.core.SoftDeletableModel;
 import com.borathings.borapagar.user.UserEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity(name = "friend_requests")
@@ -15,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
+@EqualsAndHashCode(callSuper = false)
 public class FriendRequestEntity extends SoftDeletableModel {
 
     @ManyToOne

@@ -7,6 +7,7 @@ import com.borathings.borapagar.friendRequest.dto.response.FriendRequestResponse
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,23 +74,25 @@ class FriendRequestServiceTest {
         when(userService.findByIdUserOrError(2)).thenReturn(toUser);
         when(friendRequestRepository.save(any())).thenReturn(friendRequest);
 
-        boolean result = friendRequestService.createFriendRequest("fromUser", 2);
-
-        assertTrue(result);
+        assertDoesNotThrow(() -> friendRequestService.createFriendRequest("fromUser", 2));
         verify(friendRequestRepository, times(1)).save(any());
     }
 
     @Test
     void testUpdateFriendRequest() {
-        when(userService.findByLoginOrError("toUser")).thenReturn(toUser);
-        when(userService.findByIdUserOrError(1)).thenReturn(fromUser);
-        when(friendRequestRepository.findByFromUserAndToUser(fromUser, toUser)).thenReturn(Optional.of(friendRequest));
+        when(friendRequestRepository.findById(1L)).thenReturn(Optional.of(friendRequest));
 
-        boolean result = friendRequestService.updateFriendRequest("toUser", 1, FriendRequestStatus.ACCEPTED);
-
-        assertTrue(result);
+        friendRequestService.updateFriendRequest(1L, FriendRequestStatus.ACCEPTED);
         assertEquals(FriendRequestStatus.ACCEPTED, friendRequest.getStatus());
         verify(friendRequestRepository, times(1)).save(friendRequest);
         verify(userService, times(1)).createFriendship(toUser, fromUser);
+    }
+
+    @Test
+    void testUpdateFriendRequestThrows() {
+        when(friendRequestRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(
+                EntityNotFoundException.class,
+                () -> friendRequestService.updateFriendRequest(1L, FriendRequestStatus.ACCEPTED));
     }
 }
