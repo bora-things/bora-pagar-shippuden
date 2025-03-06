@@ -50,6 +50,7 @@ class FriendRequestServiceTest {
         toUser.setLogin("toUser");
 
         friendRequest = new FriendRequestEntity();
+        friendRequest.setId(1L);
         friendRequest.setFromUser(fromUser);
         friendRequest.setToUser(toUser);
         friendRequest.setStatus(FriendRequestStatus.PENDING);
@@ -89,10 +90,24 @@ class FriendRequestServiceTest {
     }
 
     @Test
-    void testUpdateFriendRequestThrows() {
+    void testUpdateFriendRequest_failure_entityNotFound() {
         when(friendRequestRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(
                 EntityNotFoundException.class,
                 () -> friendRequestService.updateFriendRequest(1L, FriendRequestStatus.ACCEPTED));
+    }
+
+    @Test
+    void testDeleteFriendRequest_success() {
+        when(friendRequestRepository.findById(1L)).thenReturn(Optional.of(friendRequest));
+
+        friendRequestService.deleteFriendRequest(1L);
+        verify(friendRequestRepository, times(1)).softDeleteById(1L);
+    }
+
+    @Test
+    void testDeleteFriendRequest_failure_entityNotFound() {
+        when(friendRequestRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> friendRequestService.deleteFriendRequest(1L));
     }
 }
