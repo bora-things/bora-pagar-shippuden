@@ -62,6 +62,9 @@ public class FriendRequestService {
     public void deleteFriendRequest(Long requestId) {
         Optional<FriendRequestEntity> request = friendRequestRepository.findById(requestId);
         if (request.isPresent()) {
+            FriendRequestEntity friendRequestEntity=request.get();
+            friendRequestEntity.setStatus(FriendRequestStatus.CANCELLED);
+            friendRequestRepository.save(friendRequestEntity);
             friendRequestRepository.softDeleteById(request.get().getId());
         } else {
             throw new EntityNotFoundException("Pedido com ID: " + requestId + " não encontrado!");
