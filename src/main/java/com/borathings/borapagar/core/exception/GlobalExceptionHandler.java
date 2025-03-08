@@ -1,5 +1,8 @@
 package com.borathings.borapagar.core.exception;
 
+import com.borathings.borapagar.core.exception.friendRequest.AlreadyFriendsException;
+import com.borathings.borapagar.core.exception.friendRequest.DuplicateFriendRequestException;
+import com.borathings.borapagar.core.exception.friendRequest.FriendRequestCooldownException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +26,41 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    /**
+     * Trata exceções lançadas pela aplicação quando o usuário faz um pedido de amizade após ter um com menos de 7 dias.
+     *
+     * @param ex - FriendRequestCooldownException - Exceção lançada
+     * @return ResponseEntity<Object> - Exceção serializada
+     */
+    @ExceptionHandler(FriendRequestCooldownException.class)
+    private ResponseEntity<Object> handleFriendRequestCooldownException(FriendRequestCooldownException ex) {
+        ApiException exception = new ApiException(HttpStatus.FORBIDDEN, ex);
+        return buildResponseEntityFromException(exception);
+    }
+
+    /**
+     * Trata exceções lançadas pela aplicação quando o usuário faz um pedido de amizade quando já existe um pendente.
+     *
+     * @param ex - DuplicateFriendRequestException - Exceção lançada
+     * @return ResponseEntity<Object> - Exceção serializada
+     */
+    @ExceptionHandler(DuplicateFriendRequestException.class)
+    private ResponseEntity<Object> handleDuplicateFriendRequestException(DuplicateFriendRequestException ex) {
+        ApiException exception = new ApiException(HttpStatus.FORBIDDEN, ex);
+        return buildResponseEntityFromException(exception);
+    }
+    /**
+     * Trata exceções lançadas pela aplicação quando o usuário faz um pedido de amizade quando já existe um pendente.
+     *
+     * @param ex - DuplicateFriendRequestException - Exceção lançada
+     * @return ResponseEntity<Object> - Exceção serializada
+     */
+    @ExceptionHandler(AlreadyFriendsException.class)
+    private ResponseEntity<Object> handleAlreadyFriendsException(AlreadyFriendsException ex) {
+        ApiException exception = new ApiException(HttpStatus.FORBIDDEN, ex);
+        return buildResponseEntityFromException(exception);
+    }
 
     /**
      * Constrói a resposta da exceção lançada
