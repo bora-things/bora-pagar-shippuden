@@ -33,4 +33,10 @@ public class UserControllerImpl implements UserController {
         List<UserFriendResponseDto> friends = userService.getFriends(authentication);
         return ResponseEntity.ok(friends);
     }
+
+    @Override
+    public ResponseEntity<Void> deleteUserFriends(Authentication authentication, Long friendId) {
+        userService.removeFriend(authentication, friendId);
+        return ResponseEntity.noContent().build();
+    }
 }

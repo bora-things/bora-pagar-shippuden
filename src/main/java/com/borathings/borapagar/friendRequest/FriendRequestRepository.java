@@ -9,7 +9,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface FriendRequestRepository extends SoftDeletableRepository<FriendRequestEntity> {
 
-    @Query("SELECT f FROM friend_requests f WHERE f.toUser = :toUser AND f.deletedAt IS NULL AND f.status <> 'CANCELLED' AND f.status <> 'REJECTED'")
+    @Query(
+            "SELECT f FROM friend_requests f WHERE f.toUser = :toUser AND f.deletedAt IS NULL AND f.status <> 'CANCELLED' AND f.status <> 'REJECTED'")
     List<FriendRequestEntity> findAllByToUser(@Param("toUser") UserEntity toUser);
 
     @Query(

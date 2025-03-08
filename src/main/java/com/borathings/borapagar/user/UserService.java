@@ -1,5 +1,6 @@
 package com.borathings.borapagar.user;
 
+import com.borathings.borapagar.core.exception.user.UsersNotFriendsException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.UserDTO;
@@ -110,5 +111,20 @@ public class UserService {
                     return userMapper.toUserFriendResponseDto(item, student);
                 })
                 .toList();
+    }
+
+    public void removeFriend(Authentication authentication, Long friendId) {
+        UserEntity user = findByLoginOrError(authentication.getName());
+        Optional<UserEntity> friend = userRepository.findById(friendId);
+        if (friend.isEmpty()) {
+            throw new EntityNotFoundException("Usuário com ID : " + friendId + " não encontrado");
+        }
+        UserEntity friendUser = friend.get();
+        if (user.getFriends().contains(friendUser)) {
+            user.removeFriend(friendUser);
+            userRepository.saveAll(List.of(user, friendUser));
+        } else {
+            throw new UsersNotFriendsException();
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.borathings.borapagar.core.exception;
 import com.borathings.borapagar.core.exception.friendRequest.AlreadyFriendsException;
 import com.borathings.borapagar.core.exception.friendRequest.DuplicateFriendRequestException;
 import com.borathings.borapagar.core.exception.friendRequest.FriendRequestCooldownException;
+import com.borathings.borapagar.core.exception.user.UsersNotFriendsException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,13 +52,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntityFromException(exception);
     }
     /**
-     * Trata exceções lançadas pela aplicação quando o usuário faz um pedido de amizade quando já existe um pendente.
+     * Trata exceções lançadas pela aplicação quando o usuário faz um pedido de amizade quando já é amigo.
      *
      * @param ex - DuplicateFriendRequestException - Exceção lançada
      * @return ResponseEntity<Object> - Exceção serializada
      */
     @ExceptionHandler(AlreadyFriendsException.class)
     private ResponseEntity<Object> handleAlreadyFriendsException(AlreadyFriendsException ex) {
+        ApiException exception = new ApiException(HttpStatus.FORBIDDEN, ex);
+        return buildResponseEntityFromException(exception);
+    }
+    /**
+     * Trata exceções lançadas pela aplicação quando o usuário faz um pedido de amizade quando já é amigo.
+     *
+     * @param ex - DuplicateFriendRequestException - Exceção lançada
+     * @return ResponseEntity<Object> - Exceção serializada
+     */
+    @ExceptionHandler(UsersNotFriendsException.class)
+    private ResponseEntity<Object> handleUsersNotFriendsException(UsersNotFriendsException ex) {
         ApiException exception = new ApiException(HttpStatus.FORBIDDEN, ex);
         return buildResponseEntityFromException(exception);
     }

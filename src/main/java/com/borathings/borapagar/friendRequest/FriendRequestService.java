@@ -9,13 +9,11 @@ import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +67,6 @@ public class FriendRequestService {
                 throw new FriendRequestCooldownException();
             }
             friendRequestRepository.deleteById(request.getId());
-
         });
 
         FriendRequestEntity friendRequestEntity = FriendRequestEntity.builder()
