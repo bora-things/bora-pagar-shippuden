@@ -1,9 +1,5 @@
 package com.borathings.borapagar.core.exception;
 
-import com.borathings.borapagar.core.exception.friendRequest.AlreadyFriendsException;
-import com.borathings.borapagar.core.exception.friendRequest.DuplicateFriendRequestException;
-import com.borathings.borapagar.core.exception.friendRequest.FriendRequestCooldownException;
-import com.borathings.borapagar.core.exception.user.UsersNotFriendsException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,62 +25,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
-     * Trata exceções lançadas pela aplicação quando o usuário faz um pedido de amizade após ter um com menos de 7 dias.
-     *
-     * @param ex - FriendRequestCooldownException - Exceção lançada
-     * @return ResponseEntity<Object> - Exceção serializada
-     */
-    @ExceptionHandler(FriendRequestCooldownException.class)
-    private ResponseEntity<Object> handleFriendRequestCooldownException(FriendRequestCooldownException ex) {
-        ApiException exception = new ApiException(HttpStatus.FORBIDDEN, ex);
-        return buildResponseEntityFromException(exception);
-    }
-
-    /**
-     * Trata exceções lançadas pela aplicação quando o usuário faz um pedido de amizade quando já existe um pendente.
-     *
-     * @param ex - DuplicateFriendRequestException - Exceção lançada
-     * @return ResponseEntity<Object> - Exceção serializada
-     */
-    @ExceptionHandler(DuplicateFriendRequestException.class)
-    private ResponseEntity<Object> handleDuplicateFriendRequestException(DuplicateFriendRequestException ex) {
-        ApiException exception = new ApiException(HttpStatus.FORBIDDEN, ex);
-        return buildResponseEntityFromException(exception);
-    }
-    /**
-     * Trata exceções lançadas pela aplicação quando o usuário faz um pedido de amizade quando já é amigo.
-     *
-     * @param ex - DuplicateFriendRequestException - Exceção lançada
-     * @return ResponseEntity<Object> - Exceção serializada
-     */
-    @ExceptionHandler(AlreadyFriendsException.class)
-    private ResponseEntity<Object> handleAlreadyFriendsException(AlreadyFriendsException ex) {
-        ApiException exception = new ApiException(HttpStatus.FORBIDDEN, ex);
-        return buildResponseEntityFromException(exception);
-    }
-    /**
-     * Trata exceções lançadas pela aplicação quando o usuário faz um pedido de amizade quando já é amigo.
-     *
-     * @param ex - DuplicateFriendRequestException - Exceção lançada
-     * @return ResponseEntity<Object> - Exceção serializada
-     */
-    @ExceptionHandler(UsersNotFriendsException.class)
-    private ResponseEntity<Object> handleUsersNotFriendsException(UsersNotFriendsException ex) {
-        ApiException exception = new ApiException(HttpStatus.FORBIDDEN, ex);
-        return buildResponseEntityFromException(exception);
-    }
-
-    /**
-     * Constrói a resposta da exceção lançada
-     *
-     * @param ex - ApiException - Exceção lançada
-     * @return ResponseEntity<Object> - Exceção serializada
-     */
-    private ResponseEntity<Object> buildResponseEntityFromException(ApiException ex) {
-        return new ResponseEntity<>(ex, ex.getStatus());
-    }
-
-    /**
      * Trata exceções lançadas pela aplicação que não foram pegas pelos outros handlers.
      *
      * @param ex - Exception - Exceção lançada
@@ -94,7 +34,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleGenericException(Exception ex) {
         logger.error("Erro inesperado", ex);
         ApiException apiException = new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado", ex);
-        return buildResponseEntityFromException(apiException);
+        return ApiException.toResponseEntity(apiException);
     }
 
     /**
@@ -106,7 +46,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
         ApiException apiException = new ApiException(HttpStatus.NOT_FOUND, ex);
-        return buildResponseEntityFromException(apiException);
+        return ApiException.toResponseEntity(apiException);
     }
 
     /**
@@ -117,7 +57,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<Object> handleApiException(ApiException ex) {
-        return buildResponseEntityFromException(ex);
+        return ApiException.toResponseEntity(ex);
     }
 
     /**
@@ -129,7 +69,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
         ApiException apiException = new ApiException(HttpStatus.FORBIDDEN, ex);
-        return buildResponseEntityFromException(apiException);
+        return ApiException.toResponseEntity(apiException);
     }
 
     /**
@@ -141,7 +81,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<Object> handleDuplicateKeyException(DuplicateKeyException ex) {
         ApiException apiException = new ApiException(HttpStatus.CONFLICT, ex);
-        return buildResponseEntityFromException(apiException);
+        return ApiException.toResponseEntity(apiException);
     }
 
     /**
@@ -171,6 +111,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             fieldErrors.get(error.getField()).add(errorMessage);
         });
         ApiFieldException apiException = new ApiFieldException(HttpStatus.BAD_REQUEST, fieldErrors);
-        return buildResponseEntityFromException(apiException);
+        return ApiException.toResponseEntity(apiException);
     }
 }

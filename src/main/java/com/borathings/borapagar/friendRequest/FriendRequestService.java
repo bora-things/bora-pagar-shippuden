@@ -104,7 +104,7 @@ public class FriendRequestService {
                 friendRequestRepository.softDeleteById(friendRequestEntity.getId());
             }
         } else {
-            throw new EntityNotFoundException("Pedido com ID: " + requestId + "não encontrado!");
+            throw new EntityNotFoundException("Pedido com ID: " + requestId + " não encontrado!");
         }
     }
 }

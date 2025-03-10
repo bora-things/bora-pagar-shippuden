@@ -7,6 +7,7 @@ import java.time.ZoneOffset;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 /**
  * ApiException Esta classe serve como 'wrapper' das exceções lançadas pela aplicação. Padronizando a resposta de erro
@@ -51,5 +52,9 @@ public class ApiException extends RuntimeException {
         this();
         this.status = status;
         this.message = message;
+    }
+
+    public static ResponseEntity<Object> toResponseEntity(ApiException ex) {
+        return new ResponseEntity<>(ex, ex.getStatus());
     }
 }
