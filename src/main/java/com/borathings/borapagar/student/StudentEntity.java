@@ -8,7 +8,9 @@ import com.borathings.borapagar.user.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -94,4 +96,15 @@ public class StudentEntity extends SoftDeletableModel {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity user;
+
+    public int getUserPeriod() {
+        Set<String> periods = new HashSet<>();
+
+        for (ClassroomEntity classroom : classrooms) {
+            String periodKey = classroom.getYear() + "-" + classroom.getSemester();
+            periods.add(periodKey);
+        }
+
+        return periods.size();
+    }
 }

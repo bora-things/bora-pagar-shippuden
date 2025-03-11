@@ -20,6 +20,6 @@ import lombok.experimental.SuperBuilder;
 public class SoftDeletableModel extends AbstractModel {
     @JsonView(Views.Admin.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 }

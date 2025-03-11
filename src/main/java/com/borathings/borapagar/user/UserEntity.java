@@ -3,7 +3,9 @@ package com.borathings.borapagar.user;
 import com.borathings.borapagar.core.SoftDeletableModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,6 +57,13 @@ public class UserEntity extends SoftDeletableModel {
     @NotNull
     private boolean active;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_friends",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id"))
+    private Set<UserEntity> friends = new HashSet<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,5 +75,22 @@ public class UserEntity extends SoftDeletableModel {
     @Override
     public int hashCode() {
         return Objects.hashCode(getUserId());
+    }
+
+    public void addFriend(UserEntity friend) {
+        if (this == friend) {
+            throw new IllegalArgumentException("Você não pode ser amigo de si mesmo");
+        }
+        if (!friends.contains(friend)) {
+            friends.add(friend);
+            friend.getFriends().add(this);
+        }
+    }
+
+    public void removeFriend(UserEntity friend) {
+        if (friends.contains(friend)) {
+            friends.remove(friend);
+            friend.getFriends().remove(this);
+        }
     }
 }

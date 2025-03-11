@@ -131,6 +131,10 @@ public class StudentService {
         return CompletableFuture.completedFuture(null);
     }
 
+    public List<StudentEntity> findAllStudentsById(List<UserEntity> users) {
+        return studentRepository.findAllByUserIn(users);
+    }
+
     @Async
     public CompletableFuture<Void> fetchAcademicRecord(StudentEntity student) {
         try {
@@ -151,4 +155,5 @@ public class StudentService {
             return CompletableFuture.failedFuture(ex);
         }
     }
+    ;
 }

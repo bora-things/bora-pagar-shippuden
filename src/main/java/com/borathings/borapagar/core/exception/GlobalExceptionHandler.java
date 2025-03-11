@@ -25,16 +25,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
-     * Constrói a resposta da exceção lançada
-     *
-     * @param ex - ApiException - Exceção lançada
-     * @return ResponseEntity<Object> - Exceção serializada
-     */
-    private ResponseEntity<Object> buildResponseEntityFromException(ApiException ex) {
-        return new ResponseEntity<>(ex, ex.getStatus());
-    }
-
-    /**
      * Trata exceções lançadas pela aplicação que não foram pegas pelos outros handlers.
      *
      * @param ex - Exception - Exceção lançada
@@ -44,7 +34,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleGenericException(Exception ex) {
         logger.error("Erro inesperado", ex);
         ApiException apiException = new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado", ex);
-        return buildResponseEntityFromException(apiException);
+        return ApiException.toResponseEntity(apiException);
     }
 
     /**
@@ -56,7 +46,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
         ApiException apiException = new ApiException(HttpStatus.NOT_FOUND, ex);
-        return buildResponseEntityFromException(apiException);
+        return ApiException.toResponseEntity(apiException);
     }
 
     /**
@@ -67,7 +57,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<Object> handleApiException(ApiException ex) {
-        return buildResponseEntityFromException(ex);
+        return ApiException.toResponseEntity(ex);
     }
 
     /**
@@ -79,7 +69,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
         ApiException apiException = new ApiException(HttpStatus.FORBIDDEN, ex);
-        return buildResponseEntityFromException(apiException);
+        return ApiException.toResponseEntity(apiException);
     }
 
     /**
@@ -91,7 +81,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<Object> handleDuplicateKeyException(DuplicateKeyException ex) {
         ApiException apiException = new ApiException(HttpStatus.CONFLICT, ex);
-        return buildResponseEntityFromException(apiException);
+        return ApiException.toResponseEntity(apiException);
     }
 
     /**
@@ -121,6 +111,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             fieldErrors.get(error.getField()).add(errorMessage);
         });
         ApiFieldException apiException = new ApiFieldException(HttpStatus.BAD_REQUEST, fieldErrors);
-        return buildResponseEntityFromException(apiException);
+        return ApiException.toResponseEntity(apiException);
     }
 }

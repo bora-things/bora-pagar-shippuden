@@ -1,11 +1,22 @@
 package com.borathings.borapagar.user;
 
+import com.borathings.borapagar.core.exception.user.UsersNotFriendsException;
+import com.borathings.borapagar.student.StudentEntity;
+import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.UserDTO;
+import com.borathings.borapagar.user.dto.response.UserFriendResponseDto;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +28,10 @@ public class UserService {
 
     @Autowired
     UserMapper userMapper;
+
+    @Lazy
+    @Autowired
+    StudentService studentService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -66,13 +81,50 @@ public class UserService {
      */
     public UserEntity findByIdUserOrError(int idUsuario) {
         return userRepository.findByUserId(idUsuario).orElseThrow(() -> {
-            return new EntityNotFoundException("Usuário não encontrado");
+            return new EntityNotFoundException("Usuário com ID : " + idUsuario + " não encontrado");
         });
     }
 
     public UserEntity findByLoginOrError(String login) {
         return userRepository.findByLogin(login).orElseThrow(() -> {
-            return new EntityNotFoundException("Usuário não encontrado");
+            return new EntityNotFoundException("Usuário com Login : " + login + " não encontrado");
         });
+    }
+
+    @Transactional
+    public void createFriendship(UserEntity user1, UserEntity user2) {
+        user1.addFriend(user2);
+        userRepository.saveAll(List.of(user1, user2));
+    }
+
+    public List<UserFriendResponseDto> getFriends(Authentication authentication) {
+        UserEntity user = findByLoginOrError(authentication.getName());
+        Set<UserEntity> friends = user.getFriends();
+        List<StudentEntity> students =
+                studentService.findAllStudentsById(friends.stream().toList());
+
+        Map<UserEntity, StudentEntity> studentMap =
+                students.stream().collect(Collectors.toMap(StudentEntity::getUser, student -> student));
+        return user.getFriends().stream()
+                .map(item -> {
+                    StudentEntity student = studentMap.get(item);
+                    return userMapper.toUserFriendResponseDto(item, student);
+                })
+                .toList();
+    }
+
+    public void removeFriend(Authentication authentication, Long friendId) {
+        UserEntity user = findByLoginOrError(authentication.getName());
+        Optional<UserEntity> friend = userRepository.findById(friendId);
+        if (friend.isEmpty()) {
+            throw new EntityNotFoundException("Usuário com ID : " + friendId + " não encontrado");
+        }
+        UserEntity friendUser = friend.get();
+        if (user.getFriends().contains(friendUser)) {
+            user.removeFriend(friendUser);
+            userRepository.saveAll(List.of(user, friendUser));
+        } else {
+            throw new UsersNotFriendsException();
+        }
     }
 }
