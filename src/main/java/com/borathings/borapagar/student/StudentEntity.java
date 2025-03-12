@@ -28,11 +28,9 @@ public class StudentEntity extends SoftDeletableModel {
 
     @NaturalId
     @Column(name = "student_id", nullable = false)
-    @NotNull
     private Long studentId;
 
     @Column(name = "student_name", nullable = false)
-    @NotNull
     private String studentName;
 
     @Column(name = "enrollment_id")
@@ -53,15 +51,12 @@ public class StudentEntity extends SoftDeletableModel {
     private String courseName;
 
     @Column(name = "level")
-    @NotNull
     private String level;
 
     @Column(name = "admission_year")
-    @NotNull
     private int admissionYear;
 
     @Column(name = "admission_semester")
-    @NotNull
     private int admissionSemester;
 
     @Column(name = "ingress_method_id")
@@ -71,11 +66,9 @@ public class StudentEntity extends SoftDeletableModel {
     private String ingressMethodDescription;
 
     @Column(name = "academic_manager_id")
-    @NotNull
     private int academicManagerId;
 
     @Column(name = "participant_type_id")
-    @NotNull
     private int participantTypeId;
 
     @Column(name = "educational_institution_id")

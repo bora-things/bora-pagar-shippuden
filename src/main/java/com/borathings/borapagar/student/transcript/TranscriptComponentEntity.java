@@ -28,7 +28,6 @@ public class TranscriptComponentEntity extends AbstractModel {
     private Integer period;
 
     @Column(name = "year", nullable = false)
-    @NotNull
     private Integer year;
 
     @Column(name = "component_id")

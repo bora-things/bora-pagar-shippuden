@@ -4,7 +4,7 @@ CREATE TABLE workload
     total_workload_completed INT,
     total_min_workload       INT,
     pending_workload         INT,
-    student_id               BIGINT UNIQUE NOT NULL,
+    student_id               BIGINT UNIQUE ,
     created_at                TIMESTAMPTZ DEFAULT NOW(),
     updated_at                TIMESTAMPTZ DEFAULT NOW(),
     deleted_at                TIMESTAMPTZ,
