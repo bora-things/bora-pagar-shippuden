@@ -3,7 +3,6 @@ package com.borathings.borapagar.student.transcript;
 import com.borathings.borapagar.core.AbstractModel;
 import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,7 +39,7 @@ public class TranscriptComponentEntity extends AbstractModel {
     private String integralization;
 
     @Column(name = "sigaa_class_id", nullable = false)
-    private Long sigaaClassId;
+    private Integer sigaaClassId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", insertable = false, updatable = false)

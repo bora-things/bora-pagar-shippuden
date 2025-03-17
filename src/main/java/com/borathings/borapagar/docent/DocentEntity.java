@@ -3,7 +3,6 @@ package com.borathings.borapagar.docent;
 import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.core.AbstractModel;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

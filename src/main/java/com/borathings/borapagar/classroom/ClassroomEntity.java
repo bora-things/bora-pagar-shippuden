@@ -5,7 +5,6 @@ import com.borathings.borapagar.docent.DocentEntity;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.subject.ComponentEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

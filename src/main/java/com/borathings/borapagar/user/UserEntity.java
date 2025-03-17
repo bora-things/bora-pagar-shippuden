@@ -2,7 +2,6 @@ package com.borathings.borapagar.user;
 
 import com.borathings.borapagar.core.SoftDeletableModel;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;

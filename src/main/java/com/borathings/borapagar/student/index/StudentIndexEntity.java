@@ -3,7 +3,6 @@ package com.borathings.borapagar.student.index;
 import com.borathings.borapagar.core.AbstractModel;
 import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
