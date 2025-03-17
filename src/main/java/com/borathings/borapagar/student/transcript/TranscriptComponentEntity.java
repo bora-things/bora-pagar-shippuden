@@ -28,20 +28,19 @@ public class TranscriptComponentEntity extends AbstractModel {
     private Integer period;
 
     @Column(name = "year", nullable = false)
-    @NotNull
     private Integer year;
 
     @Column(name = "component_id")
     private Long componentId;
 
     @Column(name = "situation")
-    private String situation;
+    private Integer situation;
 
     @Column(name = "integralization")
     private String integralization;
 
     @Column(name = "sigaa_class_id", nullable = false)
-    private Integer sigaaClassId;
+    private Long sigaaClassId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", insertable = false, updatable = false)

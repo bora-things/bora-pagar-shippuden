@@ -22,39 +22,31 @@ import org.hibernate.annotations.NaturalId;
 @SuperBuilder(toBuilder = true)
 public class UserEntity extends SoftDeletableModel {
     @Column(nullable = false)
-    @NotNull
     private String email;
 
     @Column(name = "person_name", nullable = false)
-    @NotNull
     private String personName;
 
     @Column(nullable = false)
-    @NotNull
     private String login;
 
     @Column(name = "user_id", nullable = false, unique = true)
-    @NotNull
     @NaturalId
     private int userId;
 
     @Column(name = "institutional_id", nullable = false)
-    @NotNull
     private Long institutionalId;
 
     @Column(nullable = false)
-    @NotNull
     private String cpf;
 
     @Column(name = "image_url")
     private String imageUrl;
 
     @Column(name = "unit_id", nullable = false)
-    @NotNull
     private int unitId;
 
     @Column(nullable = false)
-    @NotNull
     private boolean active;
 
     @ManyToMany
