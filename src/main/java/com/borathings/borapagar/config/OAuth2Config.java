@@ -62,6 +62,11 @@ public class OAuth2Config {
                 .oauth2Login(oauthLogin -> oauthLogin
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(oAuth2AuthenticationSuccessHandler))
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .logoutSuccessUrl(frontendUrl)
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll())
                 .exceptionHandling(ex -> ex.defaultAuthenticationEntryPointFor(
                         new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED), new AntPathRequestMatcher("/api/**")));
 
@@ -78,7 +83,7 @@ public class OAuth2Config {
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/api/**", config);
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", config);
         return urlBasedCorsConfigurationSource;
     }
 }

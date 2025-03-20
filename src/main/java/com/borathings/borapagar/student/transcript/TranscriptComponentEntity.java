@@ -3,7 +3,6 @@ package com.borathings.borapagar.student.transcript;
 import com.borathings.borapagar.core.AbstractModel;
 import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,14 +27,13 @@ public class TranscriptComponentEntity extends AbstractModel {
     private Integer period;
 
     @Column(name = "year", nullable = false)
-    @NotNull
     private Integer year;
 
     @Column(name = "component_id")
     private Long componentId;
 
     @Column(name = "situation")
-    private String situation;
+    private Integer situation;
 
     @Column(name = "integralization")
     private String integralization;
