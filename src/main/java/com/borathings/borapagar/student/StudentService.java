@@ -14,6 +14,7 @@ import com.borathings.borapagar.user.UserService;
 import com.borathings.borapagar.workload.WorkloadDto;
 import com.borathings.borapagar.workload.WorkloadEntity;
 import com.borathings.borapagar.workload.WorkloadRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -133,6 +134,12 @@ public class StudentService {
 
     public List<StudentEntity> findAllStudentsById(List<UserEntity> users) {
         return studentRepository.findAllByUserIn(users);
+    }
+
+    public StudentEntity findByUserIdOrError(int userId) {
+        return studentRepository.findByUserId(userId).orElseThrow(() -> {
+            return new EntityNotFoundException("Estudante com id usuário : " + userId + "não foi encontrado");
+        });
     }
 
     @Async
