@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public interface UserController {
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id);
+
     @GetMapping("/me")
     public ResponseEntity<UserResponseDTO> getCurrentUser(Authentication authentication);
 
