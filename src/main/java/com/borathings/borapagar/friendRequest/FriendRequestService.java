@@ -33,11 +33,15 @@ public class FriendRequestService {
     @Autowired
     private StudentService studentService;
 
-    public List<FriendRequestResponseDto> findAllByToUserId(String toUserLogin) {
+    public List<FriendRequestResponseDto> findAllByToUserIdWithStatus(
+            String toUserLogin, Optional<FriendRequestStatus> status) {
         UserEntity toUser = userService.findByLoginOrError(toUserLogin);
-        List<FriendRequestEntity> requests = friendRequestRepository.findAllByToUser(toUser);
+        List<FriendRequestEntity> requests =
+                friendRequestRepository.findAllByToUserAndOptionalStatus(toUser, status.orElse(null));
+
         List<UserEntity> fromUsers =
                 requests.stream().map(FriendRequestEntity::getFromUser).toList();
+
         List<StudentEntity> students = studentService.findAllStudentsById(fromUsers);
         Map<UserEntity, StudentEntity> studentMap =
                 students.stream().collect(Collectors.toMap(StudentEntity::getUser, student -> student));

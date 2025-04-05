@@ -2,10 +2,12 @@ package com.borathings.borapagar.friendRequest.impl;
 
 import com.borathings.borapagar.friendRequest.FriendRequestController;
 import com.borathings.borapagar.friendRequest.FriendRequestService;
+import com.borathings.borapagar.friendRequest.FriendRequestStatus;
 import com.borathings.borapagar.friendRequest.dto.FriendRequestCreateDto;
 import com.borathings.borapagar.friendRequest.dto.FriendRequestUpdateDto;
 import com.borathings.borapagar.friendRequest.dto.response.FriendRequestResponseDto;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,9 +45,10 @@ public class FriendRequestControllerImpl implements FriendRequestController {
     }
 
     @Override
-    public ResponseEntity<List<FriendRequestResponseDto>> getFriendRequests(Authentication authentication) {
+    public ResponseEntity<List<FriendRequestResponseDto>> getFriendRequests(
+            Authentication authentication, Optional<FriendRequestStatus> status) {
         String toUserLogin = authentication.getName();
-        List<FriendRequestResponseDto> requests = friendRequestService.findAllByToUserId(toUserLogin);
+        List<FriendRequestResponseDto> requests = friendRequestService.findAllByToUserIdWithStatus(toUserLogin, status);
         return ResponseEntity.status(HttpStatus.OK).body(requests);
     }
 }

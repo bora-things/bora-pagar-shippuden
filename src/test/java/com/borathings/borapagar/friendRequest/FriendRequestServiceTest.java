@@ -59,11 +59,13 @@ class FriendRequestServiceTest {
     @Test
     void testFindAllByToUserId() {
         when(userService.findByLoginOrError("toUser")).thenReturn(toUser);
-        when(friendRequestRepository.findAllByToUser(toUser)).thenReturn(List.of(friendRequest));
-        when(studentService.findAllStudentsById(List.of(fromUser))).thenReturn(List.of());
+        when(friendRequestRepository.findAllByToUserAndOptionalStatus(toUser, null))
+                .thenReturn(List.of(friendRequest));
+        when(studentService.findAllStudentsById(anyList())).thenReturn(List.of());
         when(friendRequestMapper.toFriendRequestResponseDto(any(), any())).thenReturn(new FriendRequestResponseDto());
 
-        List<FriendRequestResponseDto> result = friendRequestService.findAllByToUserId("toUser");
+        List<FriendRequestResponseDto> result =
+                friendRequestService.findAllByToUserIdWithStatus("toUser", Optional.empty());
 
         assertNotNull(result);
         assertEquals(1, result.size());

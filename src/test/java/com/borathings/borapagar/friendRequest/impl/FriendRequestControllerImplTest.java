@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -125,10 +126,10 @@ class FriendRequestControllerImplTest {
                 Date.from(Instant.now())));
 
         when(authentication.getName()).thenReturn("user123");
-        when(friendRequestService.findAllByToUserId("user123")).thenReturn(requests);
+        when(friendRequestService.findAllByToUserIdWithStatus("user123", null)).thenReturn(requests);
 
         ResponseEntity<List<FriendRequestResponseDto>> response =
-                friendRequestController.getFriendRequests(authentication);
+                friendRequestController.getFriendRequests(authentication, null);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -138,10 +139,11 @@ class FriendRequestControllerImplTest {
     @Test
     void testGetFriendRequests_NoRequests() {
         when(authentication.getName()).thenReturn("user123");
-        when(friendRequestService.findAllByToUserId("user123")).thenReturn(Collections.emptyList());
+        when(friendRequestService.findAllByToUserIdWithStatus("user123", Optional.empty()))
+                .thenReturn(Collections.emptyList());
 
         ResponseEntity<List<FriendRequestResponseDto>> response =
-                friendRequestController.getFriendRequests(authentication);
+                friendRequestController.getFriendRequests(authentication, Optional.empty());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().isEmpty());
