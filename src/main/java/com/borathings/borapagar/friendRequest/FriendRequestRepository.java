@@ -19,4 +19,14 @@ public interface FriendRequestRepository extends SoftDeletableRepository<FriendR
             @Param("fromUser") UserEntity fromUser, @Param("toUser") UserEntity toUser);
 
     List<FriendRequestEntity> findAllByFromUserAndToUser(UserEntity fromUser, UserEntity toUser);
+
+    @Query(
+            """
+		SELECT r FROM friend_requests r
+		WHERE r.toUser = :toUser
+		AND (:status IS NULL or r.status = :status)
+		AND r.deletedAt IS NULL
+		""")
+    List<FriendRequestEntity> findAllByToUserAndOptionalStatus(
+            @Param("toUser") UserEntity toUser, @Param("status") FriendRequestStatus status);
 }
