@@ -136,6 +136,12 @@ public class StudentService {
         return studentRepository.findAllByUserIn(users);
     }
 
+    public StudentEntity findByUserLoginOrError(String userLogin) {
+        return studentRepository.findByUserLogin(userLogin).orElseThrow(() -> {
+            return new EntityNotFoundException("Estudante com login : " + userLogin + "não foi encontrado");
+        });
+    }
+
     public StudentEntity findByUserIdOrError(int userId) {
         return studentRepository.findByUserId(userId).orElseThrow(() -> {
             return new EntityNotFoundException("Estudante com id usuário : " + userId + "não foi encontrado");

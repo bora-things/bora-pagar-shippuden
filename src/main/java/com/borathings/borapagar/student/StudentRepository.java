@@ -13,5 +13,8 @@ public interface StudentRepository extends AbstractRepository<StudentEntity> {
     @Query("SELECT s FROM students s WHERE s.user.userId = :userId")
     Optional<StudentEntity> findByUserId(int userId);
 
+    @Query("SELECT s FROM students s WHERE s.user.login = :userLogin")
+    Optional<StudentEntity> findByUserLogin(String userLogin);
+
     List<StudentEntity> findAllByUserIn(Collection<UserEntity> users);
 }
