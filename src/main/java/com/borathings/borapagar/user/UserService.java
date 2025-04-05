@@ -75,7 +75,7 @@ public class UserService {
      * Recupera um usuário do banco de dados pelo id da sua conta do SIGAA. Retorna <code>
      * EntityNotFoundException</code> caso o usuário não seja encontrado
      *
-     * @param idUsuario - String - ID da conta do google
+     * @param idUsuario - String - ID da conta do SIGAA
      * @return UserEntity - Usuário encontrado
      * @throws EntityNotFoundException - Se o usuário não for encontrado
      */
@@ -88,6 +88,12 @@ public class UserService {
     public UserEntity findByLoginOrError(String login) {
         return userRepository.findByLogin(login).orElseThrow(() -> {
             return new EntityNotFoundException("Usuário com Login : " + login + " não encontrado");
+        });
+    }
+
+    public UserEntity findByIdOrError(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> {
+            return new EntityNotFoundException("Usuário com ID : " + id + " não encontrado");
         });
     }
 
