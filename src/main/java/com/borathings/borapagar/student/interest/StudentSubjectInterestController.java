@@ -1,6 +1,8 @@
 package com.borathings.borapagar.student.interest;
 
+import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestSemesterDTO;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface StudentSubjectInterestController {
 
     @GetMapping("/")
-    public ResponseEntity<Void> listInterests(Authentication currentUser);
+    public ResponseEntity<List<StudentSubjectInterestDTO>> listInterests(Authentication currentUser);
 
     @PostMapping("/{subjectId}")
     public ResponseEntity<Void> createInterest(
