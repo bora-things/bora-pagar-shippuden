@@ -143,11 +143,10 @@ public class StudentService {
         });
     }
 
-    public StudentDTO getCurrentStudent(String userLogin){
-        StudentEntity student=findByUserLoginOrError(userLogin);
+    public StudentDTO getCurrentStudent(String userLogin) {
+        StudentEntity student = findByUserLoginOrError(userLogin);
         return studentMapper.toDto(student);
     }
-
 
     public StudentEntity findByUserIdOrError(int userId) {
         return studentRepository.findByUserId(userId).orElseThrow(() -> {

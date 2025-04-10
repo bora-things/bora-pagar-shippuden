@@ -8,5 +8,4 @@ public record StudentDTO(
         @JsonProperty("course_name") String courseName,
         @JsonProperty("login") String login,
         @JsonProperty("image_url") String imageUrl,
-        @JsonProperty("period") Integer period
-) {}
+        @JsonProperty("period") Integer period) {}

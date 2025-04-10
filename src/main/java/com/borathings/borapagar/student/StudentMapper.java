@@ -13,6 +13,4 @@ public interface StudentMapper {
     public StudentDTO toDto(StudentEntity entity);
 
     public StudentEntity toEntity(StudentDTO dto);
-
-
 }

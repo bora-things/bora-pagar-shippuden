@@ -8,13 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.NaturalId;
 
 @Entity
-@Table(name = "transcript_components",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"sigaa_class_id", "student_id"})
-        })
+@Table(
+        name = "transcript_components",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"sigaa_class_id", "student_id"})})
 @SuperBuilder(toBuilder = true)
 @Getter
 @Setter

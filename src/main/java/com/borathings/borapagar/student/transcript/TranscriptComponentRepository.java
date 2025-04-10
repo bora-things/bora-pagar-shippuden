@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface TranscriptComponentRepository extends JpaRepository<TranscriptComponentEntity, Long> {
 
     void deleteByStudent(StudentEntity student);
-
 }

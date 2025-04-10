@@ -10,5 +10,4 @@ public interface StudentController {
 
     @GetMapping("/me")
     public ResponseEntity<StudentDTO> currentStudent(Authentication currentUser);
-
 }

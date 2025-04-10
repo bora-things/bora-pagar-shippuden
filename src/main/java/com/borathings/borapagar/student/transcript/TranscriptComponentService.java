@@ -2,10 +2,8 @@ package com.borathings.borapagar.student.transcript;
 
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.transcript.dto.TranscriptComponentDTO;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
