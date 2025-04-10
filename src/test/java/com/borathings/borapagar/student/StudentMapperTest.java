@@ -22,6 +22,7 @@ public class StudentMapperTest {
 
         // Build StudentEntity with test data
         StudentEntity entity = new StudentEntity();
+        entity.setId(2L);
         entity.setStudentId(123L);
         entity.setStudentName("John Doe");
         entity.setEnrollmentId("456");
@@ -47,6 +48,6 @@ public class StudentMapperTest {
         // Assert mapped fields
         assertThat(dto.studentName()).isEqualTo("John Doe");
         assertThat(dto.courseName()).isEqualTo("Computer Science");
-        assertThat(dto.id()).isEqualTo(123L);
+        assertThat(dto.id()).isEqualTo(2L);
     }
 }
