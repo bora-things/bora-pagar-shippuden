@@ -33,6 +33,9 @@ public class StudentEntity extends SoftDeletableModel {
     @Column(name = "student_name", nullable = false)
     private String studentName;
 
+    @Column(name = "login", nullable = false)
+    private String login;
+
     @Column(name = "enrollment_id")
     private String enrollmentId;
 
@@ -46,6 +49,9 @@ public class StudentEntity extends SoftDeletableModel {
 
     @Column(name = "course_id")
     private int courseId;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @Column(name = "course_name")
     private String courseName;
