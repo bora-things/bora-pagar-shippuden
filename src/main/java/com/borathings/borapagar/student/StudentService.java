@@ -3,7 +3,6 @@ package com.borathings.borapagar.student;
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 import com.borathings.borapagar.student.dto.StudentDTO;
-import com.borathings.borapagar.student.dto.StudentInfoDto;
 import com.borathings.borapagar.student.index.IndexDTO;
 import com.borathings.borapagar.student.index.IndexEnum;
 import com.borathings.borapagar.student.index.StudentIndexEntity;
@@ -143,11 +142,9 @@ public class StudentService {
         });
     }
 
-    public StudentInfoDto getStudentInfo(String userLogin){
-        StudentEntity student=studentRepository.findByUserLogin(userLogin).orElseThrow(()->{
-            return new EntityNotFoundException("Estudante com login : " + userLogin + "não foi encontrado");
-        });
-        return studentMapper.toStudentInfoDto(student);
+    public StudentDTO getCurrentStudent(String userLogin){
+        StudentEntity student=findByUserLoginOrError(userLogin);
+        return studentMapper.toDto(student);
     }
 
 
