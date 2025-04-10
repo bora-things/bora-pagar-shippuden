@@ -8,9 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.NaturalId;
 
 @Entity
-@Table(name = "transcript_components")
+@Table(name = "transcript_components",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"sigaa_class_id", "student_id"})
+        })
 @SuperBuilder(toBuilder = true)
 @Getter
 @Setter
@@ -42,6 +46,6 @@ public class TranscriptComponentEntity extends AbstractModel {
     private Integer sigaaClassId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id", insertable = false, updatable = false)
+    @JoinColumn(name = "student_id", updatable = false)
     private StudentEntity student;
 }

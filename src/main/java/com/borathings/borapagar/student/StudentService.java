@@ -122,6 +122,7 @@ public class StudentService {
                         .totalWorkloadCompleted(workloadDto.totalWorkloadCompleted())
                         .student(student)
                         .build();
+                workloadRepository.deleteAllByStudent(student);
                 workloadRepository.save(workload);
             }
 
