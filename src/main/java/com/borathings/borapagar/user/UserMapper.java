@@ -18,5 +18,6 @@ public interface UserMapper {
     public UserEntity toEntity(UserDTO dto);
 
     @Mapping(target = "period", expression = "java(student.getUserPeriod())")
+    @Mapping(target = "imageUrl", expression = "java(student.getImageUrl())")
     public UserFriendResponseDto toUserFriendResponseDto(UserEntity user, StudentEntity student);
 }

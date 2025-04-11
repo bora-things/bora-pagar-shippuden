@@ -65,9 +65,9 @@ public class StudentService {
                     .body(new ParameterizedTypeReference<>() {});
 
             StudentDTO studentDto = students.getFirst();
-
             StudentEntity studentEntity = studentMapper.toEntity(studentDto);
-
+            studentEntity.setImageUrl(userEntity.getImageUrl());
+            studentEntity.setLogin(userEntity.getLogin());
             studentEntity.setUser(userEntity);
             return studentRepository.save(studentEntity);
         }
@@ -122,6 +122,7 @@ public class StudentService {
                         .totalWorkloadCompleted(workloadDto.totalWorkloadCompleted())
                         .student(student)
                         .build();
+                workloadRepository.deleteAllByStudent(student);
                 workloadRepository.save(workload);
             }
 
@@ -140,6 +141,11 @@ public class StudentService {
         return studentRepository.findByUserLogin(userLogin).orElseThrow(() -> {
             return new EntityNotFoundException("Estudante com login : " + userLogin + "não foi encontrado");
         });
+    }
+
+    public StudentDTO getCurrentStudent(String userLogin) {
+        StudentEntity student = findByUserLoginOrError(userLogin);
+        return studentMapper.toDto(student);
     }
 
     public StudentEntity findByUserIdOrError(int userId) {

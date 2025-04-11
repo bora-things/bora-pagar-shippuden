@@ -7,7 +7,7 @@ public record TranscriptComponentDTO(
         @JsonProperty("periodo") int period,
         @JsonProperty("data-cadastro") long registerDate,
         @JsonProperty("faltas") int absences,
-        @JsonProperty("id-componente") int componentId,
+        @JsonProperty("id-componente") long componentId,
         @JsonProperty("id-discente") int studentId,
         @JsonProperty("id-matricula-componente") int registrationId,
         @JsonProperty("id-situacao-matricula") int registrationSituationId,

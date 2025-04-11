@@ -1,8 +1,6 @@
 package com.borathings.borapagar.student.impl;
 
 import com.borathings.borapagar.student.StudentController;
-import com.borathings.borapagar.student.StudentEntity;
-import com.borathings.borapagar.student.StudentMapper;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +14,8 @@ public class StudentControllerImpl implements StudentController {
     @Autowired
     StudentService studentService;
 
-    @Autowired
-    StudentMapper studentMapper;
-
     public ResponseEntity<StudentDTO> currentStudent(Authentication currentUser) {
-        StudentEntity s = studentService.findByUserLoginOrError(currentUser.getName());
-        return ResponseEntity.ok(studentMapper.toDto(s));
+        StudentDTO s = studentService.getCurrentStudent(currentUser.getName());
+        return ResponseEntity.ok(s);
     }
 }
