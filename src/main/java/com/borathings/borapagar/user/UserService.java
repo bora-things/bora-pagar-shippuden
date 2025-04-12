@@ -5,6 +5,7 @@ import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.UserDTO;
 import com.borathings.borapagar.user.dto.response.UserFriendResponseDto;
+import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -91,10 +92,12 @@ public class UserService {
         });
     }
 
-    public UserEntity findByIdOrError(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> {
+    public UserResponseDTO findByIdOrError(Long id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> {
             return new EntityNotFoundException("Usuário com ID : " + id + " não encontrado");
         });
+
+        return userMapper.toUserResponseDTO(user);
     }
 
     @Transactional
