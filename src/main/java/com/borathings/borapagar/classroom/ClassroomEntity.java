@@ -56,7 +56,7 @@ public class ClassroomEntity extends AbstractModel {
     private String componentName;
 
     @Column(nullable = false)
-    private int semester;
+    private int period;
 
     @Column(name = "level_abbreviation")
     private String levelAbbreviation;
