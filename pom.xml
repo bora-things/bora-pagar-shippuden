@@ -31,6 +31,9 @@
 			<id>dev</id>
 			<properties>
 				<activatedProperties>dev</activatedProperties>
+				<flyway.url>jdbc:postgresql://localhost:5432/borapagar</flyway.url>
+				<flyway.user>postgres</flyway.user>
+				<flyway.password>password</flyway.password>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -40,6 +43,9 @@
 			<id>prod</id>
 			<properties>
 				<activatedProperties>prod</activatedProperties>
+				<flyway.url>jdbc:postgresql://${env.DATABASE_HOST}/${DATABASE_NAME}</flyway.url>
+				<flyway.user>${env.DATABASE_USERNAME}</flyway.user>
+				<flyway.password>${env.DATABASE_PASSWORD}</flyway.password>
 			</properties>
 		</profile>
 	</profiles>
@@ -224,6 +230,11 @@
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>10.15.0</version>
+				<configuration>
+						<url>${flyway.url}</url>
+						<user>${flyway.user}</user>
+						<password>${flyway.password}</password>
+					</configuration>
 			</plugin>
 			
 			<plugin>
