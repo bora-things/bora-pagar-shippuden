@@ -26,6 +26,9 @@ import org.hibernate.annotations.NaturalId;
 @SuperBuilder(toBuilder = true)
 public class StudentEntity extends SoftDeletableModel {
 
+    @Version
+    private Long version;
+
     @NaturalId
     @Column(name = "student_id", nullable = false)
     private Long studentId;

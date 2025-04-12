@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS classrooms
     unit_id                  BIGINT,
     location                 TEXT,
     component_name           TEXT,
-    semester                 INTEGER ,
+    period                 INTEGER ,
     level_abbreviation       VARCHAR(100),
     subgroup                 BOOLEAN ,
     type                     INTEGER ,
