@@ -10,4 +10,7 @@ public interface StudentController {
 
     @GetMapping("/me")
     public ResponseEntity<StudentResponseDTO> currentStudent(Authentication currentUser);
+
+    @GetMapping("/{studentId}")
+    public ResponseEntity<StudentResponseDTO> getById(@PathVariable Long studentId);
 }

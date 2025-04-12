@@ -18,4 +18,9 @@ public class StudentControllerImpl implements StudentController {
         StudentResponseDTO s = studentService.getCurrentStudent(currentUser.getName());
         return ResponseEntity.ok(s);
     }
+
+    public ResponseEntity<StudentResponseDTO> getById(Long studentId) {
+        StudentResponseDTO s = studentService.findByIdOrError(studentId);
+        return ResponseEntity.ok(s);
+    }
 }

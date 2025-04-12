@@ -151,8 +151,16 @@ public class StudentService {
 
     public StudentEntity findByUserIdOrError(int userId) {
         return studentRepository.findByUserId(userId).orElseThrow(() -> {
-            return new EntityNotFoundException("Estudante com id usuário : " + userId + "não foi encontrado");
+            return new EntityNotFoundException("Estudante com id usuário : " + userId + " não foi encontrado");
         });
+    }
+
+    public StudentResponseDTO findByIdOrError(Long studentId) {
+        StudentEntity student = studentRepository.findById(studentId).orElseThrow(() -> {
+            return new EntityNotFoundException("Estudante com id: " + studentId + " não foi encontrado");
+        });
+
+        return studentMapper.toResponseDTO(student);
     }
 
     @Async
