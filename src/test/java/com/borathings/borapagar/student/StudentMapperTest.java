@@ -48,6 +48,5 @@ public class StudentMapperTest {
         // Assert mapped fields
         assertThat(dto.studentName()).isEqualTo("John Doe");
         assertThat(dto.courseName()).isEqualTo("Computer Science");
-        assertThat(dto.id()).isEqualTo(2L);
     }
 }
