@@ -3,6 +3,7 @@ package com.borathings.borapagar.student;
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 import com.borathings.borapagar.student.dto.StudentDTO;
+import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import com.borathings.borapagar.student.index.IndexDTO;
 import com.borathings.borapagar.student.index.IndexEnum;
 import com.borathings.borapagar.student.index.StudentIndexEntity;
@@ -62,7 +63,7 @@ public class StudentService {
                     .uri("/discente/v1/discentes?id-institucional=" + institutionalId)
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<>() {});
+                    .body(new ParameterizedTypeReference<List<StudentDTO>>() {});
 
             StudentDTO studentDto = students.getFirst();
             StudentEntity studentEntity = studentMapper.toEntity(studentDto);
@@ -143,9 +144,9 @@ public class StudentService {
         });
     }
 
-    public StudentDTO getCurrentStudent(String userLogin) {
+    public StudentResponseDTO getCurrentStudent(String userLogin) {
         StudentEntity student = findByUserLoginOrError(userLogin);
-        return studentMapper.toDto(student);
+        return studentMapper.toResponseDTO(student);
     }
 
     public StudentEntity findByUserIdOrError(int userId) {
