@@ -2,6 +2,8 @@ CREATE TABLE students
 (
     id BIGSERIAL PRIMARY KEY,
     student_id INT  UNIQUE,
+    login TEXT UNIQUE,
+    image_url  VARCHAR,
     student_name VARCHAR(255) ,
     enrollment_id VARCHAR(255) ,
     situation VARCHAR(50) ,
