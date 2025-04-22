@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class AfterLoginService {
 
+
     @Autowired
     private StudentService studentService;
 
     @Autowired
     private ClassroomService classroomService;
+
 
     @Async
     public void completeProfileAfterLogin(StudentEntity student) {

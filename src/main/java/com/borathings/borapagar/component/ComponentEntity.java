@@ -1,13 +1,11 @@
-package com.borathings.borapagar.subject;
+package com.borathings.borapagar.component;
 
 import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.core.AbstractModel;
 import jakarta.persistence.*;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity(name = "components")
@@ -16,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
+@ToString
 public class ComponentEntity extends AbstractModel {
 
     @Column(name = "total_workload", nullable = false)
