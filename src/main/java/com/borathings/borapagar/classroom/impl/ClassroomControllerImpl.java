@@ -3,6 +3,7 @@ package com.borathings.borapagar.classroom.impl;
 import com.borathings.borapagar.classroom.ClassroomController;
 import com.borathings.borapagar.classroom.ClassroomService;
 import com.borathings.borapagar.classroom.dto.ClassroomDTO;
+import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,7 +17,7 @@ public class ClassroomControllerImpl implements ClassroomController {
     private ClassroomService classroomService;
 
     @Override
-    public ResponseEntity<List<ClassroomDTO>> findStudentClassroom(Authentication authentication) {
+    public ResponseEntity<List<ClassroomResponseDTO>> findStudentClassroom(Authentication authentication) {
         String login=authentication.getName();
         return ResponseEntity.ok(classroomService.findClassroomByStudent(login));
     }

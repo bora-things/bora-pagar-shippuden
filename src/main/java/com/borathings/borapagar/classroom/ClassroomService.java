@@ -1,6 +1,10 @@
 package com.borathings.borapagar.classroom;
 
 import com.borathings.borapagar.classroom.dto.ClassroomDTO;
+import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
+import com.borathings.borapagar.component.ComponentEntity;
+import com.borathings.borapagar.component.ComponentService;
+import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import org.slf4j.Logger;
@@ -8,10 +12,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
@@ -31,6 +42,13 @@ public class ClassroomService {
 
     @Autowired
     private ClassroomRepository classroomRepository;
+
+    @Autowired
+    private ComponentService componentService;
+
+    @Autowired
+    private OAuth2AuthorizedClientService authorizedClientService;
+
 
     @Async
     public CompletableFuture<Void> fetchClassroom(StudentEntity student) {
@@ -59,13 +77,31 @@ public class ClassroomService {
         return CompletableFuture.completedFuture(null);
     }
 
-    public List<ClassroomDTO> findClassroomByStudent(String login) {
+    public List<ClassroomResponseDTO> findClassroomByStudent(String login) {
        StudentEntity student= studentService.findByUserLoginOrError(login);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient(
+                "sigaa", // registrationId do teu client
+                authentication.getName()
+        );
+
+        if (client == null) {
+            throw new IllegalStateException("OAuth2 client not found for user: " + authentication.getName());
+        }
+
+        String token = client.getAccessToken().getTokenValue();
+
         List<ClassroomEntity> classrooms= classroomRepository.findAllByStudent(student);
-        return classrooms.stream().map(item->classroomMapper.toDTO(item)).toList();
+        Map<String, ComponentResponseDTO> components=componentService.fetchComponents(classrooms,token);
+        return classrooms.stream().map(item-> {
+            if(item.getComponentCode()!=null){
+                ComponentResponseDTO component=components.get(item.getComponentCode());
+                return classroomMapper.toResponseDTO(item,component);
+            }
+            return null;
+        }).toList();
     }
-
-
 
     public ClassroomEntity toEntity(ClassroomDTO dto, StudentEntity student) {
         return ClassroomEntity.builder()
