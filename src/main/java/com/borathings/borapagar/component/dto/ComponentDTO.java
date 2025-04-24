@@ -14,7 +14,7 @@ public record ComponentDTO(
         String name,
 
         @JsonProperty("disciplina-obrigatoria")
-        Boolean mandatoryDiscipline,
+        Boolean mandatorySubject,
 
         @JsonProperty("semestre-oferta")
         Integer offeredSemester,
@@ -23,7 +23,7 @@ public record ComponentDTO(
         Long componentTypeId,
 
         @JsonProperty("id-matriz-curricular")
-        Long curriculumMatrixId,
+        Long curricularMatrixId,
 
         @JsonProperty("id-unidade")
         Long unitId,
@@ -35,13 +35,13 @@ public record ComponentDTO(
         Integer totalWorkload,
 
         @JsonProperty("pre-requisitos")
-        String prerequisites,
+        String preRequisites,
 
         @JsonProperty("co-requisitos")
-        String corequisites,
+        String coRequisites,
 
         @JsonProperty("equivalentes")
-        String equivalents,
+        String equivalent,
 
         @JsonProperty("nivel")
         String level,
