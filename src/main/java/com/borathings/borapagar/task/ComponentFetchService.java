@@ -6,6 +6,7 @@ import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.component.repository.ComponentRepository;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.ParameterizedTypeReference;
@@ -23,7 +24,8 @@ import static org.springframework.security.oauth2.client.web.client.RequestAttri
 public class ComponentFetchService {
 
     @Autowired
-    RestClient restClient;
+    @Qualifier("serviceRestClient")
+    RestClient serviceRestClient;
 
     @Autowired
     ComponentRepository componentRepository;
@@ -42,10 +44,9 @@ public class ComponentFetchService {
         boolean hasComponents = true;
         int offset = 0;
         while (hasComponents) {
-            List<ComponentDTO> components = restClient
+            List<ComponentDTO> components = serviceRestClient
                     .get()
                     .uri("/curso/v1/componentes-curriculares?nivel=G&id-unidade=6069&limit=100&offset=" + offset + "&id-matriz-curricular=" + curricularMatrixId)
-                    .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
                     .body(new ParameterizedTypeReference<List<ComponentDTO>>() {
                     });

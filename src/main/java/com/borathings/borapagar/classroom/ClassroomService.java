@@ -10,6 +10,7 @@ import com.borathings.borapagar.student.StudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
@@ -32,7 +33,8 @@ public class ClassroomService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    RestClient restClient;
+    @Qualifier("userRestClient")
+    RestClient userRestClient;
 
     @Autowired
     private ClassroomMapper classroomMapper;
@@ -54,18 +56,19 @@ public class ClassroomService {
     public CompletableFuture<Void> fetchClassroom(StudentEntity student) {
         try {
 
-            List<ClassroomDTO> classroomDTOs = restClient
+            List<ClassroomDTO> classroomDTOs = userRestClient
                     .get()
                     .uri("https://api.info.ufrn.br/turma/v1/turmas?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {});
+                    .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {
+                    });
 
-            if(classroomDTOs != null){
+            if (classroomDTOs != null) {
 
-            List<ClassroomEntity> classrooms=classroomDTOs.stream().map(item->
-                toEntity(item,student)
-            ).toList();
+                List<ClassroomEntity> classrooms = classroomDTOs.stream().map(item ->
+                        toEntity(item, student)
+                ).toList();
                 classroomRepository.deleteAllByStudent(student);
                 classroomRepository.saveAll(classrooms);
             }
@@ -78,26 +81,13 @@ public class ClassroomService {
     }
 
     public List<ClassroomResponseDTO> findClassroomByStudent(String login) {
-       StudentEntity student= studentService.findByUserLoginOrError(login);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        StudentEntity student = studentService.findByUserLoginOrError(login);
 
-        OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient(
-                "sigaa", // registrationId do teu client
-                authentication.getName()
-        );
 
-        if (client == null) {
-            throw new IllegalStateException("OAuth2 client not found for user: " + authentication.getName());
-        }
-
-        String token = client.getAccessToken().getTokenValue();
-
-        List<ClassroomEntity> classrooms= classroomRepository.findAllByStudent(student);
-        Map<String, ComponentResponseDTO> components=componentService.fetchComponents(classrooms,token);
-        return classrooms.stream().map(item-> {
-            if(item.getComponentCode()!=null){
-                ComponentResponseDTO component=components.get(item.getComponentCode());
-                return classroomMapper.toResponseDTO(item,component);
+        List<ClassroomEntity> classrooms = classroomRepository.findAllByStudent(student);
+        return classrooms.stream().map(item -> {
+            if (item.getComponentCode() != null) {
+                return classroomMapper.toResponseDTO(item, null);
             }
             return null;
         }).toList();

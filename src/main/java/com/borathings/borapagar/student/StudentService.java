@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,8 @@ public class StudentService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    RestClient restClient;
+    @Qualifier("userRestClient")
+    RestClient userRestClient;
 
     @Autowired
     StudentRepository studentRepository;
@@ -58,7 +60,7 @@ public class StudentService {
         if (student.isEmpty()) {
             UserEntity userEntity = userService.findByIdUserOrError(userId);
             logger.info("Creating Student from User {}", userEntity);
-            List<StudentDTO> students = restClient
+            List<StudentDTO> students = userRestClient
                     .get()
                     .uri("/discente/v1/discentes?id-institucional=" + institutionalId)
                     .attributes(clientRegistrationId("sigaa"))
@@ -79,7 +81,7 @@ public class StudentService {
     public CompletableFuture<Void> fetchIndexes(StudentEntity student) {
         try {
 
-            List<IndexDTO> indexes = restClient
+            List<IndexDTO> indexes = userRestClient
                     .get()
                     .uri("/discente/v1/indices-discentes?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
@@ -109,7 +111,7 @@ public class StudentService {
     public CompletableFuture<Void> fetchWorkload(StudentEntity student) {
         try {
 
-            WorkloadDto workloadDto = restClient
+            WorkloadDto workloadDto = userRestClient
                     .get()
                     .uri("https://api.info.ufrn.br/discente/v1/discentes/" + student.getStudentId() + "/carga-horaria")
                     .attributes(clientRegistrationId("sigaa"))
@@ -167,7 +169,7 @@ public class StudentService {
     public CompletableFuture<Void> fetchAcademicRecord(StudentEntity student) {
         try {
 
-            List<TranscriptComponentDTO> components = restClient
+            List<TranscriptComponentDTO> components = userRestClient
                     .get()
                     .uri("/matricula/v1/matriculas-componentes?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
