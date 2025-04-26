@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 /** UserController */
 @RequestMapping("/users")
 public interface UserController {
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable("userId") Long userId);
 
     @GetMapping("/me")
     public ResponseEntity<UserResponseDTO> getCurrentUser(Authentication authentication);
