@@ -5,7 +5,9 @@ import static org.mockito.Mockito.*;
 
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
-import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestSemesterDTO;
+import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
+import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
+import com.borathings.borapagar.subject.SubjectSigaaClient;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,11 +26,14 @@ public class StudentSubjectInterestServiceTest {
     @Mock
     private StudentService studentService;
 
+    @Mock
+    private SubjectSigaaClient subjectClient;
+
     @InjectMocks
     private StudentSubjectInterestService studentSubjectInterestService;
 
     private StudentEntity student;
-    private StudentSubjectInterestSemesterDTO semesterDTO;
+    private StudentSubjectAddInterestDTO semesterDTO;
     private StudentSubjectInterestEntity interestEntity;
 
     @BeforeEach
@@ -36,7 +41,7 @@ public class StudentSubjectInterestServiceTest {
         student = new StudentEntity();
         student.setId(1L);
 
-        semesterDTO = new StudentSubjectInterestSemesterDTO(2023, 1);
+        semesterDTO = new StudentSubjectAddInterestDTO(63313, 2023, 1);
         interestEntity = new StudentSubjectInterestEntity(2023, 1, student, 101);
     }
 
@@ -45,19 +50,18 @@ public class StudentSubjectInterestServiceTest {
         when(studentSubjectInterestRepository.findAllByStudentId(student.getId()))
                 .thenReturn(Arrays.asList(interestEntity));
 
-        List<StudentSubjectInterestEntity> result = studentSubjectInterestService.listInterest(student.getId());
+        List<StudentSubjectInterestDTO> result = studentSubjectInterestService.listInterests(student.getId());
+        var actual = new StudentSubjectInterestDTO(null, null, semesterDTO.year(), semesterDTO.period());
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(interestEntity, result.get(0));
+        assertEquals(actual, result.get(0));
         verify(studentSubjectInterestRepository, times(1)).findAllByStudentId(student.getId());
     }
 
     @Test
     void testCreateInterest() {
-        int sigaaSubjectId = 101;
-
-        studentSubjectInterestService.createInterest(sigaaSubjectId, semesterDTO, student);
+        studentSubjectInterestService.createInterest(semesterDTO, student);
 
         verify(studentSubjectInterestRepository, times(1)).save(any(StudentSubjectInterestEntity.class));
     }
