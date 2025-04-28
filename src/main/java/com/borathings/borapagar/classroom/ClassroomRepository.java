@@ -12,4 +12,5 @@ public interface ClassroomRepository extends AbstractRepository<ClassroomEntity>
     void deleteAllByStudent(StudentEntity student);
 
     List<ClassroomEntity> findAllByStudent(StudentEntity student);
+
 }

@@ -9,6 +9,12 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity(name = "components")
+@Table(
+        name = "components",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"code", "curricular_matrix_id"})
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor

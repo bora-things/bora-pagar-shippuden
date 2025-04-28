@@ -2,6 +2,8 @@ package com.borathings.borapagar.student;
 
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
+import com.borathings.borapagar.classroom.ClassroomEntity;
+import com.borathings.borapagar.student.dto.StudentClassResponseDTO;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import com.borathings.borapagar.student.index.IndexDTO;
@@ -11,15 +13,23 @@ import com.borathings.borapagar.student.index.StudentIndexRepository;
 import com.borathings.borapagar.student.transcript.TranscriptComponentService;
 import com.borathings.borapagar.student.transcript.dto.TranscriptComponentDTO;
 import com.borathings.borapagar.user.UserEntity;
+import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.UserService;
+import com.borathings.borapagar.user.dto.FriendClassUserDTO;
+import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import com.borathings.borapagar.workload.WorkloadDto;
 import com.borathings.borapagar.workload.WorkloadEntity;
 import com.borathings.borapagar.workload.WorkloadRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +64,8 @@ public class StudentService {
 
     @Autowired
     private TranscriptComponentService transcriptComponentService;
+    @Autowired
+    private UserMapper userMapper;
 
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
         Optional<StudentEntity> student = studentRepository.findByUserId(userId);
@@ -62,7 +74,7 @@ public class StudentService {
             logger.info("Creating Student from User {}", userEntity);
             List<StudentDTO> students = userRestClient
                     .get()
-                    .uri("/discente/v1/discentes?id-institucional=" + institutionalId)
+                    .uri("/discente/v1/discentes?id-curso=92127264&id-institucional=" + institutionalId)
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
                     .body(new ParameterizedTypeReference<List<StudentDTO>>() {});
@@ -184,6 +196,34 @@ public class StudentService {
 
             return CompletableFuture.failedFuture(ex);
         }
+    };
+
+
+    @Async
+    public CompletableFuture<List<UserResponseDTO>> findFriendsInClass(UserEntity user, ClassroomEntity classroom) {
+        try {
+            List<FriendClassUserDTO> studentsDto = userRestClient
+                    .get()
+                    .uri("/turma/v1/participantes?limit=100&id-turma=" + classroom.getClassroomId())
+                    .attributes(clientRegistrationId("sigaa"))
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<List<FriendClassUserDTO>>() {});
+
+            if (studentsDto != null && !studentsDto.isEmpty()) {
+                Set<UserEntity> userFriends = user.getFriends();
+                Map<Long, UserEntity> userFriendsMap = userFriends.stream()
+                        .collect(Collectors.toMap(UserEntity::getInstitutionalId, Function.identity()));
+
+                List<UserResponseDTO> result = studentsDto.stream()
+                        .filter(item -> userFriendsMap.containsKey(item.institutionalId()))
+                        .map(item->userMapper.toUserResponseDTO(userFriendsMap.get(item.institutionalId())))
+                        .toList();
+
+                return CompletableFuture.completedFuture(result);
+            }
+        } catch (Exception ex) {
+            logger.info("Exception at findFriendsInClass {}", ex.getMessage());
+        }
+        return CompletableFuture.completedFuture(null);
     }
-    ;
 }
