@@ -5,8 +5,12 @@ import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.dto.ComponentResponseDTO;
+import com.borathings.borapagar.component.mapper.ComponentMapper;
+import com.borathings.borapagar.component.repository.ComponentRepository;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
+import com.borathings.borapagar.student.dto.StudentClassResponseDTO;
+import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
@@ -50,6 +56,11 @@ public class ClassroomService {
 
     @Autowired
     private OAuth2AuthorizedClientService authorizedClientService;
+
+    @Autowired
+    private ComponentRepository componentRepository;
+    @Autowired
+    private ComponentMapper componentMapper;
 
 
     @Async
@@ -80,18 +91,52 @@ public class ClassroomService {
         return CompletableFuture.completedFuture(null);
     }
 
-    public List<ClassroomResponseDTO> findClassroomByStudent(String login) {
+
+    public List<ClassroomResponseDTO> findClassroomByStudent(String login){
         StudentEntity student = studentService.findByUserLoginOrError(login);
 
-
         List<ClassroomEntity> classrooms = classroomRepository.findAllByStudent(student);
-        return classrooms.stream().map(item -> {
-            if (item.getComponentCode() != null) {
-                return classroomMapper.toResponseDTO(item, null);
-            }
-            return null;
-        }).toList();
+        List<String> componentCodes=classrooms.stream().map(ClassroomEntity::getComponentCode).toList();
+        List<ComponentEntity> components=componentRepository.findAllByCodeIn(componentCodes);
+        Map<String, ComponentResponseDTO> componentMap = components.stream()
+                .collect(Collectors.toMap(
+                        ComponentEntity::getCode,
+                        component ->componentMapper.toResponseDTO(component),
+                        (existing, replacement) -> existing // mantém o primeiro, ignora os duplicados
+                ));
+        try{
+        List<CompletableFuture<ClassroomResponseDTO>> futures = classrooms.stream()
+                .map(item -> {
+                    if (item.getComponentCode() != null) {
+                        CompletableFuture<List<UserResponseDTO>> friendsFuture = studentService.findFriendsInClass(student.getUser(), item);
+                        ComponentResponseDTO component = componentMap.get(item.getComponentCode());
+
+                        return friendsFuture.thenApply(friends ->
+                                classroomMapper.toResponseDTO(item, component, friends)
+                        );
+                    }
+                    return CompletableFuture.completedFuture((ClassroomResponseDTO)null);
+                })
+                .toList();
+
+        CompletableFuture<List<ClassroomResponseDTO>> allDoneFuture = sequence(futures);
+        return allDoneFuture.get(); // .get() bloqueia aqui (só agora)
+        }
+        catch (Exception ex){
+            logger.error("Erro",ex.getMessage());
+        return null;
+        }
     }
+
+    public static <T> CompletableFuture<List<T>> sequence(List<CompletableFuture<T>> futures) {
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                .thenApply(v -> futures.stream()
+                        .map(CompletableFuture::join)
+                        .toList()
+                );
+    }
+
+
 
     public ClassroomEntity toEntity(ClassroomDTO dto, StudentEntity student) {
         return ClassroomEntity.builder()
@@ -116,4 +161,5 @@ public class ClassroomService {
                 .student(student)
                 .build();
     }
+
 }

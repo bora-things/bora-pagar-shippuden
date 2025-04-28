@@ -4,9 +4,13 @@ import com.borathings.borapagar.classroom.dto.ClassroomDTO;
 import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.dto.ComponentResponseDTO;
+import com.borathings.borapagar.student.dto.StudentClassResponseDTO;
+import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+
+import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ClassroomMapper {
@@ -15,7 +19,7 @@ public interface ClassroomMapper {
 
     ClassroomDTO toDTO(ClassroomEntity classroomEntity);
 
-    @Mapping(source = "classroomEntity.unitId", target = "unitId")
     @Mapping(source="component",target="component")
-    ClassroomResponseDTO toResponseDTO(ClassroomEntity classroomEntity, ComponentResponseDTO component);
+    @Mapping(expression="java(classroomEntity.getPeriod())",target="period")
+    ClassroomResponseDTO toResponseDTO(ClassroomEntity classroomEntity, ComponentResponseDTO component, List<UserResponseDTO> friends);
 }

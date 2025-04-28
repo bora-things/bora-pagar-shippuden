@@ -15,4 +15,6 @@ public interface ComponentMapper {
 
     public ComponentResponseDTO toResponseDTO(ComponentDTO componentDTO);
 
+    public ComponentResponseDTO toResponseDTO(ComponentEntity component);
+
 }

@@ -1,8 +1,7 @@
 package com.borathings.borapagar.component.controller;
 
-import com.borathings.borapagar.task.ComponentFetchService;
+import com.borathings.borapagar.component.ComponentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ComponentController {
 
     @Autowired
-    ComponentFetchService componentFetchService;
+    ComponentService componentService;
 
     @GetMapping("/fetch")
     public void fetchComponents() {
-        componentFetchService.fetchComponents();
+        componentService.fetchComponents();
     }
 
 
