@@ -10,11 +10,13 @@ import com.borathings.borapagar.friendRequest.dto.FriendRequestUpdateDto;
 import com.borathings.borapagar.friendRequest.dto.FriendRequestUserDto;
 import com.borathings.borapagar.friendRequest.dto.response.FriendRequestResponseDto;
 import jakarta.persistence.EntityNotFoundException;
+
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -120,10 +122,9 @@ class FriendRequestControllerImplTest {
 
     @Test
     void testGetFriendRequests_Success() {
-        List<FriendRequestResponseDto> requests = Collections.singletonList(new FriendRequestResponseDto(
-                new FriendRequestUserDto("PersonName", "imageUrl", "courseName", 1),
-                FriendRequestStatus.PENDING,
-                Date.from(Instant.now())));
+        List<FriendRequestResponseDto> requests = Collections.singletonList(new FriendRequestResponseDto(1L,
+                new FriendRequestUserDto("PersonName", "imageUrl", "courseName", 1)
+        ));
 
         when(authentication.getName()).thenReturn("user123");
         when(friendRequestService.findAllByToUserIdWithStatus("user123", null)).thenReturn(requests);

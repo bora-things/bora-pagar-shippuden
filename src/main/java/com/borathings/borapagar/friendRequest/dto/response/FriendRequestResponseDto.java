@@ -12,9 +12,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FriendRequestResponseDto {
-    private FriendRequestUserDto fromUser;
-    private FriendRequestStatus status;
-
-    @JsonProperty("create_date")
-    private Date createDate;
+    private Long id;
+    private FriendRequestUserDto user;
 }

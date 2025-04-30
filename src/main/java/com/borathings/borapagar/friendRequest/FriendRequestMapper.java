@@ -11,12 +11,10 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface FriendRequestMapper {
 
-    @Mapping(source = "friendRequestEntity.status", target = "status")
-    @Mapping(source = "friendRequestEntity.createdAt", target = "createDate")
+    @Mapping(source = "friendRequestEntity.id", target = "id")
     @Mapping(
-            target = "fromUser",
-            expression = "java(toFriendRequestUserDto(friendRequestEntity.getFromUser(), student))") // Aqui mapeando o
-    // fromUser
+            target = "user",
+            expression = "java(toFriendRequestUserDto(friendRequestEntity.getFromUser(), student))")
     FriendRequestResponseDto toFriendRequestResponseDto(FriendRequestEntity friendRequestEntity, StudentEntity student);
 
     default FriendRequestUserDto toFriendRequestUserDto(UserEntity user, StudentEntity student) {

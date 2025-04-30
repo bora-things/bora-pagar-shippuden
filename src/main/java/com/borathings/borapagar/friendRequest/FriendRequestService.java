@@ -45,7 +45,7 @@ public class FriendRequestService {
         List<StudentEntity> students = studentService.findAllStudentsById(fromUsers);
         Map<UserEntity, StudentEntity> studentMap =
                 students.stream().collect(Collectors.toMap(StudentEntity::getUser, student -> student));
-
+        
         return requests.stream()
                 .map(request -> {
                     StudentEntity student = studentMap.get(request.getFromUser());
