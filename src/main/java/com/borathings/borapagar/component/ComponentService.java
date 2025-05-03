@@ -1,9 +1,5 @@
 package com.borathings.borapagar.component;
 
-import com.borathings.borapagar.classroom.ClassroomEntity;
-import com.borathings.borapagar.classroom.dto.ClassroomDTO;
-import com.borathings.borapagar.component.dto.ComponentDTO;
-import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.component.repository.ComponentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +8,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import com.borathings.borapagar.subject.dto.ComponentDTO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
-import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 @Service
 public class ComponentService {
