@@ -1,6 +1,6 @@
 package com.borathings.borapagar.student.interest.dto;
 
-import com.borathings.borapagar.subject.dto.ComponentDTO;
+import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record StudentSubjectInterestDTO(

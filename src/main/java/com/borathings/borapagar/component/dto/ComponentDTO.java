@@ -1,4 +1,4 @@
-package com.borathings.borapagar.subject.dto;
+package com.borathings.borapagar.component.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

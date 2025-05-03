@@ -7,7 +7,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
-/** StudentMapper */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface StudentMapper {
 
