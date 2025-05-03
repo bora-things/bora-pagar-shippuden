@@ -9,4 +9,3 @@ public record StudentClassResponseDTO(
         @JsonProperty("login") String login,
         @JsonProperty("image_url") String imageUrl,
         @JsonProperty("period") Integer period) {}
-

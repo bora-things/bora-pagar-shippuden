@@ -17,6 +17,4 @@ public class ComponentController {
     public void fetchComponents() {
         componentService.fetchComponents();
     }
-
-
 }

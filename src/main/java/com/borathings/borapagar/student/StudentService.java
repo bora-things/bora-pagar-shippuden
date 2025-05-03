@@ -3,7 +3,6 @@ package com.borathings.borapagar.student;
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 import com.borathings.borapagar.classroom.ClassroomEntity;
-import com.borathings.borapagar.student.dto.StudentClassResponseDTO;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import com.borathings.borapagar.student.index.IndexDTO;
@@ -28,8 +27,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +61,7 @@ public class StudentService {
 
     @Autowired
     private TranscriptComponentService transcriptComponentService;
+
     @Autowired
     private UserMapper userMapper;
 
@@ -196,8 +194,8 @@ public class StudentService {
 
             return CompletableFuture.failedFuture(ex);
         }
-    };
-
+    }
+    ;
 
     @Async
     public CompletableFuture<List<UserResponseDTO>> findFriendsInClass(UserEntity user, ClassroomEntity classroom) {
@@ -216,7 +214,7 @@ public class StudentService {
 
                 List<UserResponseDTO> result = studentsDto.stream()
                         .filter(item -> userFriendsMap.containsKey(item.institutionalId()))
-                        .map(item->userMapper.toUserResponseDTO(userFriendsMap.get(item.institutionalId())))
+                        .map(item -> userMapper.toUserResponseDTO(userFriendsMap.get(item.institutionalId())))
                         .toList();
 
                 return CompletableFuture.completedFuture(result);

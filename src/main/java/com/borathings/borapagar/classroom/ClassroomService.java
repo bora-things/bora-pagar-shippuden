@@ -1,5 +1,7 @@
 package com.borathings.borapagar.classroom;
 
+import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
+
 import com.borathings.borapagar.classroom.dto.ClassroomDTO;
 import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
 import com.borathings.borapagar.component.ComponentEntity;
@@ -9,30 +11,20 @@ import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.component.repository.ComponentRepository;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
-import com.borathings.borapagar.student.dto.StudentClassResponseDTO;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-
-import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 @Service
 public class ClassroomService {
@@ -59,9 +51,9 @@ public class ClassroomService {
 
     @Autowired
     private ComponentRepository componentRepository;
+
     @Autowired
     private ComponentMapper componentMapper;
-
 
     @Async
     public CompletableFuture<Void> fetchClassroom(StudentEntity student) {
@@ -72,14 +64,13 @@ public class ClassroomService {
                     .uri("https://api.info.ufrn.br/turma/v1/turmas?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {});
 
             if (classroomDTOs != null) {
 
-                List<ClassroomEntity> classrooms = classroomDTOs.stream().map(item ->
-                        toEntity(item, student)
-                ).toList();
+                List<ClassroomEntity> classrooms = classroomDTOs.stream()
+                        .map(item -> toEntity(item, student))
+                        .toList();
                 classroomRepository.deleteAllByStudent(student);
                 classroomRepository.saveAll(classrooms);
             }
@@ -91,52 +82,46 @@ public class ClassroomService {
         return CompletableFuture.completedFuture(null);
     }
 
-
-    public List<ClassroomResponseDTO> findClassroomByStudent(String login){
+    public List<ClassroomResponseDTO> findClassroomByStudent(String login) {
         StudentEntity student = studentService.findByUserLoginOrError(login);
 
         List<ClassroomEntity> classrooms = classroomRepository.findAllByStudent(student);
-        List<String> componentCodes=classrooms.stream().map(ClassroomEntity::getComponentCode).toList();
-        List<ComponentEntity> components=componentRepository.findAllByCodeIn(componentCodes);
+        List<String> componentCodes =
+                classrooms.stream().map(ClassroomEntity::getComponentCode).toList();
+        List<ComponentEntity> components = componentRepository.findAllByCodeIn(componentCodes);
         Map<String, ComponentResponseDTO> componentMap = components.stream()
                 .collect(Collectors.toMap(
                         ComponentEntity::getCode,
-                        component ->componentMapper.toResponseDTO(component),
+                        component -> componentMapper.toResponseDTO(component),
                         (existing, replacement) -> existing // mantém o primeiro, ignora os duplicados
-                ));
-        try{
-        List<CompletableFuture<ClassroomResponseDTO>> futures = classrooms.stream()
-                .map(item -> {
-                    if (item.getComponentCode() != null) {
-                        CompletableFuture<List<UserResponseDTO>> friendsFuture = studentService.findFriendsInClass(student.getUser(), item);
-                        ComponentResponseDTO component = componentMap.get(item.getComponentCode());
+                        ));
+        try {
+            List<CompletableFuture<ClassroomResponseDTO>> futures = classrooms.stream()
+                    .map(item -> {
+                        if (item.getComponentCode() != null) {
+                            CompletableFuture<List<UserResponseDTO>> friendsFuture =
+                                    studentService.findFriendsInClass(student.getUser(), item);
+                            ComponentResponseDTO component = componentMap.get(item.getComponentCode());
 
-                        return friendsFuture.thenApply(friends ->
-                                classroomMapper.toResponseDTO(item, component, friends)
-                        );
-                    }
-                    return CompletableFuture.completedFuture((ClassroomResponseDTO)null);
-                })
-                .toList();
+                            return friendsFuture.thenApply(
+                                    friends -> classroomMapper.toResponseDTO(item, component, friends));
+                        }
+                        return CompletableFuture.completedFuture((ClassroomResponseDTO) null);
+                    })
+                    .toList();
 
-        CompletableFuture<List<ClassroomResponseDTO>> allDoneFuture = sequence(futures);
-        return allDoneFuture.get(); // .get() bloqueia aqui (só agora)
-        }
-        catch (Exception ex){
-            logger.error("Erro",ex.getMessage());
-        return null;
+            CompletableFuture<List<ClassroomResponseDTO>> allDoneFuture = sequence(futures);
+            return allDoneFuture.get(); // .get() bloqueia aqui (só agora)
+        } catch (Exception ex) {
+            logger.error("Erro", ex.getMessage());
+            return null;
         }
     }
 
     public static <T> CompletableFuture<List<T>> sequence(List<CompletableFuture<T>> futures) {
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-                .thenApply(v -> futures.stream()
-                        .map(CompletableFuture::join)
-                        .toList()
-                );
+                .thenApply(v -> futures.stream().map(CompletableFuture::join).toList());
     }
-
-
 
     public ClassroomEntity toEntity(ClassroomDTO dto, StudentEntity student) {
         return ClassroomEntity.builder()
@@ -161,5 +146,4 @@ public class ClassroomService {
                 .student(student)
                 .build();
     }
-
 }

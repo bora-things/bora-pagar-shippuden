@@ -1,8 +1,8 @@
 package com.borathings.borapagar.component.mapper;
 
 import com.borathings.borapagar.component.ComponentEntity;
-import com.borathings.borapagar.subject.dto.ComponentDTO;
 import com.borathings.borapagar.component.dto.ComponentResponseDTO;
+import com.borathings.borapagar.subject.dto.ComponentDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
@@ -16,5 +16,4 @@ public interface ComponentMapper {
     public ComponentResponseDTO toResponseDTO(ComponentDTO componentDTO);
 
     public ComponentResponseDTO toResponseDTO(ComponentEntity component);
-
 }

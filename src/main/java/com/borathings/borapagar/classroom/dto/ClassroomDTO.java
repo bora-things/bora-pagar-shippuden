@@ -23,6 +23,4 @@ public record ClassroomDTO(
         @JsonProperty("sigla-nivel") String levelAbbreviation,
         @JsonProperty("subturma") boolean isSubClassroom,
         @JsonProperty("tipo") int type,
-        @JsonProperty("utiliza-nova-turma-virtual") boolean usesNewVirtualClassroom
-) {}
-
+        @JsonProperty("utiliza-nova-turma-virtual") boolean usesNewVirtualClassroom) {}

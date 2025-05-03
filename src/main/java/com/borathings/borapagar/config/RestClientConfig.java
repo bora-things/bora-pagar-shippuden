@@ -1,5 +1,6 @@
 package com.borathings.borapagar.config;
 
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +10,6 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.web.client.OAuth2ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Map;
 
 @Configuration
 public class RestClientConfig {
@@ -26,6 +25,7 @@ public class RestClientConfig {
 
     @Value("${sigaa.token-uri}")
     private String tokenUri;
+
     @Bean
     public OAuth2AuthorizedClientManager authorizedClientManager(
             ClientRegistrationRepository clientRegistrationRepository,
@@ -34,13 +34,13 @@ public class RestClientConfig {
         var authorizedClientManager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(
                 clientRegistrationRepository, authorizedClientService);
 
-        authorizedClientManager.setAuthorizedClientProvider(
-                OAuth2AuthorizedClientProviderBuilder.builder()
-                        .authorizationCode()
-                        .build());
+        authorizedClientManager.setAuthorizedClientProvider(OAuth2AuthorizedClientProviderBuilder.builder()
+                .authorizationCode()
+                .build());
 
         return authorizedClientManager;
     }
+
     @Bean(name = "userRestClient")
     public RestClient UserRestClient(OAuth2AuthorizedClientManager authorizedClientManager) {
         return RestClient.builder()
@@ -51,6 +51,7 @@ public class RestClientConfig {
                 .requestInterceptor(new OAuth2ClientHttpRequestInterceptor(authorizedClientManager))
                 .build();
     }
+
     @Bean(name = "serviceRestClient")
     public RestClient ServiceRestClient() {
         return RestClient.builder()
@@ -72,18 +73,11 @@ public class RestClientConfig {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        String body = "client_id=" + clientId +
-                "&client_secret=" + clientSecret +
-                "&grant_type=client_credentials";
+        String body = "client_id=" + clientId + "&client_secret=" + clientSecret + "&grant_type=client_credentials";
 
         HttpEntity<String> request = new HttpEntity<>(body, headers);
 
-        ResponseEntity<Map> response = restTemplate.exchange(
-                tokenUri,
-                HttpMethod.POST,
-                request,
-                Map.class
-        );
+        ResponseEntity<Map> response = restTemplate.exchange(tokenUri, HttpMethod.POST, request, Map.class);
 
         return (String) response.getBody().get("access_token");
     }

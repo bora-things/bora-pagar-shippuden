@@ -4,17 +4,13 @@ import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.core.AbstractModel;
 import jakarta.persistence.*;
 import java.util.List;
-
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity(name = "components")
 @Table(
         name = "components",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"code", "curricular_matrix_id"})
-        }
-)
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"code", "curricular_matrix_id"})})
 @Getter
 @Setter
 @NoArgsConstructor
