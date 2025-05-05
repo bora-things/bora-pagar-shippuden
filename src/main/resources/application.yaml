@@ -32,9 +32,9 @@ springdoc:
     path: /swagger-ui.html
 
 sigaa:
-  api-key: ${SIGAA_API_KEY}
-  client-id: ${SIGAA_CLIENT_ID}
-  client-secret: ${SIGAA_CLIENT_SECRET}
+  api-key: ${SIGAA_API_KEY:}
+  client-id: ${SIGAA_CLIENT_ID:}
+  client-secret: ${SIGAA_CLIENT_SECRET:}
   token-uri: https://api.info.ufrn.br/authz-server/oauth/token
 
 frontend:
