@@ -11,6 +11,7 @@ import org.mapstruct.MappingConstants;
 /** UserMapper */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
+    @Mapping(target = "name", expression = "java(userEntity.getPersonName())")
     public UserResponseDTO toUserResponseDTO(UserEntity userEntity);
 
     public UserDTO toDto(UserEntity entity);
