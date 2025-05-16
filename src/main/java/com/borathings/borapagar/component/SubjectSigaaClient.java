@@ -8,10 +8,12 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.util.List;
+
 @Service
 public class SubjectSigaaClient {
 
-    private final String componentUrl = "/curso/v1/componentes-curriculares/";
+    private final String componentUrl = "curso/v1/componentes-curriculares?codigo=";
 
     @Qualifier("userRestClient")
     private RestClient userRestClient;
@@ -20,12 +22,14 @@ public class SubjectSigaaClient {
         this.userRestClient = userRestClient;
     }
 
-    public ComponentDTO getComponentById(int id) {
+    public ComponentDTO getComponentByCode(String code) {
         return userRestClient
                 .get()
-                .uri(componentUrl + id)
+                .uri(componentUrl + code)
                 .attributes(clientRegistrationId("sigaa"))
                 .retrieve()
-                .body(new ParameterizedTypeReference<ComponentDTO>() {});
+                .body(new ParameterizedTypeReference<List<ComponentDTO>>() {}).getFirst();
     }
+
+
 }

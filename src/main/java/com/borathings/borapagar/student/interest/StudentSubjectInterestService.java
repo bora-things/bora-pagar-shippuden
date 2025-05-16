@@ -28,7 +28,7 @@ public class StudentSubjectInterestService {
                 studentSubjectInterestRepository.findAllByStudentId(studentId);
         return studentSubjectInterests.stream()
                 .map(interest -> {
-                    ComponentDTO component = subjectClient.getComponentById(interest.getSigaaSubjectId());
+                    ComponentDTO component = subjectClient.getComponentByCode(interest.getSubjectCode());
                     return new StudentSubjectInterestDTO(
                             interest.getId(), component, interest.getYear(), interest.getPeriod());
                 })
@@ -38,13 +38,13 @@ public class StudentSubjectInterestService {
     public void createInterest(StudentSubjectAddInterestDTO semesterDTO, StudentEntity student) {
 
         StudentSubjectInterestEntity interestEntity = new StudentSubjectInterestEntity(
-                semesterDTO.year(), semesterDTO.period(), student, semesterDTO.subjectSigaaId());
+                semesterDTO.year(), semesterDTO.period(), student, semesterDTO.subjectCode());
 
         studentSubjectInterestRepository.save(interestEntity);
     }
     ;
 
-    public void deleteInterest(int sigaaSubjectId, StudentEntity student) {
-        studentSubjectInterestRepository.deleteBySigaaSubjectIdAndStudentId(sigaaSubjectId, student.getId());
+    public void deleteInterest(String subjectCode, StudentEntity student) {
+        studentSubjectInterestRepository.deleteBySigaaSubjectIdAndStudentId(subjectCode, student.getId());
     }
 }

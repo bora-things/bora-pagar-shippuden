@@ -14,9 +14,9 @@ public interface StudentSubjectInterestRepository extends AbstractRepository<Stu
     @Modifying
     @Transactional
     @Query(
-            "DELETE FROM StudentSubjectInterestEntity s WHERE s.sigaaSubjectId = :sigaaSubjectId AND s.student.id = :studentId")
+            "DELETE FROM StudentSubjectInterestEntity s WHERE s.subjectCode = :subjectCode AND s.student.id = :studentId")
     void deleteBySigaaSubjectIdAndStudentId(
-            @Param("sigaaSubjectId") int sigaaSubjectId, @Param("studentId") Long studentId);
+            @Param("subjectCode") String subjectCode, @Param("studentId") Long studentId);
 
     List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId);
 }

@@ -41,8 +41,8 @@ public class StudentSubjectInterestServiceTest {
         student = new StudentEntity();
         student.setId(1L);
 
-        semesterDTO = new StudentSubjectAddInterestDTO(63313, 2023, 1);
-        interestEntity = new StudentSubjectInterestEntity(2023, 1, student, 101);
+        semesterDTO = new StudentSubjectAddInterestDTO("63313", 2023, 1);
+        interestEntity = new StudentSubjectInterestEntity(2023, 1, student, "101");
     }
 
     @Test
@@ -68,7 +68,7 @@ public class StudentSubjectInterestServiceTest {
 
     @Test
     void testDeleteInterest() {
-        int sigaaSubjectId = 101;
+        String sigaaSubjectId = "IMD0001";
 
         studentSubjectInterestService.deleteInterest(sigaaSubjectId, student);
 
