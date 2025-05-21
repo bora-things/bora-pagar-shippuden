@@ -167,11 +167,15 @@ public class StudentService {
         });
     }
 
-    public StudentResponseDTO findByIdOrError(Long studentId) {
-        StudentEntity student = studentRepository.findById(studentId).orElseThrow(() -> {
+    public StudentEntity findByIdOrError(Long studentId) {
+
+        return studentRepository.findById(studentId).orElseThrow(() -> {
             return new EntityNotFoundException("Estudante com id: " + studentId + " não foi encontrado");
         });
+    }
 
+    public StudentResponseDTO findStudentResponseDTOById(Long studentId){
+       StudentEntity student= findByIdOrError(studentId);
         return studentMapper.toResponseDTO(student);
     }
 
