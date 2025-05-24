@@ -2,6 +2,7 @@ package com.borathings.borapagar.student;
 
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
+import com.borathings.borapagar.student.dto.MatrizCurricularDTO;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import com.borathings.borapagar.student.index.IndexDTO;
@@ -10,12 +11,14 @@ import com.borathings.borapagar.student.index.StudentIndexEntity;
 import com.borathings.borapagar.student.index.StudentIndexRepository;
 import com.borathings.borapagar.student.transcript.TranscriptComponentService;
 import com.borathings.borapagar.student.transcript.dto.TranscriptComponentDTO;
+import com.borathings.borapagar.subject.dto.ComponentDTO;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserService;
 import com.borathings.borapagar.workload.WorkloadDto;
 import com.borathings.borapagar.workload.WorkloadEntity;
 import com.borathings.borapagar.workload.WorkloadRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -24,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -52,6 +56,81 @@ public class StudentService {
 
     @Autowired
     private TranscriptComponentService transcriptComponentService;
+
+    public List<ComponentDTO> getPossibleSubjectsForStudent(String studentLogin, Pageable pageable) {
+        StudentEntity student = findByUserLoginOrError(studentLogin);
+        int courseId = student.getCourseId();
+
+        logger.info("Fetching curriculum matrices for course ID: {}", courseId);
+        String matricesUrl = "/curso/v1/matrizes-curriculares?id-curso=" + courseId;
+
+        List<MatrizCurricularDTO> curriculumMatrices = restClient
+                .get()
+                .uri(matricesUrl)
+                .attributes(clientRegistrationId("sigaa"))
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<MatrizCurricularDTO>>() {});
+
+        if (curriculumMatrices == null || curriculumMatrices.isEmpty()) {
+            logger.warn("No curriculum matrices found for course ID: {}", courseId);
+            throw new EntityNotFoundException("No curriculum matrices found for course id: " + courseId);
+        }
+
+        MatrizCurricularDTO activeCurriculum = curriculumMatrices.stream()
+                .filter(
+                        MatrizCurricularDTO
+                                ::ativo) // Make sure MatrizCurricularDTO has an isAtivo() or getAtivo() method
+                .max(Comparator.comparingInt(
+                        MatrizCurricularDTO::ano)) // Make sure MatrizCurricularDTO has a getAno() method
+                .orElseThrow(() -> {
+                    logger.warn("No active and latest curriculum matrix found for course ID: {}", courseId);
+                    return new EntityNotFoundException(
+                            "No active and latest curriculum matrix found for course id: " + courseId);
+                });
+
+        int curriculumId =
+                activeCurriculum.idMatrizCurricular(); // Make sure MatrizCurricularDTO has getIdMatrizCurricular()
+        logger.info("Active curriculum matrix ID {} found for course ID: {}", curriculumId, courseId);
+
+        // Calculate offset and limit from Pageable
+        int offset = pageable.getPageNumber() * pageable.getPageSize();
+        int limit = pageable.getPageSize();
+
+        // Respect the third-party API's constraints (limit <= 100)
+        if (limit > 100) {
+            limit = 100;
+        }
+        // The API's lower limit is 0. pageable.getPageSize() should be positive.
+        // If limit could be < 0 due to unusual Pageable, ensure it's at least 0.
+        if (limit < 0) {
+            limit = 0;
+        }
+
+        String componentsUrl = String.format(
+                "/curso/v1/componentes-curriculares?id-matriz-curricular=%d&offset=%d&limit=%d",
+                curriculumId, offset, limit);
+
+        logger.info(
+                "Fetching components for curriculum matrix ID: {} with offset: {}, limit: {}",
+                curriculumId,
+                offset,
+                limit);
+
+        List<ComponentDTO> components = restClient
+                .get()
+                .uri(componentsUrl)
+                .attributes(clientRegistrationId("sigaa"))
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<ComponentDTO>>() {});
+
+        if (components == null) {
+            logger.warn("No components returned for curriculum matrix ID: {}", curriculumId);
+            return List.of();
+        }
+
+        logger.info("Found {} components for curriculum matrix ID: {}", components.size(), curriculumId);
+        return components;
+    }
 
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
         Optional<StudentEntity> student = studentRepository.findByUserId(userId);

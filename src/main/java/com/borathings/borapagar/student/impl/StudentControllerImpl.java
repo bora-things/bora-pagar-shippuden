@@ -3,7 +3,10 @@ package com.borathings.borapagar.student.impl;
 import com.borathings.borapagar.student.StudentController;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
+import com.borathings.borapagar.subject.dto.ComponentDTO;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,5 +25,11 @@ public class StudentControllerImpl implements StudentController {
     public ResponseEntity<StudentResponseDTO> getById(Long studentId) {
         StudentResponseDTO s = studentService.findByIdOrError(studentId);
         return ResponseEntity.ok(s);
+    }
+
+    public ResponseEntity<List<ComponentDTO>> getPossibleSubjects(Authentication currentUser, Pageable pageable) {
+        String userLogin = currentUser.getName();
+        List<ComponentDTO> subjects = studentService.getPossibleSubjectsForStudent(userLogin, pageable);
+        return ResponseEntity.ok(subjects);
     }
 }
