@@ -20,7 +20,7 @@ public class StudentControllerImpl implements StudentController {
     }
 
     public ResponseEntity<StudentResponseDTO> getById(Long studentId) {
-        StudentResponseDTO s = studentService.findByIdOrError(studentId);
+        StudentResponseDTO s = studentService.findStudentResponseDTOById(studentId);
         return ResponseEntity.ok(s);
     }
 }

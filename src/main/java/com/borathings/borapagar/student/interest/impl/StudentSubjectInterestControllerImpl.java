@@ -44,12 +44,12 @@ public class StudentSubjectInterestControllerImpl implements StudentSubjectInter
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<Void> removeInterest(int subjectId, Authentication currentUser) {
+    public ResponseEntity<Void> removeInterest(String subjectCode, Authentication currentUser) {
 
         UserEntity user = userService.findByLoginOrError(currentUser.getName());
         StudentEntity student = studentService.findByUserIdOrError(user.getUserId());
 
-        interestService.deleteInterest(subjectId, student);
+        interestService.deleteInterest(subjectCode, student);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

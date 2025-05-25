@@ -8,8 +8,10 @@ import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
-import java.util.Arrays;
+import com.borathings.borapagar.user.UserEntity;
+import com.borathings.borapagar.user.UserMapper;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +31,9 @@ public class StudentSubjectInterestServiceTest {
     @Mock
     private SubjectSigaaClient subjectClient;
 
+    @Mock
+    private UserMapper userMapper;
+
     @InjectMocks
     private StudentSubjectInterestService studentSubjectInterestService;
 
@@ -41,21 +46,38 @@ public class StudentSubjectInterestServiceTest {
         student = new StudentEntity();
         student.setId(1L);
 
-        semesterDTO = new StudentSubjectAddInterestDTO(63313, 2023, 1);
-        interestEntity = new StudentSubjectInterestEntity(2023, 1, student, 101);
+        semesterDTO = new StudentSubjectAddInterestDTO("63313", 2023, 1);
+        interestEntity = new StudentSubjectInterestEntity(2023, 1, student, "101");
     }
 
     @Test
     void testListInterest() {
-        when(studentSubjectInterestRepository.findAllByStudentId(student.getId()))
-                .thenReturn(Arrays.asList(interestEntity));
+        StudentEntity studentMock = mock(StudentEntity.class);
+        UserEntity userMock = mock(UserEntity.class);
+
+        // Mock da cadeia de chamadas
+        when(studentService.findByIdOrError(anyLong())).thenReturn(studentMock);
+        when(studentMock.getUser()).thenReturn(userMock);
+        when(userMock.getFriends()).thenReturn(Set.of());
+
+        // Mock do repository
+        when(studentSubjectInterestRepository.findAllByStudentId(anyLong())).thenReturn(List.of(interestEntity));
 
         List<StudentSubjectInterestDTO> result = studentSubjectInterestService.listInterests(student.getId());
-        var actual = new StudentSubjectInterestDTO(null, null, semesterDTO.year(), semesterDTO.period());
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(actual, result.get(0));
+
+        // Ajustar conforme assinatura do DTO
+        StudentSubjectInterestDTO expected = new StudentSubjectInterestDTO(
+                interestEntity.getId(),
+                null, // Aqui você pode ajustar conforme getComponentByCode mockado ou não.
+                interestEntity.getYear(),
+                interestEntity.getPeriod(),
+                List.of());
+
+        assertEquals(expected, result.get(0));
+
         verify(studentSubjectInterestRepository, times(1)).findAllByStudentId(student.getId());
     }
 
@@ -68,7 +90,7 @@ public class StudentSubjectInterestServiceTest {
 
     @Test
     void testDeleteInterest() {
-        int sigaaSubjectId = 101;
+        String sigaaSubjectId = "IMD0001";
 
         studentSubjectInterestService.deleteInterest(sigaaSubjectId, student);
 

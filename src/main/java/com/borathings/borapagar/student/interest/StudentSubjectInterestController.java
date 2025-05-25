@@ -22,6 +22,6 @@ public interface StudentSubjectInterestController {
     public ResponseEntity<Void> createInterest(
             @RequestBody StudentSubjectAddInterestDTO semesterDTO, Authentication currentUser);
 
-    @DeleteMapping("/{subjectId}")
-    public ResponseEntity<Void> removeInterest(@PathVariable int sigaaSubjectId, Authentication currentUser);
+    @DeleteMapping("/{subjectCode}")
+    public ResponseEntity<Void> removeInterest(@PathVariable String subjectCode, Authentication currentUser);
 }
