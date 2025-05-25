@@ -33,6 +33,8 @@ public class StudentSubjectInterestService {
     @Autowired
     UserMapper userMapper;
 
+
+
     public List<StudentSubjectInterestDTO> listInterests(Long studentId) {
         List<StudentSubjectInterestEntity> studentSubjectInterests =
                 studentSubjectInterestRepository.findAllByStudentId(studentId);
