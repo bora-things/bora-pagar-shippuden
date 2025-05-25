@@ -174,8 +174,8 @@ public class StudentService {
         });
     }
 
-    public StudentResponseDTO findStudentResponseDTOById(Long studentId){
-       StudentEntity student= findByIdOrError(studentId);
+    public StudentResponseDTO findStudentResponseDTOById(Long studentId) {
+        StudentEntity student = findByIdOrError(studentId);
         return studentMapper.toResponseDTO(student);
     }
 

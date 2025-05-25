@@ -11,7 +11,7 @@ public record ComponentDTO(
         @JsonProperty("departamento") String department,
         @JsonProperty("tipo-atividade-descricao") String activityTypeDescription,
         @JsonProperty("disciplina-obrigatoria") Boolean mandatorySubject,
-        @JsonProperty("nome")  String name,
+        @JsonProperty("nome") String name,
         @JsonProperty("ementa") String description,
         @JsonProperty("equivalentes") String equivalent,
         @JsonProperty("id-componente") Integer componentId,

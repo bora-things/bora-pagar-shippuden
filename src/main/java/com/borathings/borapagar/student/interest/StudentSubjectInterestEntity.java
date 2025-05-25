@@ -25,5 +25,6 @@ public class StudentSubjectInterestEntity extends AbstractModel {
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
     private StudentEntity student;
+
     private String subjectCode;
 }

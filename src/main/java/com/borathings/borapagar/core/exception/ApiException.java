@@ -46,9 +46,8 @@ public class ApiException extends RuntimeException {
     /**
      * @param status - HttpStatus - Status do erro
      * @param message - String - Mensagem de erro amigável
-     * @param ex - Throwable - Instância da exceção lançada
      */
-    public ApiException(HttpStatus status, String message, Throwable ex) {
+    public ApiException(HttpStatus status, String message) {
         this();
         this.status = status;
         this.message = message;
