@@ -8,13 +8,10 @@ import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
-import org.assertj.core.util.Lists;
+import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,8 +61,7 @@ public class StudentSubjectInterestServiceTest {
         when(userMock.getFriends()).thenReturn(Set.of());
 
         // Mock do repository
-        when(studentSubjectInterestRepository.findAllByStudentId(anyLong()))
-                .thenReturn(List.of(interestEntity));
+        when(studentSubjectInterestRepository.findAllByStudentId(anyLong())).thenReturn(List.of(interestEntity));
 
         List<StudentSubjectInterestDTO> result = studentSubjectInterestService.listInterests(student.getId());
 
@@ -78,14 +74,12 @@ public class StudentSubjectInterestServiceTest {
                 null, // Aqui você pode ajustar conforme getComponentByCode mockado ou não.
                 interestEntity.getYear(),
                 interestEntity.getPeriod(),
-                List.of()
-        );
+                List.of());
 
         assertEquals(expected, result.get(0));
 
         verify(studentSubjectInterestRepository, times(1)).findAllByStudentId(student.getId());
     }
-
 
     @Test
     void testCreateInterest() {
