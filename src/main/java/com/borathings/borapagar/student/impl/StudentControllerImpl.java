@@ -1,9 +1,9 @@
 package com.borathings.borapagar.student.impl;
 
+import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.student.StudentController;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
-import com.borathings.borapagar.subject.dto.ComponentDTO;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;

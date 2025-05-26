@@ -2,9 +2,10 @@ package com.borathings.borapagar.student;
 
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
-
-import com.borathings.borapagar.student.dto.CurriculumMatrixDTO;
 import com.borathings.borapagar.classroom.ClassroomEntity;
+import com.borathings.borapagar.component.SubjectSigaaClient;
+import com.borathings.borapagar.component.dto.ComponentDTO;
+import com.borathings.borapagar.student.dto.CurriculumMatrixDTO;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import com.borathings.borapagar.student.index.IndexDTO;
@@ -13,8 +14,6 @@ import com.borathings.borapagar.student.index.StudentIndexEntity;
 import com.borathings.borapagar.student.index.StudentIndexRepository;
 import com.borathings.borapagar.student.transcript.TranscriptComponentService;
 import com.borathings.borapagar.student.transcript.dto.TranscriptComponentDTO;
-import com.borathings.borapagar.subject.SubjectSigaaClient;
-import com.borathings.borapagar.subject.dto.ComponentDTO;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.UserService;
@@ -70,8 +69,8 @@ public class StudentService {
 
     @Autowired
     private TranscriptComponentService transcriptComponentService;
-  
-   @Autowired
+
+    @Autowired
     private UserMapper userMapper;
 
     public List<ComponentDTO> getPossibleSubjectsForStudent(String studentLogin, Pageable pageable) {
@@ -81,7 +80,7 @@ public class StudentService {
         logger.info("Fetching curriculum matrices for course ID: {}", courseId);
         String matricesUrl = "/curso/v1/matrizes-curriculares?id-curso=" + courseId;
 
-        List<CurriculumMatrixDTO> curriculumMatrices = restClient
+        List<CurriculumMatrixDTO> curriculumMatrices = userRestClient
                 .get()
                 .uri(matricesUrl)
                 .attributes(clientRegistrationId("sigaa"))
@@ -125,7 +124,7 @@ public class StudentService {
                 offset,
                 limit);
 
-        List<ComponentDTO> components = restClient
+        List<ComponentDTO> components = userRestClient
                 .get()
                 .uri(componentsUrl)
                 .attributes(clientRegistrationId("sigaa"))
@@ -140,7 +139,7 @@ public class StudentService {
         logger.info("Found {} components for curriculum matrix ID: {}", components.size(), curriculumId);
         return components;
     }
-   
+
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
         Optional<StudentEntity> student = studentRepository.findByUserId(userId);
         if (student.isEmpty()) {
