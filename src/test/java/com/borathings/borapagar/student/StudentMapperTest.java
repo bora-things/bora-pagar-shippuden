@@ -5,14 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.user.UserEntity;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mapstruct.factory.Mappers;
 
-@SpringBootTest
 public class StudentMapperTest {
 
-    @Autowired
-    private StudentMapper studentMapper;
+    private final StudentMapper studentMapper = Mappers.getMapper(StudentMapper.class);
 
     @Test
     void testToDto() {

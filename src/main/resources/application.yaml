@@ -33,6 +33,9 @@ springdoc:
 
 sigaa:
   api-key: ${SIGAA_API_KEY:}
+  client-id: ${SIGAA_CLIENT_ID:}
+  client-secret: ${SIGAA_CLIENT_SECRET:}
+  token-uri: https://api.info.ufrn.br/authz-server/oauth/token
 
 frontend:
   url: ${FRONTEND_URL:http://localhost:8080}

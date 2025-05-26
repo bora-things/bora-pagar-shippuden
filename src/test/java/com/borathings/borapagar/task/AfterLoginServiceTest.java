@@ -2,6 +2,7 @@ package com.borathings.borapagar.task;
 
 import static org.mockito.Mockito.*;
 
+import com.borathings.borapagar.classroom.ClassroomService;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import java.util.concurrent.CompletableFuture;
@@ -17,6 +18,9 @@ public class AfterLoginServiceTest {
     @Mock
     private StudentService studentService;
 
+    @Mock
+    private ClassroomService classroomService;
+
     @InjectMocks
     private AfterLoginService afterLoginService;
 
@@ -26,6 +30,7 @@ public class AfterLoginServiceTest {
         when(studentService.fetchIndexes(student)).thenReturn(CompletableFuture.completedFuture(null));
         when(studentService.fetchWorkload(student)).thenReturn(CompletableFuture.completedFuture(null));
         when(studentService.fetchAcademicRecord(student)).thenReturn(CompletableFuture.completedFuture(null));
+        when(classroomService.fetchClassroom(student)).thenReturn(CompletableFuture.completedFuture(null));
 
         afterLoginService.completeProfileAfterLogin(student);
 
