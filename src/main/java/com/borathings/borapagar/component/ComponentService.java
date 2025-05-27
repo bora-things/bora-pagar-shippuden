@@ -3,11 +3,15 @@ package com.borathings.borapagar.component;
 import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.component.repository.ComponentRepository;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -24,6 +28,10 @@ public class ComponentService {
 
     @Autowired
     ComponentMapper componentMapper;
+
+    public Page<ComponentEntity> getAllComponentsPageable(Pageable pageable) {
+        return componentRepository.findAll(pageable);
+    }
 
     @Async
     public void fetchComponents() {
