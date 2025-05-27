@@ -11,6 +11,7 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface FriendRequestMapper {
 
+    @Mapping(source = "friendRequestEntity.id", target = "id")
     @Mapping(source = "friendRequestEntity.status", target = "status")
     @Mapping(source = "friendRequestEntity.createdAt", target = "createDate")
     @Mapping(

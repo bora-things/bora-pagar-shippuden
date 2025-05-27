@@ -5,7 +5,6 @@ import static org.springframework.security.oauth2.client.web.client.RequestAttri
 import com.borathings.borapagar.classroom.dto.ClassroomDTO;
 import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
 import com.borathings.borapagar.component.ComponentEntity;
-import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.component.repository.ComponentRepository;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -31,8 +29,8 @@ public class ClassroomService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    @Qualifier("userRestClient")
-    RestClient userRestClient;
+    @Qualifier("serviceRestClient")
+    RestClient serviceRestClient;
 
     @Autowired
     private ClassroomMapper classroomMapper;
@@ -44,12 +42,6 @@ public class ClassroomService {
     private ClassroomRepository classroomRepository;
 
     @Autowired
-    private ComponentService componentService;
-
-    @Autowired
-    private OAuth2AuthorizedClientService authorizedClientService;
-
-    @Autowired
     private ComponentRepository componentRepository;
 
     @Autowired
@@ -59,7 +51,7 @@ public class ClassroomService {
     public CompletableFuture<Void> fetchClassroom(StudentEntity student) {
         try {
 
-            List<ClassroomDTO> classroomDTOs = userRestClient
+            List<ClassroomDTO> classroomDTOs = serviceRestClient
                     .get()
                     .uri("https://api.info.ufrn.br/turma/v1/turmas?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
@@ -76,7 +68,7 @@ public class ClassroomService {
             }
 
         } catch (Exception ex) {
-            logger.error("Exception at fetchWorkload: {}", ex.getMessage());
+            logger.error("Exception at fetchClassrooms: {}", ex.getMessage());
         }
 
         return CompletableFuture.completedFuture(null);

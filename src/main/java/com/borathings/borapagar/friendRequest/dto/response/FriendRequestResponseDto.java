@@ -12,6 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FriendRequestResponseDto {
+    private Long id;
     private FriendRequestUserDto fromUser;
     private FriendRequestStatus status;
 
