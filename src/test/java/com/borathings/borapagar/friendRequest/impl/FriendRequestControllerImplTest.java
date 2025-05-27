@@ -120,7 +120,8 @@ class FriendRequestControllerImplTest {
 
     @Test
     void testGetFriendRequests_Success() {
-        List<FriendRequestResponseDto> requests = Collections.singletonList(new FriendRequestResponseDto(1L,
+        List<FriendRequestResponseDto> requests = Collections.singletonList(new FriendRequestResponseDto(
+                1L,
                 new FriendRequestUserDto("PersonName", "imageUrl", "courseName", 1),
                 FriendRequestStatus.PENDING,
                 Date.from(Instant.now())));
