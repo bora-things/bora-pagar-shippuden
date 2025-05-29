@@ -213,6 +213,9 @@ public class StudentService {
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
                     .body(new ParameterizedTypeReference<List<TranscriptComponentDTO>>() {});
+            for (TranscriptComponentDTO component : components) {
+                System.out.println(component.finalGrade());
+            }
 
             transcriptComponentService.batchInsertDTOs(components, student);
             return CompletableFuture.completedFuture(null);

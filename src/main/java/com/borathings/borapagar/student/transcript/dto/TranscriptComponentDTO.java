@@ -1,6 +1,7 @@
 package com.borathings.borapagar.student.transcript.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.ToString;
 
 public record TranscriptComponentDTO(
         @JsonProperty("ano") int year,
@@ -8,6 +9,7 @@ public record TranscriptComponentDTO(
         @JsonProperty("data-cadastro") long registerDate,
         @JsonProperty("faltas") int absences,
         @JsonProperty("id-componente") long componentId,
+        @JsonProperty("media-final") float finalGrade,
         @JsonProperty("id-discente") int studentId,
         @JsonProperty("id-matricula-componente") int registrationId,
         @JsonProperty("id-situacao-matricula") int registrationSituationId,

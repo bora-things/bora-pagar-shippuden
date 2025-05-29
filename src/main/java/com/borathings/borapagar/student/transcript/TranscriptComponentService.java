@@ -22,6 +22,7 @@ public class TranscriptComponentService {
                     return TranscriptComponentEntity.builder()
                             .absences(dto.absences())
                             .registerDate(dto.registerDate())
+                            .finalGrade(dto.finalGrade())
                             .componentId(dto.componentId())
                             .sigaaClassId(dto.sigaaClassId())
                             .situation(dto.registrationSituationId())
