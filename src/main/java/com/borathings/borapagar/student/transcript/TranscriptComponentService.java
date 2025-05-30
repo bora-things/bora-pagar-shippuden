@@ -37,4 +37,8 @@ public class TranscriptComponentService {
         repository.deleteByStudent(student);
         return repository.saveAll(componentEntities);
     }
+
+    public List<TranscriptComponentEntity> findByStudent(StudentEntity student) {
+        return repository.findAllByStudent(student);
+    }
 }

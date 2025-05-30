@@ -4,6 +4,7 @@ import com.borathings.borapagar.component.SubjectSigaaClient;
 import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.core.exception.subjectInterest.SubjectInterestAlreadyExistsException;
 import com.borathings.borapagar.student.StudentEntity;
+import com.borathings.borapagar.student.StudentHelperService;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
@@ -25,13 +26,18 @@ public class StudentSubjectInterestService {
     StudentSubjectInterestRepository studentSubjectInterestRepository;
 
     @Autowired
-    StudentService studentService;
+    StudentHelperService studentService;
 
     @Autowired
     SubjectSigaaClient subjectClient;
 
     @Autowired
     UserMapper userMapper;
+
+    public List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId){
+        return studentSubjectInterestRepository.findAllByStudentId(studentId);
+    }
+
 
     public List<StudentSubjectInterestDTO> listInterests(Long studentId) {
         List<StudentSubjectInterestEntity> studentSubjectInterests =

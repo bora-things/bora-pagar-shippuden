@@ -32,7 +32,7 @@ public class TranscriptComponentEntity extends AbstractModel {
     private Integer year;
 
     @Column(name = "component_id")
-    private Long componentId;
+    private Integer componentId;
 
     @Column(name = "final_grade")
     private Float finalGrade;
