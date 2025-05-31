@@ -105,8 +105,11 @@ public class StudentService {
         // Mapear componentes que o aluno não foi aprovado ainda
         Map<Integer, TranscriptComponentEntity> notApprovedTranscriptMap = transcriptComponents.stream()
                 .filter(tc -> !TranscriptComponentSituationEnum.fromId(tc.getSituation()).isApproved())
-                .collect(Collectors.toMap(TranscriptComponentEntity::getComponentId, Function.identity()));
-
+                .collect(Collectors.toMap(
+                        TranscriptComponentEntity::getComponentId,
+                        Function.identity(),
+                        (first, second) -> first
+                ));
 
         // Filtrar componentes que:
         // - Não estão no histórico não-aprovado

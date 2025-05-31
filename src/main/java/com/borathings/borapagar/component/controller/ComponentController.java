@@ -1,10 +1,19 @@
 package com.borathings.borapagar.component.controller;
 
 import com.borathings.borapagar.component.ComponentService;
+import com.borathings.borapagar.component.dto.ComponentDTO;
+import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/components")
@@ -17,4 +26,19 @@ public class ComponentController {
     public void fetchComponents() {
         componentService.fetchComponents();
     }
+
+    @GetMapping("")
+    public ResponseEntity<List<ComponentDTO>> findSearchedComponents(@RequestParam String searched) {
+        List<ComponentDTO> data = componentService.findSearchedComponents(searched);
+
+        Set<String> processedComponentCodes = new HashSet<>();
+
+        List<ComponentDTO> uniqueData = data.stream()
+                .filter(component -> processedComponentCodes.add(component.code()))
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(uniqueData);
+    }
+
+
 }

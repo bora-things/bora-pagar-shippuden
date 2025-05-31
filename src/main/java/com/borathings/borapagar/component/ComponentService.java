@@ -61,4 +61,9 @@ public class ComponentService {
         componentRepository.saveAll(
                 componentsFetched.stream().map(componentMapper::toEntity).toList());
     }
+
+    public List<ComponentDTO> findSearchedComponents(String searched) {
+        List<ComponentEntity> components= componentRepository.searchByNameOrCode(searched);
+        return components.stream().map(componentMapper::toDto).toList();
+    }
 }
