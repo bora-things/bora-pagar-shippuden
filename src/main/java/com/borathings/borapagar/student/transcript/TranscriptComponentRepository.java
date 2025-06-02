@@ -1,10 +1,9 @@
 package com.borathings.borapagar.student.transcript;
 
 import com.borathings.borapagar.student.StudentEntity;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface TranscriptComponentRepository extends JpaRepository<TranscriptComponentEntity, Long> {

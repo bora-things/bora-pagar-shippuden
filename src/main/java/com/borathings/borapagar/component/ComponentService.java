@@ -3,10 +3,8 @@ package com.borathings.borapagar.component;
 import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.component.repository.ComponentRepository;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
@@ -63,7 +61,7 @@ public class ComponentService {
     }
 
     public List<ComponentDTO> findSearchedComponents(String searched) {
-        List<ComponentEntity> components= componentRepository.searchByNameOrCode(searched);
+        List<ComponentEntity> components = componentRepository.searchByNameOrCode(searched);
         return components.stream().map(componentMapper::toDto).toList();
     }
 }

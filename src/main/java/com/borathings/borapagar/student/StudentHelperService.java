@@ -11,7 +11,9 @@ public class StudentHelperService {
     private StudentRepository studentRepository;
 
     public StudentEntity findByIdOrError(Long studentId) {
-        return studentRepository.findById(studentId).orElseThrow(() ->
-                new EntityNotFoundException("Estudante com id: " + studentId + " não foi encontrado"));
+        return studentRepository
+                .findById(studentId)
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Estudante com id: " + studentId + " não foi encontrado"));
     }
 }

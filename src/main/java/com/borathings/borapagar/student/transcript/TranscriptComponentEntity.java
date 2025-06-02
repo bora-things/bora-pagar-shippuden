@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(
         name = "transcript_components",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"year", "student_id","component_id","period"})})
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"year", "student_id", "component_id", "period"})})
 @SuperBuilder(toBuilder = true)
 @Getter
 @Setter
@@ -39,9 +39,6 @@ public class TranscriptComponentEntity extends AbstractModel {
 
     @Column(name = "situation")
     private Integer situation;
-
-    @Column(name = "integralization")
-    private String integralization;
 
     @Column(name = "sigaa_class_id", nullable = false)
     private Integer sigaaClassId;

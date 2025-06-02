@@ -26,7 +26,6 @@ public class TranscriptComponentService {
                             .componentId(dto.componentId())
                             .sigaaClassId(dto.sigaaClassId())
                             .situation(dto.registrationSituationId())
-                            .integralization(dto.integralizationKindId())
                             .period(dto.period())
                             .year(dto.year())
                             .student(student)

@@ -5,10 +5,8 @@ import static org.springframework.security.oauth2.client.web.client.RequestAttri
 import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
-import com.borathings.borapagar.component.SubjectSigaaClient;
 import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
-import com.borathings.borapagar.student.dto.CurriculumMatrixDTO;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import com.borathings.borapagar.student.index.IndexDTO;
@@ -30,12 +28,10 @@ import com.borathings.borapagar.workload.WorkloadDto;
 import com.borathings.borapagar.workload.WorkloadEntity;
 import com.borathings.borapagar.workload.WorkloadRepository;
 import jakarta.persistence.EntityNotFoundException;
-
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +71,10 @@ public class StudentService {
 
     @Autowired
     private UserMapper userMapper;
+
     @Autowired
     private ComponentService componentService;
+
     @Autowired
     private ComponentMapper componentMapper;
 
@@ -98,33 +96,28 @@ public class StudentService {
                 .collect(Collectors.toMap(ClassroomEntity::getComponentCode, Function.identity()));
 
         // Mapear interesses do aluno por código da disciplina
-        Map<String, StudentSubjectInterestEntity> interestMap = studentSubjectInterestService.findAllByStudentId(student.getStudentId())
-                .stream()
-                .collect(Collectors.toMap(StudentSubjectInterestEntity::getSubjectCode, Function.identity()));
+        Map<String, StudentSubjectInterestEntity> interestMap =
+                studentSubjectInterestService.findAllByStudentId(student.getStudentId()).stream()
+                        .collect(Collectors.toMap(StudentSubjectInterestEntity::getSubjectCode, Function.identity()));
 
         // Mapear componentes que o aluno não foi aprovado ainda
         Map<Integer, TranscriptComponentEntity> notApprovedTranscriptMap = transcriptComponents.stream()
-                .filter(tc -> !TranscriptComponentSituationEnum.fromId(tc.getSituation()).isApproved())
+                .filter(tc -> !TranscriptComponentSituationEnum.fromId(tc.getSituation())
+                        .isApproved())
                 .collect(Collectors.toMap(
-                        TranscriptComponentEntity::getComponentId,
-                        Function.identity(),
-                        (first, second) -> first
-                ));
+                        TranscriptComponentEntity::getComponentId, Function.identity(), (first, second) -> first));
 
         // Filtrar componentes que:
         // - Não estão no histórico não-aprovado
         // - Não estão entre os interesses já cadastrados
         // - Estão entre as turmas do aluno
         return components.stream()
-                .filter(component ->
-                        !notApprovedTranscriptMap.containsKey(component.getComponentId()) &&
-                                !interestMap.containsKey(component.getCode()) &&
-                                !classroomMap.containsKey(component.getCode())
-                )
+                .filter(component -> !notApprovedTranscriptMap.containsKey(component.getComponentId())
+                        && !interestMap.containsKey(component.getCode())
+                        && !classroomMap.containsKey(component.getCode()))
                 .map(componentMapper::toDto)
                 .toList();
     }
-
 
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
         Optional<StudentEntity> student = studentRepository.findByUserId(userId);
@@ -136,8 +129,7 @@ public class StudentService {
                     .uri("/discente/v1/discentes?id-curso=92127264&id-institucional=" + institutionalId)
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<StudentDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<StudentDTO>>() {});
 
             StudentDTO studentDto = students.getFirst();
             StudentEntity studentEntity = studentMapper.toEntity(studentDto);
@@ -158,8 +150,7 @@ public class StudentService {
                     .uri("/discente/v1/indices-discentes?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<IndexDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<IndexDTO>>() {});
 
             List<StudentIndexEntity> studentIndexEntities = indexes.stream()
                     .map(idx -> StudentIndexEntity.builder()
@@ -189,8 +180,7 @@ public class StudentService {
                     .uri("https://api.info.ufrn.br/discente/v1/discentes/" + student.getStudentId() + "/carga-horaria")
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<WorkloadDto>() {
-                    });
+                    .body(new ParameterizedTypeReference<WorkloadDto>() {});
 
             if (workloadDto != null) {
                 WorkloadEntity workload = WorkloadEntity.builder()
@@ -252,8 +242,7 @@ public class StudentService {
                     .uri("/matricula/v1/matriculas-componentes?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<TranscriptComponentDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<TranscriptComponentDTO>>() {});
 
             transcriptComponentService.batchInsertDTOs(components, student);
             return CompletableFuture.completedFuture(null);
@@ -273,8 +262,7 @@ public class StudentService {
                     .uri("/turma/v1/participantes?limit=100&id-turma=" + classroom.getClassroomId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<FriendClassUserDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<FriendClassUserDTO>>() {});
 
             if (studentsDto != null && !studentsDto.isEmpty()) {
                 Set<UserEntity> userFriends = user.getFriends();
@@ -293,5 +281,4 @@ public class StudentService {
         }
         return CompletableFuture.completedFuture(null);
     }
-
 }

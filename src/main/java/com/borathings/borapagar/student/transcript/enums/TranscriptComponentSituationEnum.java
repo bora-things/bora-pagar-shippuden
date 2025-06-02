@@ -44,6 +44,6 @@ public enum TranscriptComponentSituationEnum {
     }
 
     public boolean isApproved() {
-        return this == APROVADO || this == APROVADO_POR_NOTA || this == APROVADO_POR_CONSELHO ||this==CUMPRIU ;
+        return this == APROVADO || this == APROVADO_POR_NOTA || this == APROVADO_POR_CONSELHO || this == CUMPRIU;
     }
 }
