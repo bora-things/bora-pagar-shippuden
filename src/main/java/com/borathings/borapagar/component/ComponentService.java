@@ -8,6 +8,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -24,6 +26,10 @@ public class ComponentService {
 
     @Autowired
     ComponentMapper componentMapper;
+
+    public Page<ComponentEntity> getAllComponentsPageable(Pageable pageable) {
+        return componentRepository.findAll(pageable);
+    }
 
     @Async
     public void fetchComponents() {
@@ -52,5 +58,10 @@ public class ComponentService {
         }
         componentRepository.saveAll(
                 componentsFetched.stream().map(componentMapper::toEntity).toList());
+    }
+
+    public List<ComponentDTO> findSearchedComponents(String searched) {
+        List<ComponentEntity> components = componentRepository.searchByNameOrCode(searched);
+        return components.stream().map(componentMapper::toDto).toList();
     }
 }

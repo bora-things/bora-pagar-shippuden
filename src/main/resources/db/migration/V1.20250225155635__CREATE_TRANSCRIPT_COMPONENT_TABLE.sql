@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS transcript_components
     year INTEGER,
     class_id BIGINT,
     period INTEGER,
+    final_grade DECIMAL(10,2),
     component_id BIGINT,
     situation INTEGER,
     integralization VARCHAR(100),

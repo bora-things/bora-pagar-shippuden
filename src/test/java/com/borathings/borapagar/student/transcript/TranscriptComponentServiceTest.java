@@ -42,10 +42,10 @@ public class TranscriptComponentServiceTest {
                         date1.toEpochDay(),
                         5, // absences
                         101, // componentId
+                        7, // studentId
                         1001, // studentId
                         2001, // registrationId
                         1, // registrationSituationId
-                        "REG", // integralizationKindId
                         101 // sigaaClassId (int, not String)
                         ),
                 new TranscriptComponentDTO(
@@ -54,10 +54,10 @@ public class TranscriptComponentServiceTest {
                         date2.toEpochDay(),
                         2, // absences
                         102, // componentId
+                        7, // studentId
                         1001, // studentId
                         2002, // registrationId
                         1, // registrationSituationId
-                        "REG", // integralizationKindId
                         102 // sigaaClassId
                         ));
 

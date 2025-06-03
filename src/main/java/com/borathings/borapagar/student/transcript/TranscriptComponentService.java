@@ -22,10 +22,10 @@ public class TranscriptComponentService {
                     return TranscriptComponentEntity.builder()
                             .absences(dto.absences())
                             .registerDate(dto.registerDate())
+                            .finalGrade(dto.finalGrade())
                             .componentId(dto.componentId())
                             .sigaaClassId(dto.sigaaClassId())
                             .situation(dto.registrationSituationId())
-                            .integralization(dto.integralizationKindId())
                             .period(dto.period())
                             .year(dto.year())
                             .student(student)
@@ -35,5 +35,9 @@ public class TranscriptComponentService {
 
         repository.deleteByStudent(student);
         return repository.saveAll(componentEntities);
+    }
+
+    public List<TranscriptComponentEntity> findByStudent(StudentEntity student) {
+        return repository.findAllByStudent(student);
     }
 }

@@ -39,8 +39,6 @@ public class FriendRequestService {
         List<FriendRequestEntity> requests =
                 friendRequestRepository.findAllByToUserAndOptionalStatus(toUser, status.orElse(null));
 
-        System.out.println(requests.size());
-
         List<UserEntity> fromUsers =
                 requests.stream().map(FriendRequestEntity::getFromUser).toList();
 

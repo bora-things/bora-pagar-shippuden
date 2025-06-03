@@ -3,17 +3,22 @@ package com.borathings.borapagar.student;
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 import com.borathings.borapagar.classroom.ClassroomEntity;
-import com.borathings.borapagar.component.SubjectSigaaClient;
+import com.borathings.borapagar.component.ComponentEntity;
+import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.dto.ComponentDTO;
-import com.borathings.borapagar.student.dto.CurriculumMatrixDTO;
+import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import com.borathings.borapagar.student.index.IndexDTO;
 import com.borathings.borapagar.student.index.IndexEnum;
 import com.borathings.borapagar.student.index.StudentIndexEntity;
 import com.borathings.borapagar.student.index.StudentIndexRepository;
+import com.borathings.borapagar.student.interest.StudentSubjectInterestEntity;
+import com.borathings.borapagar.student.interest.StudentSubjectInterestService;
+import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
 import com.borathings.borapagar.student.transcript.TranscriptComponentService;
 import com.borathings.borapagar.student.transcript.dto.TranscriptComponentDTO;
+import com.borathings.borapagar.student.transcript.enums.TranscriptComponentSituationEnum;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.UserService;
@@ -23,11 +28,7 @@ import com.borathings.borapagar.workload.WorkloadDto;
 import com.borathings.borapagar.workload.WorkloadEntity;
 import com.borathings.borapagar.workload.WorkloadRepository;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -48,9 +50,6 @@ public class StudentService {
     @Autowired
     @Qualifier("userRestClient")
     RestClient userRestClient;
-
-    @Autowired
-    SubjectSigaaClient sigaaClient;
 
     @Autowired
     StudentRepository studentRepository;
@@ -73,71 +72,51 @@ public class StudentService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private ComponentService componentService;
+
+    @Autowired
+    private ComponentMapper componentMapper;
+
+    @Autowired
+    private StudentSubjectInterestService studentSubjectInterestService;
+
     public List<ComponentDTO> getPossibleSubjectsForStudent(String studentLogin, Pageable pageable) {
         StudentEntity student = findByUserLoginOrError(studentLogin);
-        int courseId = student.getCourseId();
 
-        logger.info("Fetching curriculum matrices for course ID: {}", courseId);
-        String matricesUrl = "/curso/v1/matrizes-curriculares?id-curso=" + courseId;
+        // Buscar componentes disponíveis com paginação
+        Page<ComponentEntity> componentPage = componentService.getAllComponentsPageable(pageable);
+        List<ComponentEntity> components = componentPage.getContent();
 
-        List<CurriculumMatrixDTO> curriculumMatrices = userRestClient
-                .get()
-                .uri(matricesUrl)
-                .attributes(clientRegistrationId("sigaa"))
-                .retrieve()
-                .body(new ParameterizedTypeReference<List<CurriculumMatrixDTO>>() {});
+        // Buscar histórico do aluno (disciplinas cursadas)
+        List<TranscriptComponentEntity> transcriptComponents = transcriptComponentService.findByStudent(student);
 
-        if (curriculumMatrices == null || curriculumMatrices.isEmpty()) {
-            logger.warn("No curriculum matrices found for course ID: {}", courseId);
-            throw new EntityNotFoundException("No curriculum matrices found for course id: " + courseId);
-        }
+        // Mapear turmas do aluno por código da disciplina
+        Map<String, ClassroomEntity> classroomMap = student.getClassrooms().stream()
+                .collect(Collectors.toMap(ClassroomEntity::getComponentCode, Function.identity()));
 
-        CurriculumMatrixDTO activeCurriculum = curriculumMatrices.stream()
-                .filter(CurriculumMatrixDTO::active)
-                .max(Comparator.comparingInt(CurriculumMatrixDTO::year))
-                .orElseThrow(() -> {
-                    logger.warn("No active and latest curriculum matrix found for course ID: {}", courseId);
-                    return new EntityNotFoundException(
-                            "No active and latest curriculum matrix found for course id: " + courseId);
-                });
+        // Mapear interesses do aluno por código da disciplina
+        Map<String, StudentSubjectInterestEntity> interestMap =
+                studentSubjectInterestService.findAllByStudentId(student.getStudentId()).stream()
+                        .collect(Collectors.toMap(StudentSubjectInterestEntity::getSubjectCode, Function.identity()));
 
-        int curriculumId = activeCurriculum.curriculumMatrixId();
-        logger.info("Active curriculum matrix ID {} found for course ID: {}", curriculumId, courseId);
+        // Mapear componentes que o aluno não foi aprovado ainda
+        Map<Integer, TranscriptComponentEntity> notApprovedTranscriptMap = transcriptComponents.stream()
+                .filter(tc -> !TranscriptComponentSituationEnum.fromId(tc.getSituation())
+                        .isApproved())
+                .collect(Collectors.toMap(
+                        TranscriptComponentEntity::getComponentId, Function.identity(), (first, second) -> first));
 
-        int offset = pageable.getPageNumber() * pageable.getPageSize();
-        int limit = pageable.getPageSize();
-
-        if (limit > 100) {
-            limit = 100;
-        }
-        if (limit < 0) {
-            limit = 0;
-        }
-
-        String componentsUrl = String.format(
-                "/curso/v1/componentes-curriculares?id-matriz-curricular=%d&offset=%d&limit=%d",
-                curriculumId, offset, limit);
-
-        logger.info(
-                "Fetching components for curriculum matrix ID: {} with offset: {}, limit: {}",
-                curriculumId,
-                offset,
-                limit);
-
-        List<ComponentDTO> components = userRestClient
-                .get()
-                .uri(componentsUrl)
-                .attributes(clientRegistrationId("sigaa"))
-                .retrieve()
-                .body(new ParameterizedTypeReference<List<ComponentDTO>>() {});
-
-        if (components == null) {
-            logger.warn("No components returned for curriculum matrix ID: {}", curriculumId);
-            return List.of();
-        }
-
-        logger.info("Found {} components for curriculum matrix ID: {}", components.size(), curriculumId);
-        return components;
+        // Filtrar componentes que:
+        // - Não estão no histórico não-aprovado
+        // - Não estão entre os interesses já cadastrados
+        // - Estão entre as turmas do aluno
+        return components.stream()
+                .filter(component -> !notApprovedTranscriptMap.containsKey(component.getComponentId())
+                        && !interestMap.containsKey(component.getCode())
+                        && !classroomMap.containsKey(component.getCode()))
+                .map(componentMapper::toDto)
+                .toList();
     }
 
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
@@ -274,7 +253,6 @@ public class StudentService {
             return CompletableFuture.failedFuture(ex);
         }
     }
-    ;
 
     @Async
     public CompletableFuture<List<UserResponseDTO>> findFriendsInClass(UserEntity user, ClassroomEntity classroom) {

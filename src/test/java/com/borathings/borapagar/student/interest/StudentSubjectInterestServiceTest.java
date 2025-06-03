@@ -5,7 +5,7 @@ import static org.mockito.Mockito.*;
 
 import com.borathings.borapagar.component.SubjectSigaaClient;
 import com.borathings.borapagar.student.StudentEntity;
-import com.borathings.borapagar.student.StudentService;
+import com.borathings.borapagar.student.StudentHelperService;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
 import com.borathings.borapagar.user.UserEntity;
@@ -25,17 +25,17 @@ public class StudentSubjectInterestServiceTest {
     @Mock
     private StudentSubjectInterestRepository studentSubjectInterestRepository;
 
-    @Mock
-    private StudentService studentService;
+    @InjectMocks
+    private StudentSubjectInterestService studentSubjectInterestService;
 
     @Mock
-    private SubjectSigaaClient subjectClient;
+    private StudentHelperService studentHelperService;
+
+    @Mock
+    private SubjectSigaaClient subjectSigaaClient;
 
     @Mock
     private UserMapper userMapper;
-
-    @InjectMocks
-    private StudentSubjectInterestService studentSubjectInterestService;
 
     private StudentEntity student;
     private StudentSubjectAddInterestDTO semesterDTO;
@@ -56,9 +56,10 @@ public class StudentSubjectInterestServiceTest {
         UserEntity userMock = mock(UserEntity.class);
 
         // Mock da cadeia de chamadas
-        when(studentService.findByIdOrError(anyLong())).thenReturn(studentMock);
+        when(studentHelperService.findByIdOrError(anyLong())).thenReturn(studentMock);
         when(studentMock.getUser()).thenReturn(userMock);
         when(userMock.getFriends()).thenReturn(Set.of());
+        when(subjectSigaaClient.getComponentByCode(any(String.class))).thenReturn(null);
 
         // Mock do repository
         when(studentSubjectInterestRepository.findAllByStudentId(anyLong())).thenReturn(List.of(interestEntity));

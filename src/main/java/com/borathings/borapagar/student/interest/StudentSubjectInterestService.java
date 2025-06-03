@@ -4,16 +4,13 @@ import com.borathings.borapagar.component.SubjectSigaaClient;
 import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.core.exception.subjectInterest.SubjectInterestAlreadyExistsException;
 import com.borathings.borapagar.student.StudentEntity;
-import com.borathings.borapagar.student.StudentService;
+import com.borathings.borapagar.student.StudentHelperService;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +22,7 @@ public class StudentSubjectInterestService {
     StudentSubjectInterestRepository studentSubjectInterestRepository;
 
     @Autowired
-    StudentService studentService;
+    StudentHelperService studentService;
 
     @Autowired
     SubjectSigaaClient subjectClient;
@@ -33,12 +30,18 @@ public class StudentSubjectInterestService {
     @Autowired
     UserMapper userMapper;
 
+    public List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId) {
+        return studentSubjectInterestRepository.findAllByStudentId(studentId);
+    }
+
     public List<StudentSubjectInterestDTO> listInterests(Long studentId) {
         List<StudentSubjectInterestEntity> studentSubjectInterests =
                 studentSubjectInterestRepository.findAllByStudentId(studentId);
 
         StudentEntity student = studentService.findByIdOrError(studentId);
-        Set<UserEntity> friends = student.getUser().getFriends();
+        Set<UserEntity> friends = Optional.ofNullable(student.getUser())
+                .map(UserEntity::getFriends)
+                .orElse(Set.of());
         Map<Long, UserResponseDTO> friendsMap =
                 friends.stream().collect(Collectors.toMap(UserEntity::getId, userMapper::toUserResponseDTO));
 
