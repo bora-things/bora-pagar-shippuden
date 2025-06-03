@@ -10,11 +10,10 @@ import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,9 +41,12 @@ public class StudentSubjectInterestService {
                 studentSubjectInterestRepository.findAllByStudentId(studentId);
 
         StudentEntity student = studentService.findByIdOrError(studentId);
-        Set<UserEntity> friends = student.getUser().getFriends();
-        Map<Long, UserResponseDTO> friendsMap =
-                friends.stream().collect(Collectors.toMap(UserEntity::getId, userMapper::toUserResponseDTO));
+        Set<UserEntity> friends = Optional.ofNullable(student.getUser())
+                .map(UserEntity::getFriends)
+                .orElse(Set.of());
+        Map<Long, UserResponseDTO> friendsMap = friends.stream()
+                .collect(Collectors.toMap(UserEntity::getId, userMapper::toUserResponseDTO));
+
 
         return studentSubjectInterests.stream()
                 .map(interest -> {
@@ -90,6 +92,7 @@ public class StudentSubjectInterestService {
             throw new SubjectInterestAlreadyExistsException();
         }
     }
+
     ;
 
     public void deleteInterest(String subjectCode, StudentEntity student) {

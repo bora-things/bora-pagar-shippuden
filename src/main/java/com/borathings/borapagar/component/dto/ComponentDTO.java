@@ -1,6 +1,7 @@
 package com.borathings.borapagar.component.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.NoArgsConstructor;
 
 public record ComponentDTO(
         @JsonProperty("carga-horaria-total") Integer totalWorkload,
