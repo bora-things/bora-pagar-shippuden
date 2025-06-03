@@ -10,10 +10,8 @@ import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,9 +42,8 @@ public class StudentSubjectInterestService {
         Set<UserEntity> friends = Optional.ofNullable(student.getUser())
                 .map(UserEntity::getFriends)
                 .orElse(Set.of());
-        Map<Long, UserResponseDTO> friendsMap = friends.stream()
-                .collect(Collectors.toMap(UserEntity::getId, userMapper::toUserResponseDTO));
-
+        Map<Long, UserResponseDTO> friendsMap =
+                friends.stream().collect(Collectors.toMap(UserEntity::getId, userMapper::toUserResponseDTO));
 
         return studentSubjectInterests.stream()
                 .map(interest -> {
@@ -92,7 +89,6 @@ public class StudentSubjectInterestService {
             throw new SubjectInterestAlreadyExistsException();
         }
     }
-
     ;
 
     public void deleteInterest(String subjectCode, StudentEntity student) {

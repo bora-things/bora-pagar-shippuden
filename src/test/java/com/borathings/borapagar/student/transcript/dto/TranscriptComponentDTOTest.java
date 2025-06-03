@@ -52,7 +52,8 @@ public class TranscriptComponentDTOTest {
         TranscriptComponentDTO dto1 =
                 new TranscriptComponentDTO(2023, 1, registerDate, 5, 101, 10, 1901001, 2001, 1, 201);
 
-        TranscriptComponentDTO dto2 = new TranscriptComponentDTO(2023, 1, registerDate, 5, 101, 10,1901001, 2001, 1, 201);
+        TranscriptComponentDTO dto2 =
+                new TranscriptComponentDTO(2023, 1, registerDate, 5, 101, 10, 1901001, 2001, 1, 201);
 
         TranscriptComponentDTO differentDto =
                 new TranscriptComponentDTO(2023, 2, registerDate, 5, 101, 10, 1001, 2001, 1, 201);
