@@ -13,6 +13,7 @@ import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -46,6 +47,11 @@ public class ClassroomService {
 
     @Autowired
     private ComponentMapper componentMapper;
+
+
+    public Optional<ClassroomEntity> findByComponentCodeAndStudentId(String code,Long id){
+        return classroomRepository.findByComponentCodeAndStudentId(code, id);
+    }
 
     @Async
     public CompletableFuture<Void> fetchClassroom(StudentEntity student) {
