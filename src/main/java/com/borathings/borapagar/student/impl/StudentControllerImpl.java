@@ -1,7 +1,6 @@
 package com.borathings.borapagar.student.impl;
 
 import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
-import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.student.StudentController;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
@@ -28,7 +27,8 @@ public class StudentControllerImpl implements StudentController {
         return ResponseEntity.ok(s);
     }
 
-    public ResponseEntity<List<ClassroomResponseDTO>> getPossibleSubjects(Authentication currentUser, Pageable pageable) {
+    public ResponseEntity<List<ClassroomResponseDTO>> getPossibleSubjects(
+            Authentication currentUser, Pageable pageable) {
         String userLogin = currentUser.getName();
         List<ClassroomResponseDTO> subjects = studentService.getPossibleSubjectsForStudent(userLogin, pageable);
         return ResponseEntity.ok(subjects);

@@ -96,18 +96,17 @@ public class StudentEntity extends SoftDeletableModel {
     @ManyToMany
     @JoinTable(
             name = "student_classroom",
-            joinColumns = @JoinColumn(name = "student_id"),       // chave de Student
+            joinColumns = @JoinColumn(name = "student_id"), // chave de Student
             inverseJoinColumns = @JoinColumn(name = "classroom_id") // chave de Classroom
-    )
+            )
     private List<ClassroomEntity> classrooms = new ArrayList<>();
-
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity user;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StudentSubjectInterestEntity> interests=new ArrayList<>();
+    private List<StudentSubjectInterestEntity> interests = new ArrayList<>();
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TranscriptComponentEntity> transcriptComponents = new ArrayList<>();

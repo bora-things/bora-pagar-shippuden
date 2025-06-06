@@ -11,14 +11,10 @@ import com.borathings.borapagar.component.repository.ComponentRepository;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
-
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
-import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +48,9 @@ public class ClassroomService {
     @Autowired
     private ComponentMapper componentMapper;
 
-
     @Async
     public CompletableFuture<Void> fetchClassroomAsync(StudentEntity student) {
-        fetchClassroom(student.getId());  // Chama o método síncrono e transacional
+        fetchClassroom(student.getId()); // Chama o método síncrono e transacional
         return CompletableFuture.completedFuture(null);
     }
 
@@ -74,7 +69,8 @@ public class ClassroomService {
             if (classroomDTOs != null && !classroomDTOs.isEmpty()) {
 
                 for (ClassroomDTO dto : classroomDTOs) {
-                    ClassroomEntity classroom = classroomRepository.findByClassroomId(dto.classroomId())
+                    ClassroomEntity classroom = classroomRepository
+                            .findByClassroomId(dto.classroomId())
                             .orElseGet(() -> {
                                 ClassroomEntity newClassroom = classroomMapper.toEntity(dto);
                                 return classroomRepository.save(newClassroom);
@@ -92,6 +88,7 @@ public class ClassroomService {
             logger.error("Exception at fetchClassrooms", ex);
         }
     }
+
     public List<ClassroomResponseDTO> findClassroomByStudent(String login) {
         StudentEntity student = studentService.findByUserLoginOrError(login);
 
@@ -104,7 +101,7 @@ public class ClassroomService {
                         ComponentEntity::getCode,
                         component -> componentMapper.toResponseDTO(component),
                         (existing, replacement) -> existing // mantém o primeiro, ignora os duplicados
-                ));
+                        ));
         try {
             List<CompletableFuture<ClassroomResponseDTO>> futures = classrooms.stream()
                     .map(item -> {
@@ -132,6 +129,4 @@ public class ClassroomService {
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
                 .thenApply(v -> futures.stream().map(CompletableFuture::join).toList());
     }
-
-
 }

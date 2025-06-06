@@ -1,7 +1,6 @@
 package com.borathings.borapagar.student;
 
 import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
-import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import java.util.List;
 import org.springframework.data.domain.Pageable;

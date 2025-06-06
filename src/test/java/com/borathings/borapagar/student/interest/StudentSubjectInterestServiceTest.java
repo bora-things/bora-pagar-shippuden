@@ -15,11 +15,10 @@ import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
 import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -116,9 +115,9 @@ public class StudentSubjectInterestServiceTest {
     void shouldThrowWhenComponentNotFound() {
         when(componentService.findByCode("63313")).thenReturn(Optional.empty());
 
-        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () ->
-                studentSubjectInterestService.createInterest(semesterDTO, student)
-        );
+        EntityNotFoundException ex = assertThrows(
+                EntityNotFoundException.class,
+                () -> studentSubjectInterestService.createInterest(semesterDTO, student));
 
         assertEquals("Componente não encontrado", ex.getMessage());
         verify(studentSubjectInterestRepository, never()).save(any());
@@ -137,9 +136,9 @@ public class StudentSubjectInterestServiceTest {
 
         when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
 
-        assertThrows(InterestInCompletedSubjectException.class, () ->
-                studentSubjectInterestService.createInterest(semesterDTO, student)
-        );
+        assertThrows(
+                InterestInCompletedSubjectException.class,
+                () -> studentSubjectInterestService.createInterest(semesterDTO, student));
 
         verify(studentSubjectInterestRepository, never()).save(any());
     }
@@ -157,9 +156,9 @@ public class StudentSubjectInterestServiceTest {
 
         when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
 
-        assertThrows(InterestInCompletedSubjectException.class, () ->
-                studentSubjectInterestService.createInterest(semesterDTO, student)
-        );
+        assertThrows(
+                InterestInCompletedSubjectException.class,
+                () -> studentSubjectInterestService.createInterest(semesterDTO, student));
 
         verify(studentSubjectInterestRepository, never()).save(any());
     }
@@ -177,13 +176,12 @@ public class StudentSubjectInterestServiceTest {
         when(studentSubjectInterestRepository.findBySubjectCodeAndStudentId("63313", student.getId()))
                 .thenReturn(Optional.of(mock(StudentSubjectInterestEntity.class)));
 
-        assertThrows(InterestInCompletedSubjectException.class, () ->
-                studentSubjectInterestService.createInterest(semesterDTO, student)
-        );
+        assertThrows(
+                InterestInCompletedSubjectException.class,
+                () -> studentSubjectInterestService.createInterest(semesterDTO, student));
 
         verify(studentSubjectInterestRepository, never()).save(any());
     }
-
 
     @Test
     void testDeleteInterest() {

@@ -3,7 +3,6 @@ package com.borathings.borapagar.student.interest;
 import com.borathings.borapagar.core.AbstractRepository;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,5 +22,4 @@ public interface StudentSubjectInterestRepository extends AbstractRepository<Stu
     List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId);
 
     Optional<StudentSubjectInterestEntity> findBySubjectCodeAndStudentId(String subjectCode, Long studentId);
-
 }

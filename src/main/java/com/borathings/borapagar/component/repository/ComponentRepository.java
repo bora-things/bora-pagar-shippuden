@@ -4,7 +4,6 @@ import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.core.AbstractRepository;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +20,4 @@ public interface ComponentRepository extends AbstractRepository<ComponentEntity>
     List<ComponentEntity> searchByNameOrCode(@Param("searched") String searched);
 
     Optional<ComponentEntity> findFirstByCode(String code);
-
-
 }

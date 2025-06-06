@@ -1,29 +1,22 @@
 package com.borathings.borapagar.student.interest;
 
 import com.borathings.borapagar.classroom.ClassroomEntity;
-import com.borathings.borapagar.classroom.ClassroomService;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.SubjectSigaaClient;
 import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.core.exception.subjectInterest.InterestInCompletedSubjectException;
-import com.borathings.borapagar.core.exception.subjectInterest.SubjectInterestAlreadyExistsException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentHelperService;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
 import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
-import com.borathings.borapagar.student.transcript.TranscriptComponentRepository;
-import com.borathings.borapagar.student.transcript.TranscriptComponentService;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
-
+import jakarta.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import jakarta.persistence.EntityNotFoundException;
-import org.apache.logging.log4j.util.InternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +37,6 @@ public class StudentSubjectInterestService {
 
     @Autowired
     ComponentService componentService;
-
 
     public List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId) {
         return studentSubjectInterestRepository.findAllByStudentId(studentId);
@@ -106,22 +98,25 @@ public class StudentSubjectInterestService {
         }
 
         List<TranscriptComponentEntity> studentTranscriptComponents = student.getTranscriptComponents();
-        if (studentTranscriptComponents.stream().anyMatch(item -> item.getComponentId().equals(component.get().getComponentId()))) {
+        if (studentTranscriptComponents.stream()
+                .anyMatch(item -> item.getComponentId().equals(component.get().getComponentId()))) {
             throw new InterestInCompletedSubjectException();
         }
 
         List<ClassroomEntity> studentClasses = student.getClassrooms();
-        if (studentClasses.stream().anyMatch(item -> item.getComponentCode().equals(component.get().getCode()))) {
+        if (studentClasses.stream()
+                .anyMatch(item -> item.getComponentCode().equals(component.get().getCode()))) {
             throw new InterestInCompletedSubjectException();
         }
 
-        Optional<StudentSubjectInterestEntity> optionalStudentSubjectInterestEntity=studentSubjectInterestRepository.findBySubjectCodeAndStudentId(semesterDTO.subjectCode(), student.getId());
-        if(optionalStudentSubjectInterestEntity.isPresent()) {
+        Optional<StudentSubjectInterestEntity> optionalStudentSubjectInterestEntity =
+                studentSubjectInterestRepository.findBySubjectCodeAndStudentId(
+                        semesterDTO.subjectCode(), student.getId());
+        if (optionalStudentSubjectInterestEntity.isPresent()) {
             throw new InterestInCompletedSubjectException();
         }
         studentSubjectInterestRepository.save(interestEntity);
     }
-
     ;
 
     public void deleteInterest(String subjectCode, StudentEntity student) {

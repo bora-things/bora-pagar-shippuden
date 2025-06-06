@@ -5,11 +5,10 @@ import com.borathings.borapagar.core.AbstractModel;
 import com.borathings.borapagar.docent.DocentEntity;
 import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity(name = "classrooms")
 @Getter
@@ -75,7 +74,6 @@ public class ClassroomEntity extends AbstractModel {
 
     @ManyToMany(mappedBy = "classrooms")
     private List<StudentEntity> students = new ArrayList<>();
-
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "docent_id")
