@@ -30,7 +30,7 @@ public class AfterLoginServiceTest {
         when(studentService.fetchIndexes(student)).thenReturn(CompletableFuture.completedFuture(null));
         when(studentService.fetchWorkload(student)).thenReturn(CompletableFuture.completedFuture(null));
         when(studentService.fetchAcademicRecord(student)).thenReturn(CompletableFuture.completedFuture(null));
-        when(classroomService.fetchClassroom(student)).thenReturn(CompletableFuture.completedFuture(null));
+        when(classroomService.fetchClassroomAsync(student)).thenReturn(CompletableFuture.completedFuture(null));
 
         afterLoginService.completeProfileAfterLogin(student);
 

@@ -4,6 +4,7 @@ import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.core.SoftDeletableModel;
 import com.borathings.borapagar.student.IdMappers.StudentSituation;
 import com.borathings.borapagar.student.IdMappers.StudentType;
+import com.borathings.borapagar.student.interest.StudentSubjectInterestEntity;
 import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
 import com.borathings.borapagar.user.UserEntity;
 import jakarta.persistence.*;
@@ -92,12 +93,21 @@ public class StudentEntity extends SoftDeletableModel {
     @Column(name = "campus")
     private String campus;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany
+    @JoinTable(
+            name = "student_classroom",
+            joinColumns = @JoinColumn(name = "student_id"),       // chave de Student
+            inverseJoinColumns = @JoinColumn(name = "classroom_id") // chave de Classroom
+    )
     private List<ClassroomEntity> classrooms = new ArrayList<>();
+
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity user;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentSubjectInterestEntity> interests=new ArrayList<>();
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TranscriptComponentEntity> transcriptComponents = new ArrayList<>();

@@ -8,6 +8,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name = "classrooms")
 @Getter
 @Setter
@@ -70,9 +73,9 @@ public class ClassroomEntity extends AbstractModel {
     @Column(name = "uses_new_virtual_classroom", nullable = false)
     private boolean usesNewVirtualClassroom;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id", nullable = false)
-    private StudentEntity student;
+    @ManyToMany(mappedBy = "classrooms")
+    private List<StudentEntity> students = new ArrayList<>();
+
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "docent_id")

@@ -7,9 +7,5 @@ import java.util.Optional;
 
 public interface ClassroomRepository extends AbstractRepository<ClassroomEntity> {
 
-    void deleteAllByStudent(StudentEntity student);
-
-    List<ClassroomEntity> findAllByStudent(StudentEntity student);
-
-    Optional<ClassroomEntity> findByComponentCodeAndStudentId(String componentCode,Long studentId);
+    Optional<ClassroomEntity> findByClassroomId(long classroomId);
 }
