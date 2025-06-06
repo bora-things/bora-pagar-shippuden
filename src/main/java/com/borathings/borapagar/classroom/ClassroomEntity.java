@@ -7,6 +7,8 @@ import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -15,6 +17,9 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(
+        name = "classrooms",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {("classroom_id")})})
 @SuperBuilder(toBuilder = true)
 public class ClassroomEntity extends AbstractModel {
 
@@ -82,4 +87,17 @@ public class ClassroomEntity extends AbstractModel {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "component_id")
     private ComponentEntity component;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ClassroomEntity)) return false;
+        ClassroomEntity that = (ClassroomEntity) o;
+        return Objects.equals(classroomId, that.classroomId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(classroomId);
+    }
 }

@@ -103,7 +103,7 @@ public class StudentSubjectInterestService {
             throw new InterestInCompletedSubjectException();
         }
 
-        List<ClassroomEntity> studentClasses = student.getClassrooms();
+        Set<ClassroomEntity> studentClasses = student.getClassrooms();
         if (studentClasses.stream()
                 .anyMatch(item -> item.getComponentCode().equals(component.get().getCode()))) {
             throw new InterestInCompletedSubjectException();

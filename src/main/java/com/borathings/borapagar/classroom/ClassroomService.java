@@ -13,6 +13,7 @@ import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -92,7 +93,7 @@ public class ClassroomService {
     public List<ClassroomResponseDTO> findClassroomByStudent(String login) {
         StudentEntity student = studentService.findByUserLoginOrError(login);
 
-        List<ClassroomEntity> classrooms = student.getClassrooms();
+        Set<ClassroomEntity> classrooms = student.getClassrooms();
         List<String> componentCodes =
                 classrooms.stream().map(ClassroomEntity::getComponentCode).toList();
         List<ComponentEntity> components = componentRepository.findAllByCodeIn(componentCodes);

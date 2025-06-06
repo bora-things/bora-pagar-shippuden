@@ -99,7 +99,7 @@ public class StudentEntity extends SoftDeletableModel {
             joinColumns = @JoinColumn(name = "student_id"), // chave de Student
             inverseJoinColumns = @JoinColumn(name = "classroom_id") // chave de Classroom
             )
-    private List<ClassroomEntity> classrooms = new ArrayList<>();
+    private Set<ClassroomEntity> classrooms = new HashSet<>();
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

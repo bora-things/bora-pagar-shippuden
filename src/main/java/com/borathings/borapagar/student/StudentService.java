@@ -90,6 +90,7 @@ public class StudentService {
     }
 
     public List<ClassroomResponseDTO> getPossibleSubjectsForStudent(String studentLogin, Pageable pageable) {
+
         StudentEntity student = findByUserLoginOrError(studentLogin);
 
         // Buscar componentes disponíveis com paginação
@@ -97,15 +98,14 @@ public class StudentService {
         List<ComponentEntity> components = componentPage.getContent();
 
         // Buscar histórico do aluno (disciplinas cursadas)
-        List<TranscriptComponentEntity> transcriptComponents = transcriptComponentService.findByStudent(student);
-
+        List<TranscriptComponentEntity> transcriptComponents = student.getTranscriptComponents();
         // Mapear turmas do aluno por código da disciplina
         Map<String, ClassroomEntity> classroomMap = student.getClassrooms().stream()
                 .collect(Collectors.toMap(ClassroomEntity::getComponentCode, Function.identity()));
 
         // Mapear interesses do aluno por código da disciplina
         Map<String, StudentSubjectInterestEntity> interestMap =
-                studentSubjectInterestService.findAllByStudentId(student.getStudentId()).stream()
+                student.getInterests().stream()
                         .collect(Collectors.toMap(StudentSubjectInterestEntity::getSubjectCode, Function.identity()));
 
         // Mapear componentes que o aluno não foi aprovado ainda
@@ -141,6 +141,7 @@ public class StudentService {
                 .toList();
 
         return result;
+
     }
 
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
