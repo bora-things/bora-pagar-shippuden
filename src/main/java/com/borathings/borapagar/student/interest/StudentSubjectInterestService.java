@@ -1,5 +1,7 @@
 package com.borathings.borapagar.student.interest;
 
+import com.borathings.borapagar.classroom.ClassroomEntity;
+import com.borathings.borapagar.classroom.ClassroomService;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.SubjectSigaaClient;
@@ -16,6 +18,7 @@ import com.borathings.borapagar.student.transcript.TranscriptComponentService;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,11 +43,7 @@ public class StudentSubjectInterestService {
     UserMapper userMapper;
 
     @Autowired
-    TranscriptComponentService transcriptComponentService;
-
-    @Autowired
     ComponentService componentService;
-
 
 
     public List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId) {
@@ -101,20 +100,28 @@ public class StudentSubjectInterestService {
         StudentSubjectInterestEntity interestEntity = new StudentSubjectInterestEntity(
                 semesterDTO.year(), semesterDTO.period(), student, semesterDTO.subjectCode());
 
-        Optional<ComponentEntity> component=componentService.findByCode(semesterDTO.subjectCode());
-        if(component.isEmpty()) {
+        Optional<ComponentEntity> component = componentService.findByCode(semesterDTO.subjectCode());
+        if (component.isEmpty()) {
             throw new EntityNotFoundException("Componente não encontrado");
         }
-        Optional<TranscriptComponentEntity> transcriptComponentEntity=transcriptComponentService.findByComponentId(component.get().getComponentId());
-        if(transcriptComponentEntity.isPresent()){
+
+        List<TranscriptComponentEntity> studentTranscriptComponents = student.getTranscriptComponents();
+        if (studentTranscriptComponents.stream().anyMatch(item -> item.getComponentId().equals(component.get().getComponentId()))) {
             throw new InterestInCompletedSubjectException();
         }
-        try {
-            studentSubjectInterestRepository.save(interestEntity);
-        } catch (Exception e) {
-            throw new SubjectInterestAlreadyExistsException();
+
+        List<ClassroomEntity> studentClasses = student.getClassrooms();
+        if (studentClasses.stream().anyMatch(item -> item.getComponentCode().equals(component.get().getCode()))) {
+            throw new InterestInCompletedSubjectException();
         }
+
+        Optional<StudentSubjectInterestEntity> optionalStudentSubjectInterestEntity=studentSubjectInterestRepository.findBySubjectCodeAndStudentId(semesterDTO.subjectCode(), student.getId());
+        if(optionalStudentSubjectInterestEntity.isPresent()) {
+            throw new InterestInCompletedSubjectException();
+        }
+        studentSubjectInterestRepository.save(interestEntity);
     }
+
     ;
 
     public void deleteInterest(String subjectCode, StudentEntity student) {
