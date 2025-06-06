@@ -3,14 +3,21 @@ package com.borathings.borapagar.student.interest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.borathings.borapagar.classroom.ClassroomEntity;
+import com.borathings.borapagar.component.ComponentEntity;
+import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.SubjectSigaaClient;
+import com.borathings.borapagar.core.exception.subjectInterest.InterestInCompletedSubjectException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentHelperService;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
+import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +34,9 @@ public class StudentSubjectInterestServiceTest {
 
     @InjectMocks
     private StudentSubjectInterestService studentSubjectInterestService;
+
+    @Mock
+    private ComponentService componentService;
 
     @Mock
     private StudentHelperService studentHelperService;
@@ -83,10 +93,94 @@ public class StudentSubjectInterestServiceTest {
     }
 
     @Test
-    void testCreateInterest() {
+    void shouldCreateInterestSuccessfully() {
+        ComponentEntity component = new ComponentEntity();
+        component.setComponentId(10);
+        component.setCode("63313");
+
+        // Student não tem histórico, nem turma, nem interesse
+        student.setTranscriptComponents(List.of());
+        student.setClassrooms(Set.of());
+
+        when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
+        when(studentSubjectInterestRepository.findBySubjectCodeAndStudentId("63313", student.getId()))
+                .thenReturn(Optional.empty());
+
         studentSubjectInterestService.createInterest(semesterDTO, student);
 
         verify(studentSubjectInterestRepository, times(1)).save(any(StudentSubjectInterestEntity.class));
+    }
+
+    @Test
+    void shouldThrowWhenComponentNotFound() {
+        when(componentService.findByCode("63313")).thenReturn(Optional.empty());
+
+        EntityNotFoundException ex = assertThrows(
+                EntityNotFoundException.class,
+                () -> studentSubjectInterestService.createInterest(semesterDTO, student));
+
+        assertEquals("Componente não encontrado", ex.getMessage());
+        verify(studentSubjectInterestRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowWhenAlreadyInTranscript() {
+        ComponentEntity component = new ComponentEntity();
+        component.setComponentId(10);
+        component.setCode("63313");
+
+        TranscriptComponentEntity transcript = new TranscriptComponentEntity();
+        transcript.setComponentId(10);
+        student.setTranscriptComponents(List.of(transcript));
+        student.setClassrooms(Set.of());
+
+        when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
+
+        assertThrows(
+                InterestInCompletedSubjectException.class,
+                () -> studentSubjectInterestService.createInterest(semesterDTO, student));
+
+        verify(studentSubjectInterestRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowWhenAlreadyInClassroom() {
+        ComponentEntity component = new ComponentEntity();
+        component.setComponentId(10);
+        component.setCode("63313");
+
+        ClassroomEntity classroom = new ClassroomEntity();
+        classroom.setComponentCode("63313");
+        student.setClassrooms(Set.of(classroom));
+        student.setTranscriptComponents(List.of());
+
+        when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
+
+        assertThrows(
+                InterestInCompletedSubjectException.class,
+                () -> studentSubjectInterestService.createInterest(semesterDTO, student));
+
+        verify(studentSubjectInterestRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowWhenAlreadyInterested() {
+        ComponentEntity component = new ComponentEntity();
+        component.setComponentId(10);
+        component.setCode("63313");
+
+        student.setClassrooms(Set.of());
+        student.setTranscriptComponents(List.of());
+
+        when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
+        when(studentSubjectInterestRepository.findBySubjectCodeAndStudentId("63313", student.getId()))
+                .thenReturn(Optional.of(mock(StudentSubjectInterestEntity.class)));
+
+        assertThrows(
+                InterestInCompletedSubjectException.class,
+                () -> studentSubjectInterestService.createInterest(semesterDTO, student));
+
+        verify(studentSubjectInterestRepository, never()).save(any());
     }
 
     @Test

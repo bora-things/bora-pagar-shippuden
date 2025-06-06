@@ -13,6 +13,7 @@ import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 @Service
@@ -48,8 +50,15 @@ public class ClassroomService {
     private ComponentMapper componentMapper;
 
     @Async
-    public CompletableFuture<Void> fetchClassroom(StudentEntity student) {
+    public CompletableFuture<Void> fetchClassroomAsync(StudentEntity student) {
+        fetchClassroom(student.getId()); // Chama o método síncrono e transacional
+        return CompletableFuture.completedFuture(null);
+    }
+
+    @Transactional
+    public void fetchClassroom(Long studentId) {
         try {
+            StudentEntity student = studentService.findByIdWithClassrooms(studentId);
 
             List<ClassroomDTO> classroomDTOs = serviceRestClient
                     .get()
@@ -58,26 +67,33 @@ public class ClassroomService {
                     .retrieve()
                     .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {});
 
-            if (classroomDTOs != null) {
+            if (classroomDTOs != null && !classroomDTOs.isEmpty()) {
 
-                List<ClassroomEntity> classrooms = classroomDTOs.stream()
-                        .map(item -> toEntity(item, student))
-                        .toList();
-                classroomRepository.deleteAllByStudent(student);
-                classroomRepository.saveAll(classrooms);
+                for (ClassroomDTO dto : classroomDTOs) {
+                    ClassroomEntity classroom = classroomRepository
+                            .findByClassroomId(dto.classroomId())
+                            .orElseGet(() -> {
+                                ClassroomEntity newClassroom = classroomMapper.toEntity(dto);
+                                return classroomRepository.save(newClassroom);
+                            });
+
+                    if (!student.getClassrooms().contains(classroom)) {
+                        student.getClassrooms().add(classroom);
+                    }
+                }
+
+                studentService.saveStudent(student);
             }
 
         } catch (Exception ex) {
-            logger.error("Exception at fetchClassrooms: {}", ex.getMessage());
+            logger.error("Exception at fetchClassrooms", ex);
         }
-
-        return CompletableFuture.completedFuture(null);
     }
 
     public List<ClassroomResponseDTO> findClassroomByStudent(String login) {
         StudentEntity student = studentService.findByUserLoginOrError(login);
 
-        List<ClassroomEntity> classrooms = classroomRepository.findAllByStudent(student);
+        Set<ClassroomEntity> classrooms = student.getClassrooms();
         List<String> componentCodes =
                 classrooms.stream().map(ClassroomEntity::getComponentCode).toList();
         List<ComponentEntity> components = componentRepository.findAllByCodeIn(componentCodes);
@@ -113,29 +129,5 @@ public class ClassroomService {
     public static <T> CompletableFuture<List<T>> sequence(List<CompletableFuture<T>> futures) {
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
                 .thenApply(v -> futures.stream().map(CompletableFuture::join).toList());
-    }
-
-    public ClassroomEntity toEntity(ClassroomDTO dto, StudentEntity student) {
-        return ClassroomEntity.builder()
-                .classroomId(dto.classroomId())
-                .year(dto.year())
-                .studentCapacity(dto.studentCapacity())
-                .componentCode(dto.componentCode())
-                .classroomCode(dto.classroomCode())
-                .scheduleDescription(dto.scheduleDescription())
-                .externalTeacherId(dto.externalTeacherId())
-                .educationModeId(dto.educationModeId())
-                .classroomStatusId(dto.classroomStatusId())
-                .groupingClassroomId(dto.groupingClassroomId())
-                .unitId(dto.unitId())
-                .location(dto.location())
-                .componentName(dto.componentName())
-                .period(dto.period())
-                .levelAbbreviation(dto.levelAbbreviation())
-                .subgroup(dto.isSubClassroom())
-                .type(dto.type())
-                .usesNewVirtualClassroom(dto.usesNewVirtualClassroom())
-                .student(student)
-                .build();
     }
 }

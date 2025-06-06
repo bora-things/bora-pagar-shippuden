@@ -3,9 +3,9 @@ package com.borathings.borapagar.student;
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 import com.borathings.borapagar.classroom.ClassroomEntity;
+import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
-import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
@@ -41,6 +41,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 @Service
@@ -81,7 +82,15 @@ public class StudentService {
     @Autowired
     private StudentSubjectInterestService studentSubjectInterestService;
 
-    public List<ComponentDTO> getPossibleSubjectsForStudent(String studentLogin, Pageable pageable) {
+    public StudentEntity findByIdWithClassrooms(Long studentId) {
+        StudentEntity student = studentRepository
+                .findByIdWithClassrooms(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        return student;
+    }
+
+    public List<ClassroomResponseDTO> getPossibleSubjectsForStudent(String studentLogin, Pageable pageable) {
+
         StudentEntity student = findByUserLoginOrError(studentLogin);
 
         // Buscar componentes disponíveis com paginação
@@ -89,16 +98,14 @@ public class StudentService {
         List<ComponentEntity> components = componentPage.getContent();
 
         // Buscar histórico do aluno (disciplinas cursadas)
-        List<TranscriptComponentEntity> transcriptComponents = transcriptComponentService.findByStudent(student);
-
+        List<TranscriptComponentEntity> transcriptComponents = student.getTranscriptComponents();
         // Mapear turmas do aluno por código da disciplina
         Map<String, ClassroomEntity> classroomMap = student.getClassrooms().stream()
                 .collect(Collectors.toMap(ClassroomEntity::getComponentCode, Function.identity()));
 
         // Mapear interesses do aluno por código da disciplina
-        Map<String, StudentSubjectInterestEntity> interestMap =
-                studentSubjectInterestService.findAllByStudentId(student.getStudentId()).stream()
-                        .collect(Collectors.toMap(StudentSubjectInterestEntity::getSubjectCode, Function.identity()));
+        Map<String, StudentSubjectInterestEntity> interestMap = student.getInterests().stream()
+                .collect(Collectors.toMap(StudentSubjectInterestEntity::getSubjectCode, Function.identity()));
 
         // Mapear componentes que o aluno não foi aprovado ainda
         Map<Integer, TranscriptComponentEntity> notApprovedTranscriptMap = transcriptComponents.stream()
@@ -107,16 +114,32 @@ public class StudentService {
                 .collect(Collectors.toMap(
                         TranscriptComponentEntity::getComponentId, Function.identity(), (first, second) -> first));
 
-        // Filtrar componentes que:
-        // - Não estão no histórico não-aprovado
-        // - Não estão entre os interesses já cadastrados
-        // - Estão entre as turmas do aluno
-        return components.stream()
+        List<StudentEntity> studentFriends = student.getUser().getFriends().stream()
+                .map(item -> findByUserIdOrError(item.getUserId()))
+                .collect(Collectors.toList());
+
+        Map<Long, Set<String>> friendInterestsMap = studentFriends.stream()
+                .collect(Collectors.toMap(StudentEntity::getId, friend -> friend.getInterests().stream()
+                        .map(StudentSubjectInterestEntity::getSubjectCode)
+                        .collect(Collectors.toSet())));
+
+        List<ClassroomResponseDTO> result = components.stream()
                 .filter(component -> !notApprovedTranscriptMap.containsKey(component.getComponentId())
                         && !interestMap.containsKey(component.getCode())
                         && !classroomMap.containsKey(component.getCode()))
-                .map(componentMapper::toDto)
+                .map(component -> {
+                    List<UserResponseDTO> interestedFriends = studentFriends.stream()
+                            .filter(friend ->
+                                    friendInterestsMap.get(friend.getId()).contains(component.getCode()))
+                            .map(item -> userMapper.toUserResponseDTO(item.getUser()))
+                            .toList();
+
+                    return new ClassroomResponseDTO(
+                            0, 0, 0, componentMapper.toResponseDTO(component), interestedFriends);
+                })
                 .toList();
+
+        return result;
     }
 
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
@@ -172,6 +195,7 @@ public class StudentService {
     }
 
     @Async
+    @Transactional
     public CompletableFuture<Void> fetchWorkload(StudentEntity student) {
         try {
 
@@ -231,6 +255,10 @@ public class StudentService {
     public StudentResponseDTO findStudentResponseDTOById(Long studentId) {
         StudentEntity student = findByIdOrError(studentId);
         return studentMapper.toResponseDTO(student);
+    }
+
+    public void saveStudent(StudentEntity student) {
+        studentRepository.save(student);
     }
 
     @Async

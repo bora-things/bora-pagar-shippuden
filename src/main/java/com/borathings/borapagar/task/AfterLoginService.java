@@ -23,7 +23,7 @@ public class AfterLoginService {
                         studentService.fetchIndexes(student),
                         studentService.fetchWorkload(student),
                         studentService.fetchAcademicRecord(student),
-                        classroomService.fetchClassroom(student))
+                        classroomService.fetchClassroomAsync(student))
                 .exceptionally(ex -> {
                     throw new Error(ex);
                 });

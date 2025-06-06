@@ -1,6 +1,6 @@
 package com.borathings.borapagar.student;
 
-import com.borathings.borapagar.component.dto.ComponentDTO;
+import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +16,7 @@ public interface StudentController {
     public ResponseEntity<StudentResponseDTO> currentStudent(Authentication currentUser);
 
     @GetMapping("/me/possible-subjects")
-    public ResponseEntity<List<ComponentDTO>> getPossibleSubjects(
+    public ResponseEntity<List<ClassroomResponseDTO>> getPossibleSubjects(
             Authentication currentUser, @PageableDefault(size = 20, page = 0) Pageable pageable);
 
     @GetMapping("/{studentId}")
