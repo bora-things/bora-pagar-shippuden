@@ -100,7 +100,7 @@ public class StudentSubjectInterestServiceTest {
 
         // Student não tem histórico, nem turma, nem interesse
         student.setTranscriptComponents(List.of());
-        student.setClassrooms(List.of());
+        student.setClassrooms(Set.of());
 
         when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
         when(studentSubjectInterestRepository.findBySubjectCodeAndStudentId("63313", student.getId()))
@@ -132,7 +132,7 @@ public class StudentSubjectInterestServiceTest {
         TranscriptComponentEntity transcript = new TranscriptComponentEntity();
         transcript.setComponentId(10);
         student.setTranscriptComponents(List.of(transcript));
-        student.setClassrooms(List.of());
+        student.setClassrooms(Set.of());
 
         when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
 
@@ -151,7 +151,7 @@ public class StudentSubjectInterestServiceTest {
 
         ClassroomEntity classroom = new ClassroomEntity();
         classroom.setComponentCode("63313");
-        student.setClassrooms(List.of(classroom));
+        student.setClassrooms(Set.of(classroom));
         student.setTranscriptComponents(List.of());
 
         when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
@@ -169,7 +169,7 @@ public class StudentSubjectInterestServiceTest {
         component.setComponentId(10);
         component.setCode("63313");
 
-        student.setClassrooms(List.of());
+        student.setClassrooms(Set.of());
         student.setTranscriptComponents(List.of());
 
         when(componentService.findByCode("63313")).thenReturn(Optional.of(component));

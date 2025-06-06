@@ -104,9 +104,8 @@ public class StudentService {
                 .collect(Collectors.toMap(ClassroomEntity::getComponentCode, Function.identity()));
 
         // Mapear interesses do aluno por código da disciplina
-        Map<String, StudentSubjectInterestEntity> interestMap =
-                student.getInterests().stream()
-                        .collect(Collectors.toMap(StudentSubjectInterestEntity::getSubjectCode, Function.identity()));
+        Map<String, StudentSubjectInterestEntity> interestMap = student.getInterests().stream()
+                .collect(Collectors.toMap(StudentSubjectInterestEntity::getSubjectCode, Function.identity()));
 
         // Mapear componentes que o aluno não foi aprovado ainda
         Map<Integer, TranscriptComponentEntity> notApprovedTranscriptMap = transcriptComponents.stream()
@@ -141,7 +140,6 @@ public class StudentService {
                 .toList();
 
         return result;
-
     }
 
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
