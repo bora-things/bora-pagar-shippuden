@@ -20,7 +20,4 @@ public interface ComponentRepository extends AbstractRepository<ComponentEntity>
     List<ComponentEntity> searchByNameOrCode(@Param("searched") String searched);
 
     Optional<ComponentEntity> findFirstByCode(String code);
-
-
-
 }

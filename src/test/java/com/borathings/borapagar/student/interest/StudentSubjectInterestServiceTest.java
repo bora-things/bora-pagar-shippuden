@@ -1,12 +1,14 @@
 package com.borathings.borapagar.student.interest;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
-import com.borathings.borapagar.component.SubjectSigaaClient;
+import com.borathings.borapagar.component.dto.ComponentDTO;
+import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.core.exception.subjectInterest.InterestInCompletedSubjectException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentHelperService;
@@ -14,8 +16,8 @@ import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDT
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
 import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
 import com.borathings.borapagar.user.UserEntity;
-import com.borathings.borapagar.user.UserMapper;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -42,10 +44,7 @@ public class StudentSubjectInterestServiceTest {
     private StudentHelperService studentHelperService;
 
     @Mock
-    private SubjectSigaaClient subjectSigaaClient;
-
-    @Mock
-    private UserMapper userMapper;
+    private ComponentMapper componentMapper;
 
     private StudentEntity student;
     private StudentSubjectAddInterestDTO semesterDTO;
@@ -61,35 +60,37 @@ public class StudentSubjectInterestServiceTest {
     }
 
     @Test
-    void testListInterest() {
-        StudentEntity studentMock = mock(StudentEntity.class);
-        UserEntity userMock = mock(UserEntity.class);
+    void listInterests_SimpleTest_ShouldReturnStudentInterests() {
 
-        // Mock da cadeia de chamadas
-        when(studentHelperService.findByIdOrError(anyLong())).thenReturn(studentMock);
-        when(studentMock.getUser()).thenReturn(userMock);
-        when(userMock.getFriends()).thenReturn(Set.of());
-        when(subjectSigaaClient.getComponentByCode(any(String.class))).thenReturn(null);
+        Long studentId = 1L;
+        String subjectCode = "PROG1";
 
-        // Mock do repository
-        when(studentSubjectInterestRepository.findAllByStudentId(anyLong())).thenReturn(List.of(interestEntity));
+        StudentSubjectInterestEntity interest = new StudentSubjectInterestEntity();
+        interest.setId(101L);
+        interest.setSubjectCode(subjectCode);
+        interest.setYear(2025);
+        interest.setPeriod(1);
+        when(studentSubjectInterestRepository.findAllByStudentId(studentId)).thenReturn(List.of(interest));
 
-        List<StudentSubjectInterestDTO> result = studentSubjectInterestService.listInterests(student.getId());
+        ComponentEntity component = new ComponentEntity();
+        component.setCode(subjectCode);
+        component.setName("Programação I");
+        when(componentService.findAllByCodeIn(List.of(subjectCode))).thenReturn(List.of(component));
 
-        assertNotNull(result);
-        assertEquals(1, result.size());
+        ComponentDTO componentDto = null;
+        when(componentMapper.toDto(any(ComponentEntity.class))).thenReturn(componentDto);
 
-        // Ajustar conforme assinatura do DTO
-        StudentSubjectInterestDTO expected = new StudentSubjectInterestDTO(
-                interestEntity.getId(),
-                null, // Aqui você pode ajustar conforme getComponentByCode mockado ou não.
-                interestEntity.getYear(),
-                interestEntity.getPeriod(),
-                List.of());
+        StudentEntity student = new StudentEntity();
+        UserEntity user = new UserEntity();
+        user.setFriends(Collections.emptySet()); // O ponto chave para simplificar!
+        student.setUser(user);
+        when(studentHelperService.findByIdOrError(studentId)).thenReturn(student);
 
-        assertEquals(expected, result.get(0));
+        List<StudentSubjectInterestDTO> result = studentSubjectInterestService.listInterests(studentId);
 
-        verify(studentSubjectInterestRepository, times(1)).findAllByStudentId(student.getId());
+        StudentSubjectInterestDTO resultDto = result.get(0);
+        assertThat(resultDto).isNotNull();
+        assertThat(resultDto.interestId()).isEqualTo(interest.getId());
     }
 
     @Test

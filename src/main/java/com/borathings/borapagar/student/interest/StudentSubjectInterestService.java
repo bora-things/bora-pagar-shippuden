@@ -4,7 +4,6 @@ import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.SubjectSigaaClient;
-import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.core.exception.subjectInterest.InterestInCompletedSubjectException;
 import com.borathings.borapagar.student.StudentEntity;
@@ -38,13 +37,13 @@ public class StudentSubjectInterestService {
 
     @Autowired
     ComponentService componentService;
+
     @Autowired
     private ComponentMapper componentMapper;
 
     public List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId) {
         return studentSubjectInterestRepository.findAllByStudentId(studentId);
     }
-
 
     public List<StudentSubjectInterestDTO> listInterests(Long studentId) {
         List<StudentSubjectInterestEntity> studentInterests =
@@ -60,10 +59,7 @@ public class StudentSubjectInterestService {
 
         Map<String, ComponentEntity> componentMap = componentService.findAllByCodeIn(subjectCodes).stream()
                 .collect(Collectors.toMap(
-                        ComponentEntity::getCode,
-                        component -> component,
-                        (existingValue, newValue) -> existingValue
-                ));
+                        ComponentEntity::getCode, component -> component, (existingValue, newValue) -> existingValue));
 
         StudentEntity student = studentService.findByIdOrError(studentId);
         Set<UserEntity> friends = Optional.ofNullable(student.getUser())
@@ -73,22 +69,20 @@ public class StudentSubjectInterestService {
         Map<List<Object>, List<UserResponseDTO>> friendsByInterestMap = new HashMap<>();
 
         if (friends != null && !friends.isEmpty()) {
-            Map<Long, UserResponseDTO> friendsDtoMap = friends.stream()
-                    .collect(Collectors.toMap(UserEntity::getId, userMapper::toUserResponseDTO));
+            Map<Long, UserResponseDTO> friendsDtoMap =
+                    friends.stream().collect(Collectors.toMap(UserEntity::getId, userMapper::toUserResponseDTO));
 
             List<Long> friendIds = new ArrayList<>(friendsDtoMap.keySet());
-
 
             List<StudentSubjectInterestEntity> friendsInterests =
                     studentSubjectInterestRepository.findAllByStudentIdIn(friendIds);
 
             for (StudentSubjectInterestEntity friendInterest : friendsInterests) {
-                List<Object> interestKey = List.of(
-                        friendInterest.getSubjectCode(),
-                        friendInterest.getYear(),
-                        friendInterest.getPeriod());
+                List<Object> interestKey =
+                        List.of(friendInterest.getSubjectCode(), friendInterest.getYear(), friendInterest.getPeriod());
 
-                UserResponseDTO friendDto = friendsDtoMap.get(friendInterest.getStudent().getId());
+                UserResponseDTO friendDto =
+                        friendsDtoMap.get(friendInterest.getStudent().getId());
                 if (friendDto != null) {
                     friendsByInterestMap
                             .computeIfAbsent(interestKey, k -> new ArrayList<>())
@@ -101,13 +95,11 @@ public class StudentSubjectInterestService {
                 .map(interest -> {
                     ComponentEntity component = componentMap.get(interest.getSubjectCode());
 
-                    List<Object> currentInterestKey = List.of(
-                            interest.getSubjectCode(),
-                            interest.getYear(),
-                            interest.getPeriod());
+                    List<Object> currentInterestKey =
+                            List.of(interest.getSubjectCode(), interest.getYear(), interest.getPeriod());
 
-                    List<UserResponseDTO> friendsWithSameInterest = friendsByInterestMap
-                            .getOrDefault(currentInterestKey, Collections.emptyList());
+                    List<UserResponseDTO> friendsWithSameInterest =
+                            friendsByInterestMap.getOrDefault(currentInterestKey, Collections.emptyList());
 
                     return new StudentSubjectInterestDTO(
                             interest.getId(),
