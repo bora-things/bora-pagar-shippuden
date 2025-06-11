@@ -6,6 +6,8 @@ import com.borathings.borapagar.component.repository.ComponentRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
@@ -30,6 +32,10 @@ public class ComponentService {
 
     public Page<ComponentEntity> getAllComponentsPageable(Pageable pageable) {
         return componentRepository.findAll(pageable);
+    }
+
+    public List<ComponentEntity> findAllByCodeIn(List<String> codes) {
+        return componentRepository.findAllByCodeIn(codes);
     }
 
     @Async
