@@ -4,7 +4,7 @@ import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.SubjectSigaaClient;
-import com.borathings.borapagar.component.dto.ComponentDTO;
+import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.core.exception.subjectInterest.InterestInCompletedSubjectException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentHelperService;
@@ -38,52 +38,76 @@ public class StudentSubjectInterestService {
     @Autowired
     ComponentService componentService;
 
+    @Autowired
+    private ComponentMapper componentMapper;
+
     public List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId) {
         return studentSubjectInterestRepository.findAllByStudentId(studentId);
     }
 
     public List<StudentSubjectInterestDTO> listInterests(Long studentId) {
-        List<StudentSubjectInterestEntity> studentSubjectInterests =
+        List<StudentSubjectInterestEntity> studentInterests =
                 studentSubjectInterestRepository.findAllByStudentId(studentId);
+
+        if (studentInterests.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<String> subjectCodes = studentInterests.stream()
+                .map(StudentSubjectInterestEntity::getSubjectCode)
+                .toList();
+
+        Map<String, ComponentEntity> componentMap = componentService.findAllByCodeIn(subjectCodes).stream()
+                .collect(Collectors.toMap(
+                        ComponentEntity::getCode, component -> component, (existingValue, newValue) -> existingValue));
 
         StudentEntity student = studentService.findByIdOrError(studentId);
         Set<UserEntity> friends = Optional.ofNullable(student.getUser())
                 .map(UserEntity::getFriends)
                 .orElse(Set.of());
-        Map<Long, UserResponseDTO> friendsMap =
-                friends.stream().collect(Collectors.toMap(UserEntity::getId, userMapper::toUserResponseDTO));
 
-        return studentSubjectInterests.stream()
+        Map<List<Object>, List<UserResponseDTO>> friendsByInterestMap = new HashMap<>();
+
+        if (friends != null && !friends.isEmpty()) {
+            Map<Long, UserResponseDTO> friendsDtoMap =
+                    friends.stream().collect(Collectors.toMap(UserEntity::getId, userMapper::toUserResponseDTO));
+
+            List<Long> friendIds = new ArrayList<>(friendsDtoMap.keySet());
+
+            List<StudentSubjectInterestEntity> friendsInterests =
+                    studentSubjectInterestRepository.findAllByStudentIdIn(friendIds);
+
+            for (StudentSubjectInterestEntity friendInterest : friendsInterests) {
+                List<Object> interestKey =
+                        List.of(friendInterest.getSubjectCode(), friendInterest.getYear(), friendInterest.getPeriod());
+
+                UserResponseDTO friendDto =
+                        friendsDtoMap.get(friendInterest.getStudent().getId());
+                if (friendDto != null) {
+                    friendsByInterestMap
+                            .computeIfAbsent(interestKey, k -> new ArrayList<>())
+                            .add(friendDto);
+                }
+            }
+        }
+
+        return studentInterests.stream()
                 .map(interest -> {
-                    ComponentDTO component = subjectClient.getComponentByCode(interest.getSubjectCode());
+                    ComponentEntity component = componentMap.get(interest.getSubjectCode());
 
-                    List<Long> friendsWithSameInterest = findFriendsWithSameInterest(
-                            friends, interest.getSubjectCode(), interest.getYear(), interest.getPeriod());
+                    List<Object> currentInterestKey =
+                            List.of(interest.getSubjectCode(), interest.getYear(), interest.getPeriod());
+
+                    List<UserResponseDTO> friendsWithSameInterest =
+                            friendsByInterestMap.getOrDefault(currentInterestKey, Collections.emptyList());
 
                     return new StudentSubjectInterestDTO(
                             interest.getId(),
-                            component,
+                            componentMapper.toDto(component),
                             interest.getYear(),
                             interest.getPeriod(),
-                            friendsWithSameInterest.stream()
-                                    .map(friendsMap::get)
-                                    .toList());
+                            friendsWithSameInterest);
                 })
-                .collect(Collectors.toList());
-    }
-
-    private List<Long> findFriendsWithSameInterest(
-            Set<UserEntity> friends, String subjectCode, Integer year, Integer period) {
-        return friends.stream()
-                .map(friend -> studentService.findByIdOrError(friend.getId()))
-                .filter(Objects::nonNull)
-                .flatMap(friendStudent ->
-                        studentSubjectInterestRepository.findAllByStudentId(friendStudent.getId()).stream())
-                .filter(friendInterest -> friendInterest.getSubjectCode().equals(subjectCode)
-                        && friendInterest.getYear().equals(year)
-                        && friendInterest.getPeriod().equals(period))
-                .map(StudentSubjectInterestEntity::getId)
-                .distinct()
                 .collect(Collectors.toList());
     }
 

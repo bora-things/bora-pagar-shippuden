@@ -32,6 +32,10 @@ public class ComponentService {
         return componentRepository.findAll(pageable);
     }
 
+    public List<ComponentEntity> findAllByCodeIn(List<String> codes) {
+        return componentRepository.findAllByCodeIn(codes);
+    }
+
     @Async
     public void fetchComponents() {
         List<String> curricularMatrixIdList = List.of("134044403", "133795010", "133797961", "133804382");
