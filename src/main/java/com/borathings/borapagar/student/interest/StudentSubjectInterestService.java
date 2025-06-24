@@ -4,10 +4,13 @@ import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.SubjectSigaaClient;
+import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.core.exception.subjectInterest.InterestInCompletedSubjectException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentHelperService;
+import com.borathings.borapagar.student.interest.dto.FriendsInterestsDTO;
+import com.borathings.borapagar.student.interest.dto.StudentFriendInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
 import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
@@ -28,9 +31,6 @@ public class StudentSubjectInterestService {
 
     @Autowired
     StudentHelperService studentService;
-
-    @Autowired
-    SubjectSigaaClient subjectClient;
 
     @Autowired
     UserMapper userMapper;
@@ -146,4 +146,52 @@ public class StudentSubjectInterestService {
     public void deleteInterest(String subjectCode, StudentEntity student) {
         studentSubjectInterestRepository.deleteBySigaaSubjectIdAndStudentId(subjectCode, student.getId());
     }
+
+    public FriendsInterestsDTO listFriendsInterests(StudentEntity student, Integer period, Integer year) {
+
+        Set<UserEntity> userFriends=student.getUser().getFriends();
+        List<StudentSubjectInterestEntity> friendsInterests=studentSubjectInterestRepository.findAllByUserInAndPeriodAndYear(
+                userFriends, period, year
+        );
+
+        List<String> uniqueSubjectCodes = friendsInterests.stream()
+                .map(StudentSubjectInterestEntity::getSubjectCode)
+                .distinct()
+                .toList();
+
+        List<ComponentEntity> components=componentService.findAllByCodeIn(uniqueSubjectCodes);
+
+        List<ComponentResponseDTO> componentResponseDTOS=components.stream().map(item->componentMapper.toResponseDTO(item))
+                .toList();
+
+        Map<StudentEntity, List<StudentSubjectInterestEntity>> groupedByStudent = friendsInterests.stream()
+                .collect(Collectors.groupingBy(StudentSubjectInterestEntity::getStudent));
+
+        List<StudentFriendInterestDTO> studentFriendInterestDTOS = groupedByStudent.entrySet().stream()
+                .map(entry -> {
+                    StudentEntity s = entry.getKey();
+                    List<StudentSubjectInterestEntity> interests = entry.getValue();
+
+                    // Pegar códigos únicos
+                    List<String> subjectCodes = interests.stream()
+                            .map(StudentSubjectInterestEntity::getSubjectCode)
+                            .distinct()
+                            .toList();
+
+                    return new StudentFriendInterestDTO(
+                            s.getStudentName(),
+                            s.getImageUrl(),
+                            subjectCodes
+                    );
+                })
+                .toList();
+
+        return new FriendsInterestsDTO(
+                componentResponseDTOS,
+                studentFriendInterestDTOS
+        );
+
+    }
+
 }
+

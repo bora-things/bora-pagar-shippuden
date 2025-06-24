@@ -1,8 +1,12 @@
 package com.borathings.borapagar.student.interest;
 
+import com.borathings.borapagar.student.interest.dto.FriendsInterestsDTO;
+import com.borathings.borapagar.student.interest.dto.StudentFriendInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
 import java.util.List;
+
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,4 +28,9 @@ public interface StudentSubjectInterestController {
 
     @DeleteMapping("/{subjectCode}")
     public ResponseEntity<Void> removeInterest(@PathVariable String subjectCode, Authentication currentUser);
+
+    @GetMapping("/friends")
+    public ResponseEntity<FriendsInterestsDTO> listFriendsInterests(Authentication currentUser,
+                                                                          @Param("period") Integer period,
+                                                                          @Param("year") Integer year);
 }

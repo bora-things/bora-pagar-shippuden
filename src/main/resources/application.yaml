@@ -40,3 +40,4 @@ sigaa:
 frontend:
   url: ${FRONTEND_URL:http://localhost:8080}
   redirect: ${FRONTEND_URL:http://localhost:8080}/dashboard
+

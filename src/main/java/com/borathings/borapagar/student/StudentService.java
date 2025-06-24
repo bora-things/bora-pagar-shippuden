@@ -101,7 +101,8 @@ public class StudentService {
         List<TranscriptComponentEntity> transcriptComponents = student.getTranscriptComponents();
         // Mapear turmas do aluno por código da disciplina
         Map<String, ClassroomEntity> classroomMap = student.getClassrooms().stream()
-                .collect(Collectors.toMap(ClassroomEntity::getComponentCode, Function.identity()));
+                .collect(Collectors.toMap(ClassroomEntity::getComponentCode, Function.identity(),
+                        (prev,next)->prev));
 
         // Mapear interesses do aluno por código da disciplina
         Map<String, StudentSubjectInterestEntity> interestMap = student.getInterests().stream()
