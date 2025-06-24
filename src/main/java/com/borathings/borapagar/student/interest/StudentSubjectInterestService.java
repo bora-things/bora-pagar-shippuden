@@ -14,11 +14,13 @@ import com.borathings.borapagar.student.interest.dto.StudentFriendInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
 import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
+import com.borathings.borapagar.student.transcript.enums.TranscriptComponentSituationEnum;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -164,6 +166,13 @@ public class StudentSubjectInterestService {
         List<ComponentResponseDTO> componentResponseDTOS=components.stream().map(item->componentMapper.toResponseDTO(item))
                 .toList();
 
+        Map<Integer, String> componentMap = components.stream()
+                .collect(Collectors.toMap(
+                        ComponentEntity::getComponentId,
+                        ComponentEntity::getCode,
+                        (a, b) -> a
+                ));
+
         Map<StudentEntity, List<StudentSubjectInterestEntity>> groupedByStudent = friendsInterests.stream()
                 .collect(Collectors.groupingBy(StudentSubjectInterestEntity::getStudent));
 
@@ -172,17 +181,22 @@ public class StudentSubjectInterestService {
                     StudentEntity s = entry.getKey();
                     List<StudentSubjectInterestEntity> interests = entry.getValue();
 
-                    // Pegar códigos únicos
-                    List<String> subjectCodes = interests.stream()
+                    List<String> subjectInterestsCodes = interests.stream()
                             .map(StudentSubjectInterestEntity::getSubjectCode)
                             .distinct()
+                            .toList();
+                    List<String> subjectsFinished = s.getTranscriptComponents().stream()
+                            .filter(item -> TranscriptComponentSituationEnum.fromId(item.getSituation()).isApproved())
+                            .map(item -> componentMap.get(item.getComponentId()))
+                            .filter(Objects::nonNull)
                             .toList();
 
                     return new StudentFriendInterestDTO(
                             s.getStudentName(),
                             s.getImageUrl(),
-                            subjectCodes
-                    );
+                            subjectInterestsCodes,
+                            subjectsFinished
+                            );
                 })
                 .toList();
 

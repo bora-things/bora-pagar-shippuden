@@ -11,7 +11,14 @@ import org.springframework.data.repository.query.Param;
 
 public interface ComponentRepository extends AbstractRepository<ComponentEntity> {
 
-    List<ComponentEntity> findAllByCodeIn(List<String> code);
+    @Query(value = """
+    SELECT DISTINCT ON (c.code) *
+    FROM components c
+    WHERE c.code IN (:codes)
+    ORDER BY c.code, c.id DESC
+""", nativeQuery = true)
+
+    List<ComponentEntity> findAllByCodeIn(List<String> codes);
 
     Page<ComponentEntity> findAll(Pageable pageable);
 

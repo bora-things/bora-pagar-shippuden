@@ -1,0 +1,10 @@
+```sh
+#!/usr/bin/sh
+# Run only if had changed at backend dir
+if ! git diff --cached --quiet -- backend/; then
+    # If any command fails, exit immediately with that command's exit status
+    set -e pipefail
+    cd $(git rev-parse --show-toplevel)/backend
+    exec mvn spotless:check
+fi
+```
