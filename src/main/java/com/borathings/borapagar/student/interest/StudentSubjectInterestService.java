@@ -3,7 +3,6 @@ package com.borathings.borapagar.student.interest;
 import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
-import com.borathings.borapagar.component.SubjectSigaaClient;
 import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.core.exception.subjectInterest.InterestInCompletedSubjectException;
@@ -20,7 +19,6 @@ import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -151,30 +149,26 @@ public class StudentSubjectInterestService {
 
     public FriendsInterestsDTO listFriendsInterests(StudentEntity student, Integer period, Integer year) {
 
-        Set<UserEntity> userFriends=student.getUser().getFriends();
-        List<StudentSubjectInterestEntity> friendsInterests=studentSubjectInterestRepository.findAllByUserInAndPeriodAndYear(
-                userFriends, period, year
-        );
+        Set<UserEntity> userFriends = student.getUser().getFriends();
+        List<StudentSubjectInterestEntity> friendsInterests =
+                studentSubjectInterestRepository.findAllByUserInAndPeriodAndYear(userFriends, period, year);
 
         List<String> uniqueSubjectCodes = friendsInterests.stream()
                 .map(StudentSubjectInterestEntity::getSubjectCode)
                 .distinct()
                 .toList();
 
-        List<ComponentEntity> components=componentService.findAllByCodeIn(uniqueSubjectCodes);
+        List<ComponentEntity> components = componentService.findAllByCodeIn(uniqueSubjectCodes);
 
-        List<ComponentResponseDTO> componentResponseDTOS=components.stream().map(item->componentMapper.toResponseDTO(item))
+        List<ComponentResponseDTO> componentResponseDTOS = components.stream()
+                .map(item -> componentMapper.toResponseDTO(item))
                 .toList();
 
         Map<Integer, String> componentMap = components.stream()
-                .collect(Collectors.toMap(
-                        ComponentEntity::getComponentId,
-                        ComponentEntity::getCode,
-                        (a, b) -> a
-                ));
+                .collect(Collectors.toMap(ComponentEntity::getComponentId, ComponentEntity::getCode, (a, b) -> a));
 
-        Map<StudentEntity, List<StudentSubjectInterestEntity>> groupedByStudent = friendsInterests.stream()
-                .collect(Collectors.groupingBy(StudentSubjectInterestEntity::getStudent));
+        Map<StudentEntity, List<StudentSubjectInterestEntity>> groupedByStudent =
+                friendsInterests.stream().collect(Collectors.groupingBy(StudentSubjectInterestEntity::getStudent));
 
         List<StudentFriendInterestDTO> studentFriendInterestDTOS = groupedByStudent.entrySet().stream()
                 .map(entry -> {
@@ -186,26 +180,17 @@ public class StudentSubjectInterestService {
                             .distinct()
                             .toList();
                     List<String> subjectsFinished = s.getTranscriptComponents().stream()
-                            .filter(item -> TranscriptComponentSituationEnum.fromId(item.getSituation()).isApproved())
+                            .filter(item -> TranscriptComponentSituationEnum.fromId(item.getSituation())
+                                    .isApproved())
                             .map(item -> componentMap.get(item.getComponentId()))
                             .filter(Objects::nonNull)
                             .toList();
 
                     return new StudentFriendInterestDTO(
-                            s.getStudentName(),
-                            s.getImageUrl(),
-                            subjectInterestsCodes,
-                            subjectsFinished
-                            );
+                            s.getStudentName(), s.getImageUrl(), subjectInterestsCodes, subjectsFinished);
                 })
                 .toList();
 
-        return new FriendsInterestsDTO(
-                componentResponseDTOS,
-                studentFriendInterestDTOS
-        );
-
+        return new FriendsInterestsDTO(componentResponseDTOS, studentFriendInterestDTOS);
     }
-
 }
-

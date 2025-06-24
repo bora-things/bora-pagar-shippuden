@@ -5,7 +5,6 @@ import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestController;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestService;
 import com.borathings.borapagar.student.interest.dto.FriendsInterestsDTO;
-import com.borathings.borapagar.student.interest.dto.StudentFriendInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
 import com.borathings.borapagar.user.UserEntity;
@@ -29,6 +28,7 @@ public class StudentSubjectInterestControllerImpl implements StudentSubjectInter
 
     @Autowired
     StudentService studentService;
+
     @Autowired
     private StudentSubjectInterestService studentSubjectInterestService;
 
@@ -61,13 +61,10 @@ public class StudentSubjectInterestControllerImpl implements StudentSubjectInter
 
     @Override
     public ResponseEntity<FriendsInterestsDTO> listFriendsInterests(
-            Authentication currentUser,
-            @Param("period") Integer period,
-            @Param("year") Integer year) {
+            Authentication currentUser, @Param("period") Integer period, @Param("year") Integer year) {
         UserEntity u = userService.findByLoginOrError(currentUser.getName());
         StudentEntity s = studentService.findByUserIdOrError(u.getUserId());
-        FriendsInterestsDTO response= studentSubjectInterestService.listFriendsInterests(s,period,year);
+        FriendsInterestsDTO response = studentSubjectInterestService.listFriendsInterests(s, period, year);
         return ResponseEntity.ok(response);
     }
-
 }

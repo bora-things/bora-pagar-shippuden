@@ -1,11 +1,10 @@
 package com.borathings.borapagar.student.interest;
 
 import com.borathings.borapagar.core.AbstractRepository;
+import com.borathings.borapagar.user.UserEntity;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import com.borathings.borapagar.user.UserEntity;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,18 +29,13 @@ public interface StudentSubjectInterestRepository extends AbstractRepository<Stu
             "SELECT ssi FROM StudentSubjectInterestEntity ssi JOIN FETCH ssi.student WHERE ssi.student.user.id IN :studentIds")
     List<StudentSubjectInterestEntity> findAllByStudentIdIn(@Param("studentIds") List<Long> studentIds);
 
-    @Query("""
+    @Query(
+            """
     SELECT ssi FROM StudentSubjectInterestEntity ssi
     JOIN FETCH ssi.student
     WHERE ssi.student.user IN :users
     AND ssi.period = :period AND ssi.year = :year
 """)
     List<StudentSubjectInterestEntity> findAllByUserInAndPeriodAndYear(
-            @Param("users") Set<UserEntity> users,
-            @Param("period") Integer period,
-            @Param("year") Integer year);
-
-
-
-
+            @Param("users") Set<UserEntity> users, @Param("period") Integer period, @Param("year") Integer year);
 }
