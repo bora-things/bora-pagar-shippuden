@@ -3,3 +3,4 @@ spring:
     url: 'jdbc:postgresql://localhost:5432/borapagar'
     username: postgres
     password: password
+    driver-class-name: org.postgresql.Driver

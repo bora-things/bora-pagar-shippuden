@@ -208,13 +208,14 @@ public class StudentService {
                     .body(new ParameterizedTypeReference<WorkloadDto>() {});
 
             if (workloadDto != null) {
-                WorkloadEntity workload = WorkloadEntity.builder()
-                        .pendingWorkload(workloadDto.pendingWorkload())
-                        .totalMinimumWorkload(workloadDto.totalMinimumWorkload())
-                        .totalWorkloadCompleted(workloadDto.totalWorkloadCompleted())
-                        .student(student)
-                        .build();
-                workloadRepository.deleteAllByStudent(student);
+                WorkloadEntity workload = workloadRepository
+                        .findByStudent(student)
+                        .orElse(WorkloadEntity.builder().student(student).build());
+
+                workload.setPendingWorkload(workloadDto.pendingWorkload());
+                workload.setTotalMinimumWorkload(workloadDto.totalMinimumWorkload());
+                workload.setTotalWorkloadCompleted(workloadDto.totalWorkloadCompleted());
+
                 workloadRepository.save(workload);
             }
 

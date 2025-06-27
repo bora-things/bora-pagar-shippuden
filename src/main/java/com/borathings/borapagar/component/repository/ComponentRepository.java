@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -29,4 +30,7 @@ public interface ComponentRepository extends AbstractRepository<ComponentEntity>
     List<ComponentEntity> searchByNameOrCode(@Param("searched") String searched);
 
     Optional<ComponentEntity> findFirstByCode(String code);
+
+    @Modifying
+    void deleteByCurricularMatrixId(@Param("curricularMatrixId") Integer curricularMatrixId);
 }
