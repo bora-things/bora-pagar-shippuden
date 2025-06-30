@@ -5,6 +5,10 @@ import com.borathings.borapagar.component.dto.ComponentDTO;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+
+import com.borathings.borapagar.component.dto.ComponentDetailsDTO;
+import com.borathings.borapagar.component.dto.ComponentResponseDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,4 +41,12 @@ public class ComponentController {
 
         return ResponseEntity.status(HttpStatus.OK).body(uniqueData);
     }
+
+    @GetMapping("/details")
+    public CompletableFuture<ResponseEntity<ComponentResponseDetailsDTO>> findComponentDetails(@RequestParam String code) {
+        return componentService.findComponentDetails(code)
+                .thenApply(response -> ResponseEntity.ok(response));
+    }
+
+
 }
