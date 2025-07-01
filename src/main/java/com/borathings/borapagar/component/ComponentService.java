@@ -10,10 +10,9 @@ import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.component.repository.ComponentRepository;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import com.borathings.borapagar.core.AbstractModel;
 import com.borathings.borapagar.docent.DocentService;
@@ -25,6 +24,8 @@ import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestEntity;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestHelperService;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestService;
+import com.borathings.borapagar.user.UserService;
+import com.borathings.borapagar.user.dto.UserDTO;
 import com.borathings.borapagar.user.dto.response.UserFriendResponseDto;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
@@ -62,6 +63,9 @@ public class ComponentService {
     private StudentRepository studentRepository;
     @Autowired
     private ClassroomHelperService classroomHelperService;
+
+    @Autowired
+    private UserService userService;
 
 
     public Page<ComponentEntity> getAllComponentsPageable(Pageable pageable) {
@@ -110,7 +114,6 @@ public class ComponentService {
             List<UserFriendResponseDto> friendsInterests=studentSubjectInterestService.getFriendsInterestsInComponent(student,code).stream()
                     .map(item->{
                         StudentEntity studentFriend=item.getStudent();
-                                System.out.println(student.getStudentName());
                         return new UserFriendResponseDto(studentFriend.getStudentName(),studentFriend.getCourseName(),studentFriend.getUserPeriod(),studentFriend.getImageUrl());
                     }
                     ).toList();
@@ -132,12 +135,48 @@ public class ComponentService {
         // Passa a lista filtrada para o método do service (ajuste se o método espera outro tipo)
         List<DocentEvaluationDTO> evaluationDTOS = docentService.findDocentsEvaluation(code, filteredClassrooms);
 
-        return evaluationDTOS.stream()
-                .map(item -> new DocentResponseDTO(item.getTeacherName(), item.getGeneralAverage()))
+        Map<Long, Accumulator> teacherMap = new HashMap<>();
+
+        for (DocentEvaluationDTO dto : evaluationDTOS) {
+            Long teacherId = dto.getTeacherId();
+
+
+            teacherMap.computeIfAbsent(teacherId, id -> {
+                Accumulator acc = new Accumulator();
+                acc.name = dto.getTeacherName();
+                acc.cpf = dto.getCpf();
+                return acc;
+            }).add(dto.getGeneralAverage());
+        }
+
+        List<DocentResponseDTO> response = teacherMap.values().stream()
+                .map(acc -> {
+                    UserDTO user = userService.fetchUserByCpf(acc.cpf); // busca aqui, uma vez por professor
+
+                    return new DocentResponseDTO(
+                            acc.name,
+                            acc.average(),
+                            user.imageUrl()
+                    );
+                })
                 .toList();
+
+        return response;
+    }
+}
+
+class Accumulator {
+    double sum = 0;
+    int count = 0;
+    String name;
+    String cpf;
+
+    void add(double value) {
+        sum += value;
+        count++;
     }
 
-
-
-
+    double average() {
+        return count == 0 ? 0 : sum / count;
+    }
 }

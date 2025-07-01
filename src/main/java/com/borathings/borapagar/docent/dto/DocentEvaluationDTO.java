@@ -47,4 +47,8 @@ public class DocentEvaluationDTO {
 
     @JsonProperty("periodo-turma")
     private Integer classPeriod;
+
+    private String cpf;
+
+
 }

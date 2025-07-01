@@ -7,6 +7,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
@@ -21,7 +22,7 @@ public class ClassroomHelperService {
     @Autowired
     private ClassroomMapper classroomMapper;
 
-    public List<ClassroomEntity> findClassroomsByComponentCode(String code){
+    public List<ClassroomEntity> findClassroomsByComponentCode(String code) {
 
         List<ClassroomDTO> classroomDTOs = serviceRestClient
                 .get()
@@ -30,10 +31,12 @@ public class ClassroomHelperService {
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {});
 
-        if(classroomDTOs != null && !classroomDTOs.isEmpty()) {
-            return classroomDTOs.stream().map(item->classroomMapper.toEntity(item)).toList();
-
+        if (classroomDTOs != null && !classroomDTOs.isEmpty()) {
+            return classroomDTOs.stream()
+                    .map(classroomMapper::toEntity)
+                    .toList();
         }
-        return null;
+
+        return Collections.emptyList();
     }
 }
