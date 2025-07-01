@@ -1,20 +1,23 @@
 package com.borathings.borapagar.component.dto;
 
+import com.borathings.borapagar.docent.dto.DocentResponseDTO;
+import com.borathings.borapagar.user.dto.response.UserFriendResponseDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 public record ComponentResponseDetailsDTO(
-        @JsonProperty("carga-horaria-total") Integer totalWorkload,
+        @JsonProperty("workload") Integer totalWorkload,
         @JsonProperty("co-requisites") String coRequisites,
         @JsonProperty("pre-requisites") String preRequisites,
-        @JsonProperty("codigo") String code,
-        @JsonProperty("departamento") String department,
-        @JsonProperty("disciplina-obrigatoria") Boolean mandatorySubject,
-        @JsonProperty("nome") String name,
-        @JsonProperty("equivalentes") String equivalent,
-        @JsonProperty("id-componente") Integer componentId,
-        @JsonProperty("id-matriz-curricular") Integer curricularMatrixId,
-        @JsonProperty("id-unidade") Integer unitId,
-        @JsonProperty("ementa") String objectives,
-        @JsonProperty("conteudo") String content
-        )
-{}
+        @JsonProperty("code") String code,
+        @JsonProperty("mandatory") Boolean mandatorySubject,
+        @JsonProperty("name") String name,
+        @JsonProperty("equivalents") String equivalent,
+        @JsonProperty("componentId") Integer componentId,
+        @JsonProperty("description") String objectives,
+        List<UserFriendResponseDto> friends,
+        List<DocentResponseDTO> teachers
+) {
+
+}

@@ -5,10 +5,13 @@ import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.component.dto.ComponentDetailsDTO;
 import com.borathings.borapagar.component.dto.ComponentResponseDetailsDTO;
 import com.borathings.borapagar.component.dto.ComponentResponseDTO;
+import com.borathings.borapagar.docent.dto.DocentResponseDTO;
+import com.borathings.borapagar.user.dto.response.UserFriendResponseDto;
+import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.Mappings;
+
+import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ComponentMapper {
@@ -20,6 +23,8 @@ public interface ComponentMapper {
     public ComponentResponseDTO toResponseDTO(ComponentEntity component);
 
     public ComponentResponseDetailsDTO toDetailsDTO(ComponentEntity component,
-                                                    ComponentDetailsDTO componentDetailsDTO);
+                                                    ComponentDetailsDTO componentDetailsDTO,
+                                                    List<DocentResponseDTO> teachers,
+                                                    List<UserFriendResponseDto> friends);
 
 }

@@ -69,6 +69,4 @@ public class DocentEntity extends AbstractModel {
     @Column(name = "unit")
     private String unit;
 
-    @OneToMany(mappedBy = "docent")
-    private List<ClassroomEntity> classrooms;
 }
