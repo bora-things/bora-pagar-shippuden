@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: 'postgres:latest'
@@ -12,6 +10,14 @@ services:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data  # Volume para persistência dos dados
+  redis:
+      image: 'redis:latest'
+      restart: always
+      ports:
+        - '6379:6379'
+      volumes:
+        - redis_data:/data
 
 volumes:
   postgres_data:  # Define o volume para armazenar os dados do banco
+  redis_data:

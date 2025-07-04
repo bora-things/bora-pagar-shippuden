@@ -30,7 +30,7 @@ public class ComponentController {
         componentService.fetchComponents();
     }
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<List<ComponentDTO>> findSearchedComponents(@RequestParam String searched) {
         List<ComponentDTO> data = componentService.findSearchedComponents(searched);
 

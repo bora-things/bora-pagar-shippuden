@@ -31,6 +31,7 @@ import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -95,6 +96,7 @@ public class ComponentService {
 
 
 
+		@Cacheable(value = "component.detail", key="#code")
     public ComponentResponseDetailsDTO findComponentDetails(String code,String studentLogin) {
         StudentEntity student=studentRepository.findByUserLogin(studentLogin).orElseThrow(EntityNotFoundException::new);
         Optional<ComponentEntity> component = componentRepository.findFirstByCode(code);
