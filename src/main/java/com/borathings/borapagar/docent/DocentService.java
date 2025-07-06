@@ -3,13 +3,12 @@ package com.borathings.borapagar.docent;
 import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.docent.dto.DocentDTO;
 import com.borathings.borapagar.docent.dto.DocentEvaluationDTO;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-
-import java.util.*;
 
 @Service
 public class DocentService {
@@ -26,8 +25,7 @@ public class DocentService {
                     .get()
                     .uri("/turma/v1/turmas/" + classroomId + "/docentes")
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<DocentDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<DocentDTO>>() {});
 
             if (docents != null && !docents.isEmpty()) {
                 docentsResponse.addAll(docents);
@@ -36,8 +34,7 @@ public class DocentService {
         return docentsResponse;
     }
 
-
-    public List<DocentEvaluationDTO> findDocentsEvaluation(String componentCode,List<ClassroomEntity> classrooms) {
+    public List<DocentEvaluationDTO> findDocentsEvaluation(String componentCode, List<ClassroomEntity> classrooms) {
         Set<DocentEvaluationDTO> docentsEvaluationSet = new HashSet<>();
         List<DocentDTO> docents = findDocentsOnClassrooms(classrooms);
 
@@ -46,10 +43,11 @@ public class DocentService {
                 continue;
             }
 
-
             List<DocentEvaluationDTO> docentsEvaluation = serviceRestClient
                     .get()
-                    .uri("/avaliacao-institucional/v1/avaliacoes-docentes?id-unidade="+classrooms.getFirst().getUnitId()+"&id-docente="+docent.teacherId()+"&codigo-componente="+componentCode)
+                    .uri("/avaliacao-institucional/v1/avaliacoes-docentes?id-unidade="
+                            + classrooms.getFirst().getUnitId() + "&id-docente=" + docent.teacherId()
+                            + "&codigo-componente=" + componentCode)
                     .retrieve()
                     .body(new ParameterizedTypeReference<List<DocentEvaluationDTO>>() {});
 
@@ -76,8 +74,5 @@ public class DocentService {
             }
         }
         return docentsEvaluationSet.stream().toList();
-
     }
-
-
 }

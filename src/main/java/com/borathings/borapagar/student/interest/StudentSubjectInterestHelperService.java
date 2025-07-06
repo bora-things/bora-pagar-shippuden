@@ -2,10 +2,9 @@ package com.borathings.borapagar.student.interest;
 
 import com.borathings.borapagar.core.AbstractModel;
 import com.borathings.borapagar.student.StudentEntity;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class StudentSubjectInterestHelperService {

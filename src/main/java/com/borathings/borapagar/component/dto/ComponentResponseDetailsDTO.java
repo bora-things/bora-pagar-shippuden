@@ -3,7 +3,6 @@ package com.borathings.borapagar.component.dto;
 import com.borathings.borapagar.docent.dto.DocentResponseDTO;
 import com.borathings.borapagar.user.dto.response.UserFriendResponseDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public record ComponentResponseDetailsDTO(
@@ -17,7 +16,4 @@ public record ComponentResponseDetailsDTO(
         @JsonProperty("componentId") Integer componentId,
         @JsonProperty("description") String objectives,
         List<UserFriendResponseDto> friends,
-        List<DocentResponseDTO> teachers
-) {
-
-}
+        List<DocentResponseDTO> teachers) {}

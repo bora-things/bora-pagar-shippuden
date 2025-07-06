@@ -1,6 +1,5 @@
 package com.borathings.borapagar.user;
 
-import com.borathings.borapagar.component.dto.ComponentDetailsDTO;
 import com.borathings.borapagar.core.exception.user.UsersNotFriendsException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
@@ -149,12 +148,10 @@ public class UserService {
 
         List<UserDTO> users = serviceRestClient
                 .get()
-                .uri("/usuario/v1/usuarios?cpf-cnpj="+cpf)
+                .uri("/usuario/v1/usuarios?cpf-cnpj=" + cpf)
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<UserDTO>>() {});
 
-        return users==null || users.isEmpty()?null:users.getFirst();
-
+        return users == null || users.isEmpty() ? null : users.getFirst();
     }
-
 }

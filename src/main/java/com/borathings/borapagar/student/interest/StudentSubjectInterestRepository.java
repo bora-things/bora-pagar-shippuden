@@ -41,7 +41,6 @@ public interface StudentSubjectInterestRepository extends AbstractRepository<Stu
 
     @Query(
             "SELECT ssi FROM StudentSubjectInterestEntity ssi JOIN FETCH ssi.student WHERE ssi.student.user.id IN :studentIds and ssi.subjectCode=:subjectCode")
-    List<StudentSubjectInterestEntity> findAllBySubjectCodeAndStudentIn(@Param("subjectCode") String subjectCode,@Param("studentIds") List<Long> studentIds);
-
-
+    List<StudentSubjectInterestEntity> findAllBySubjectCodeAndStudentIn(
+            @Param("subjectCode") String subjectCode, @Param("studentIds") List<Long> studentIds);
 }

@@ -49,6 +49,4 @@ public class DocentEvaluationDTO {
     private Integer classPeriod;
 
     private String cpf;
-
-
 }

@@ -126,7 +126,7 @@ public class ClassroomService {
         }
     }
 
-    public List<ClassroomEntity> findClassroomsByComponentCode(String code){
+    public List<ClassroomEntity> findClassroomsByComponentCode(String code) {
 
         List<ClassroomDTO> classroomDTOs = serviceRestClient
                 .get()
@@ -135,14 +135,13 @@ public class ClassroomService {
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {});
 
-        if(classroomDTOs != null && !classroomDTOs.isEmpty()) {
-            return classroomDTOs.stream().map(item->classroomMapper.toEntity(item)).toList();
-
+        if (classroomDTOs != null && !classroomDTOs.isEmpty()) {
+            return classroomDTOs.stream()
+                    .map(item -> classroomMapper.toEntity(item))
+                    .toList();
         }
         return null;
     }
-
-
 
     public static <T> CompletableFuture<List<T>> sequence(List<CompletableFuture<T>> futures) {
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))

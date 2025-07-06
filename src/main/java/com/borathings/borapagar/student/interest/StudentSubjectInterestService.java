@@ -42,9 +42,11 @@ public class StudentSubjectInterestService {
     @Autowired
     private ComponentMapper componentMapper;
 
-    public List<StudentSubjectInterestEntity> getFriendsInterestsInComponent(StudentEntity student, String code){
-        List<Long> friendsIds=student.getUser().getFriends().stream().map(AbstractModel::getId).toList();
-        return studentSubjectInterestRepository.findAllBySubjectCodeAndStudentIn(code,friendsIds);
+    public List<StudentSubjectInterestEntity> getFriendsInterestsInComponent(StudentEntity student, String code) {
+        List<Long> friendsIds = student.getUser().getFriends().stream()
+                .map(AbstractModel::getId)
+                .toList();
+        return studentSubjectInterestRepository.findAllBySubjectCodeAndStudentIn(code, friendsIds);
     }
 
     public List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId) {

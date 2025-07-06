@@ -1,9 +1,7 @@
 package com.borathings.borapagar.docent;
 
-import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.core.AbstractModel;
 import jakarta.persistence.*;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -68,5 +66,4 @@ public class DocentEntity extends AbstractModel {
 
     @Column(name = "unit")
     private String unit;
-
 }

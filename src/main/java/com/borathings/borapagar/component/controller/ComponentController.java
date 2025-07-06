@@ -2,13 +2,10 @@ package com.borathings.borapagar.component.controller;
 
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.dto.ComponentDTO;
+import com.borathings.borapagar.component.dto.ComponentResponseDetailsDTO;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-
-import com.borathings.borapagar.component.dto.ComponentDetailsDTO;
-import com.borathings.borapagar.component.dto.ComponentResponseDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,11 +41,10 @@ public class ComponentController {
     }
 
     @GetMapping("/details")
-    public ResponseEntity<ComponentResponseDetailsDTO> findComponentDetails(@RequestParam String code, Authentication authentication) {
+    public ResponseEntity<ComponentResponseDetailsDTO> findComponentDetails(
+            @RequestParam String code, Authentication authentication) {
         String login = authentication.getName();
-        ComponentResponseDetailsDTO detailsDTO= componentService.findComponentDetails(code,login);
+        ComponentResponseDetailsDTO detailsDTO = componentService.findComponentDetails(code, login);
         return ResponseEntity.ok(detailsDTO);
     }
-
-
 }
