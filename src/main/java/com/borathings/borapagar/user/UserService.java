@@ -16,10 +16,13 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 /** UserService */
 @Service
@@ -33,6 +36,10 @@ public class UserService {
     @Lazy
     @Autowired
     StudentService studentService;
+
+    @Autowired
+    @Qualifier("serviceRestClient")
+    RestClient serviceRestClient;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -135,5 +142,16 @@ public class UserService {
         } else {
             throw new UsersNotFriendsException();
         }
+    }
+
+    public UserDTO fetchUserByCpf(String cpf) {
+
+        List<UserDTO> users = serviceRestClient
+                .get()
+                .uri("/usuario/v1/usuarios?cpf-cnpj=" + cpf)
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<UserDTO>>() {});
+
+        return users == null || users.isEmpty() ? null : users.getFirst();
     }
 }

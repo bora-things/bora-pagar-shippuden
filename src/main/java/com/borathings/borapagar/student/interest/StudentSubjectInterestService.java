@@ -5,6 +5,7 @@ import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
+import com.borathings.borapagar.core.AbstractModel;
 import com.borathings.borapagar.core.exception.subjectInterest.InterestInCompletedSubjectException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentHelperService;
@@ -40,6 +41,13 @@ public class StudentSubjectInterestService {
 
     @Autowired
     private ComponentMapper componentMapper;
+
+    public List<StudentSubjectInterestEntity> getFriendsInterestsInComponent(StudentEntity student, String code) {
+        List<Long> friendsIds = student.getUser().getFriends().stream()
+                .map(AbstractModel::getId)
+                .toList();
+        return studentSubjectInterestRepository.findAllBySubjectCodeAndStudentIn(code, friendsIds);
+    }
 
     public List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId) {
         return studentSubjectInterestRepository.findAllByStudentId(studentId);

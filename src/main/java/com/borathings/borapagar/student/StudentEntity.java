@@ -114,8 +114,11 @@ public class StudentEntity extends SoftDeletableModel {
     public int getUserPeriod() {
         Set<String> periods = new HashSet<>();
 
-        for (TranscriptComponentEntity transcriptComponentEntity : transcriptComponents) {
-            String periodKey = transcriptComponentEntity.getYear() + "-" + transcriptComponentEntity.getPeriod();
+        for (ClassroomEntity classrooms : classrooms) {
+            if (classrooms.getPeriod() != 1 && classrooms.getPeriod() != 2) {
+                continue;
+            }
+            String periodKey = classrooms.getYear() + "-" + classrooms.getPeriod();
             periods.add(periodKey);
         }
 
