@@ -33,4 +33,12 @@ public interface ComponentRepository extends AbstractRepository<ComponentEntity>
 
     @Modifying
     void deleteByCurricularMatrixId(@Param("curricularMatrixId") Integer curricularMatrixId);
+
+    @Query(value = 
+        """
+        SELECT *, embedding <=> ? as distance 
+        FROM components c ORDER BY embedding <=> ?1 LIMIT ?2;
+        JOIN components_embeddings ce on ce.component_id = c.id  
+        """, nativeQuery = true)
+    List<ComponentEntity> topKComponents(List<Integer> embedding, int k);
 }
