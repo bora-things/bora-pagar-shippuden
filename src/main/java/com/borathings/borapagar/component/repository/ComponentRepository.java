@@ -25,6 +25,8 @@ public interface ComponentRepository extends AbstractRepository<ComponentEntity>
 
     Page<ComponentEntity> findAll(Pageable pageable);
 
+    List<ComponentEntity> findAllByComponentIdIn(List<Integer> ids);
+
     @Query("SELECT c FROM components c " + "WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :searched, '%')) "
             + "OR LOWER(c.code) LIKE LOWER(CONCAT('%', :searched, '%'))")
     List<ComponentEntity> searchByNameOrCode(@Param("searched") String searched);

@@ -120,22 +120,29 @@ public class StudentSubjectInterestServiceTest {
                 EntityNotFoundException.class,
                 () -> studentSubjectInterestService.createInterest(semesterDTO, student));
 
-        assertEquals("Componente não encontrado", ex.getMessage());
+        assertEquals("Componente não encontrado: 63313", ex.getMessage());
         verify(studentSubjectInterestRepository, never()).save(any());
     }
 
     @Test
     void shouldThrowWhenAlreadyInTranscript() {
+        StudentEntity student = new StudentEntity();
+        student.setId(1L);
+        student.setClassrooms(Set.of());
+
         ComponentEntity component = new ComponentEntity();
         component.setComponentId(10);
         component.setCode("63313");
 
         TranscriptComponentEntity transcript = new TranscriptComponentEntity();
         transcript.setComponentId(10);
+
         student.setTranscriptComponents(List.of(transcript));
-        student.setClassrooms(Set.of());
+
+        StudentSubjectAddInterestDTO semesterDTO = new StudentSubjectAddInterestDTO("63313", 2025, 1);
 
         when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
+        when(componentService.findAllByComponentId(List.of(10))).thenReturn(List.of(component));
 
         assertThrows(
                 InterestInCompletedSubjectException.class,

@@ -13,6 +13,7 @@ import com.borathings.borapagar.student.interest.dto.FriendsInterestsDTO;
 import com.borathings.borapagar.student.interest.dto.StudentFriendInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
+import com.borathings.borapagar.student.interest.util.RequisiteParser;
 import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
 import com.borathings.borapagar.student.transcript.enums.TranscriptComponentSituationEnum;
 import com.borathings.borapagar.user.UserEntity;
@@ -21,26 +22,19 @@ import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.stream.Stream;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class StudentSubjectInterestService {
 
-    @Autowired
     StudentSubjectInterestRepository studentSubjectInterestRepository;
-
-    @Autowired
     StudentHelperService studentService;
-
-    @Autowired
     UserMapper userMapper;
-
-    @Autowired
     ComponentService componentService;
-
-    @Autowired
-    private ComponentMapper componentMapper;
+    ComponentMapper componentMapper;
 
     public List<StudentSubjectInterestEntity> getFriendsInterestsInComponent(StudentEntity student, String code) {
         List<Long> friendsIds = student.getUser().getFriends().stream()
@@ -124,21 +118,30 @@ public class StudentSubjectInterestService {
         StudentSubjectInterestEntity interestEntity = new StudentSubjectInterestEntity(
                 semesterDTO.year(), semesterDTO.period(), student, semesterDTO.subjectCode());
 
-        Optional<ComponentEntity> component = componentService.findByCode(semesterDTO.subjectCode());
-        if (component.isEmpty()) {
-            throw new EntityNotFoundException("Componente não encontrado");
-        }
+        ComponentEntity component = componentService
+                .findByCode(semesterDTO.subjectCode())
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Componente não encontrado: " + semesterDTO.subjectCode()));
 
-        List<TranscriptComponentEntity> studentTranscriptComponents = student.getTranscriptComponents();
-        if (studentTranscriptComponents.stream()
-                .anyMatch(item -> item.getComponentId().equals(component.get().getComponentId()))) {
+        List<ComponentEntity> transcriptComponents =
+                componentService.findAllByComponentId(student.getTranscriptComponents().stream()
+                        .map(TranscriptComponentEntity::getComponentId)
+                        .toList());
+
+        Set<String> completedOrEnrolledCodes = Stream.concat(
+                        transcriptComponents.stream().map(ComponentEntity::getCode),
+                        student.getClassrooms().stream().map(ClassroomEntity::getComponentCode))
+                .collect(Collectors.toSet());
+        System.out.println(completedOrEnrolledCodes);
+
+        if (completedOrEnrolledCodes.contains(component.getCode())) {
             throw new InterestInCompletedSubjectException();
         }
 
-        Set<ClassroomEntity> studentClasses = student.getClassrooms();
-        if (studentClasses.stream()
-                .anyMatch(item -> item.getComponentCode().equals(component.get().getCode()))) {
-            throw new InterestInCompletedSubjectException();
+        if (component.getPreRequisites() != null
+                && !component.getPreRequisites().isEmpty()) {
+            RequisiteParser parser = new RequisiteParser(completedOrEnrolledCodes);
+            parser.assertRequisitesAreMet(component.getPreRequisites());
         }
 
         Optional<StudentSubjectInterestEntity> optionalStudentSubjectInterestEntity =
