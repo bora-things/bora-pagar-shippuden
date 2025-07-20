@@ -67,6 +67,10 @@ public class ComponentService {
         return componentRepository.findAllByCodeIn(codes);
     }
 
+    public List<ComponentEntity> findAllByComponentId(List<Integer> ids) {
+        return componentRepository.findAllByComponentIdIn(ids);
+    }
+
     @Async
     public void fetchComponents() {
         List<Integer> curricularMatrixIdList = List.of(134044403, 133795010, 133797961, 133804382);

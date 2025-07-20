@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record ComponentDTO(
         @JsonProperty("carga-horaria-total") Integer totalWorkload,
-        @JsonProperty("co-requisites") String coRequisites,
-        @JsonProperty("pre-requisites") String preRequisites,
+        @JsonProperty("co-requisitos") String coRequisites,
+        @JsonProperty("pre-requisitos") String preRequisites,
         @JsonProperty("codigo") String code,
         @JsonProperty("blockComponents") String blockComponents,
         @JsonProperty("departamento") String department,
