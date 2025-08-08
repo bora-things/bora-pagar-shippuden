@@ -1,6 +1,6 @@
 package com.borathings.borapagar.friendRequest;
 
-import com.borathings.borapagar.core.SoftDeletableRepository;
+import com.borathings.borapagar.core.persistence.SoftDeletableRepository;
 import com.borathings.borapagar.user.UserEntity;
 import java.util.List;
 import java.util.Optional;

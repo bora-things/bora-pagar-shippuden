@@ -1,6 +1,6 @@
 package com.borathings.borapagar.workload;
 
-import com.borathings.borapagar.core.SoftDeletableModel;
+import com.borathings.borapagar.core.persistence.SoftDeletableModel;
 import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package com.borathings.borapagar.student.index;
 
-import com.borathings.borapagar.core.AbstractRepository;
+import com.borathings.borapagar.core.persistence.AbstractRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository

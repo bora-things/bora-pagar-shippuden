@@ -1,6 +1,6 @@
 package com.borathings.borapagar.workload;
 
-import com.borathings.borapagar.core.AbstractRepository;
+import com.borathings.borapagar.core.persistence.AbstractRepository;
 import com.borathings.borapagar.student.StudentEntity;
 import java.util.Optional;
 

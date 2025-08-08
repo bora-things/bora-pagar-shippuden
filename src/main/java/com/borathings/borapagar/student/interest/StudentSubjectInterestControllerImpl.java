@@ -1,9 +1,7 @@
-package com.borathings.borapagar.student.interest.impl;
+package com.borathings.borapagar.student.interest;
 
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
-import com.borathings.borapagar.student.interest.StudentSubjectInterestController;
-import com.borathings.borapagar.student.interest.StudentSubjectInterestService;
 import com.borathings.borapagar.student.interest.dto.FriendsInterestsDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;

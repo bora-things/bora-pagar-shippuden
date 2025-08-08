@@ -1,6 +1,6 @@
 package com.borathings.borapagar.student.interest;
 
-import com.borathings.borapagar.core.AbstractRepository;
+import com.borathings.borapagar.core.persistence.AbstractRepository;
 import com.borathings.borapagar.user.UserEntity;
 import java.util.List;
 import java.util.Optional;

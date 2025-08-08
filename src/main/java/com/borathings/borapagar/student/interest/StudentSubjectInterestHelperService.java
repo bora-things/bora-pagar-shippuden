@@ -1,6 +1,6 @@
 package com.borathings.borapagar.student.interest;
 
-import com.borathings.borapagar.core.AbstractModel;
+import com.borathings.borapagar.core.persistence.AbstractModel;
 import com.borathings.borapagar.student.StudentEntity;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

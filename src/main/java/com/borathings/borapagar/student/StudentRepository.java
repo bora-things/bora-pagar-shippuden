@@ -1,6 +1,6 @@
 package com.borathings.borapagar.student;
 
-import com.borathings.borapagar.core.AbstractRepository;
+import com.borathings.borapagar.core.persistence.AbstractRepository;
 import com.borathings.borapagar.user.UserEntity;
 import java.util.Collection;
 import java.util.List;

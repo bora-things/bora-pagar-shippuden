@@ -1,6 +1,6 @@
 package com.borathings.borapagar.student.transcript;
 
-import com.borathings.borapagar.core.AbstractModel;
+import com.borathings.borapagar.core.persistence.AbstractModel;
 import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

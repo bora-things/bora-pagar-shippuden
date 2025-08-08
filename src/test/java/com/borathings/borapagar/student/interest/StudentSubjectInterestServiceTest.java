@@ -9,7 +9,7 @@ import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
-import com.borathings.borapagar.core.exception.subjectInterest.InterestInCompletedSubjectException;
+import com.borathings.borapagar.student.interest.exception.InterestInCompletedSubjectException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentHelperService;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;

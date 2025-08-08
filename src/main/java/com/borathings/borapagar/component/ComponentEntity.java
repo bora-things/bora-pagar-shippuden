@@ -1,7 +1,7 @@
 package com.borathings.borapagar.component;
 
 import com.borathings.borapagar.classroom.ClassroomEntity;
-import com.borathings.borapagar.core.AbstractModel;
+import com.borathings.borapagar.core.persistence.AbstractModel;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.*;

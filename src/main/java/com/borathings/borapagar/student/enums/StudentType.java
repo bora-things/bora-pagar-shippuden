@@ -1,4 +1,4 @@
-package com.borathings.borapagar.student.IdMappers;
+package com.borathings.borapagar.student.enums;
 
 import java.util.HashMap;
 import java.util.Map;

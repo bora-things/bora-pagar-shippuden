@@ -1,6 +1,6 @@
 package com.borathings.borapagar.docent;
 
-import com.borathings.borapagar.core.AbstractModel;
+import com.borathings.borapagar.core.persistence.AbstractModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

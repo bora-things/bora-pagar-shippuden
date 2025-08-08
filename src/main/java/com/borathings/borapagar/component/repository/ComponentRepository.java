@@ -1,7 +1,7 @@
 package com.borathings.borapagar.component.repository;
 
 import com.borathings.borapagar.component.ComponentEntity;
-import com.borathings.borapagar.core.AbstractRepository;
+import com.borathings.borapagar.core.persistence.AbstractRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;

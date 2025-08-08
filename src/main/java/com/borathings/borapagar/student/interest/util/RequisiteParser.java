@@ -1,6 +1,6 @@
 package com.borathings.borapagar.student.interest.util;
 
-import com.borathings.borapagar.core.exception.subjectInterest.PreRequisitesNotCompletedException;
+import com.borathings.borapagar.student.interest.exception.PreRequisitesNotCompletedException;
 import java.util.*;
 
 /**

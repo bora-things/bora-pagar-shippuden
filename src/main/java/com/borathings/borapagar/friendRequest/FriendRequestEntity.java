@@ -1,6 +1,6 @@
 package com.borathings.borapagar.friendRequest;
 
-import com.borathings.borapagar.core.SoftDeletableModel;
+import com.borathings.borapagar.core.persistence.SoftDeletableModel;
 import com.borathings.borapagar.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;

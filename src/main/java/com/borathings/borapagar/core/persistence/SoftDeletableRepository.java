@@ -1,4 +1,4 @@
-package com.borathings.borapagar.core;
+package com.borathings.borapagar.core.persistence;
 
 import jakarta.transaction.Transactional;
 import java.util.List;

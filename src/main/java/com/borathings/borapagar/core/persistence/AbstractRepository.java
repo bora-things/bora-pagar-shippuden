@@ -1,4 +1,4 @@
-package com.borathings.borapagar.core;
+package com.borathings.borapagar.core.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;

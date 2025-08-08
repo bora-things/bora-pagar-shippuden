@@ -1,6 +1,6 @@
 package com.borathings.borapagar.user;
 
-import com.borathings.borapagar.core.SoftDeletableModel;
+import com.borathings.borapagar.core.persistence.SoftDeletableModel;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;

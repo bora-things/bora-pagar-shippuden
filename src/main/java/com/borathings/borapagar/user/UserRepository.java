@@ -1,6 +1,6 @@
 package com.borathings.borapagar.user;
 
-import com.borathings.borapagar.core.SoftDeletableRepository;
+import com.borathings.borapagar.core.persistence.SoftDeletableRepository;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 

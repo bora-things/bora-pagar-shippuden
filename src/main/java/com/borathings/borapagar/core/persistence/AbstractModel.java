@@ -1,5 +1,6 @@
-package com.borathings.borapagar.core;
+package com.borathings.borapagar.core.persistence;
 
+import com.borathings.borapagar.core.Views;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.Column;

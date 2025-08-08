@@ -1,4 +1,4 @@
-package com.borathings.borapagar.core.exception.subjectInterest;
+package com.borathings.borapagar.student.interest.exception;
 
 import com.borathings.borapagar.core.exception.ApiException;
 import org.springframework.http.HttpStatus;

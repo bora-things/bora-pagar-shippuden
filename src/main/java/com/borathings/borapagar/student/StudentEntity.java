@@ -1,9 +1,9 @@
 package com.borathings.borapagar.student;
 
 import com.borathings.borapagar.classroom.ClassroomEntity;
-import com.borathings.borapagar.core.SoftDeletableModel;
-import com.borathings.borapagar.student.IdMappers.StudentSituation;
-import com.borathings.borapagar.student.IdMappers.StudentType;
+import com.borathings.borapagar.core.persistence.SoftDeletableModel;
+import com.borathings.borapagar.student.enums.StudentSituation;
+import com.borathings.borapagar.student.enums.StudentType;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestEntity;
 import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
 import com.borathings.borapagar.user.UserEntity;

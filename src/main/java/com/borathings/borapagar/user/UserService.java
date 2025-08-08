@@ -1,6 +1,6 @@
 package com.borathings.borapagar.user;
 
-import com.borathings.borapagar.core.exception.user.UsersNotFriendsException;
+import com.borathings.borapagar.user.exception.UsersNotFriendsException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.UserDTO;
