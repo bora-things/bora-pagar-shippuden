@@ -5,6 +5,6 @@ import org.springframework.http.HttpStatus;
 
 public class FriendRequestCooldownException extends ApiException {
     public FriendRequestCooldownException() {
-        super(HttpStatus.BAD_REQUEST,"Pedido de amizade em cooldown");
+        super(HttpStatus.BAD_REQUEST, "Pedido de amizade em cooldown");
     }
 }

@@ -1,11 +1,11 @@
-package com.borathings.borapagar.student.transcript;
+package com.borathings.borapagar.student.takenComponent;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 import com.borathings.borapagar.student.StudentEntity;
-import com.borathings.borapagar.student.transcript.dto.TranscriptComponentDTO;
+import com.borathings.borapagar.student.takenComponent.dto.TakenComponentDTO;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -17,17 +17,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class TranscriptComponentServiceTest {
+public class TakenComponentServiceTest {
 
     @Mock
-    private TranscriptComponentRepository repository;
+    private TakenComponentRepository repository;
 
     @InjectMocks
-    private TranscriptComponentService service;
+    private TakenComponentService service;
 
     private StudentEntity student;
-    private List<TranscriptComponentDTO> componentDTOs;
-    private List<TranscriptComponentEntity> expectedEntities;
+    private List<TakenComponentDTO> componentDTOs;
+    private List<TakenComponentEntity> expectedEntities;
 
     @BeforeEach
     void setUp() {
@@ -36,7 +36,7 @@ public class TranscriptComponentServiceTest {
         LocalDate date2 = LocalDate.of(2023, 1, 20);
 
         componentDTOs = Arrays.asList(
-                new TranscriptComponentDTO(
+                new TakenComponentDTO(
                         2023,
                         1,
                         date1.toEpochDay(),
@@ -48,7 +48,7 @@ public class TranscriptComponentServiceTest {
                         1, // registrationSituationId
                         101 // sigaaClassId (int, not String)
                         ),
-                new TranscriptComponentDTO(
+                new TakenComponentDTO(
                         2023, // year
                         1, // period
                         date2.toEpochDay(),
@@ -62,7 +62,7 @@ public class TranscriptComponentServiceTest {
                         ));
 
         expectedEntities = Arrays.asList(
-                TranscriptComponentEntity.builder()
+                TakenComponentEntity.builder()
                         .absences(5)
                         .registerDate(date1.toEpochDay())
                         .sigaaClassId(101)
@@ -70,7 +70,7 @@ public class TranscriptComponentServiceTest {
                         .year(2023)
                         .student(student)
                         .build(),
-                TranscriptComponentEntity.builder()
+                TakenComponentEntity.builder()
                         .absences(2)
                         .registerDate(date2.toEpochDay())
                         .sigaaClassId(102)
@@ -83,7 +83,7 @@ public class TranscriptComponentServiceTest {
 
     @Test
     void testBatchInsertDTOs() {
-        List<TranscriptComponentEntity> result = service.batchInsertDTOs(componentDTOs, student);
+        List<TakenComponentEntity> result = service.batchInsertDTOs(componentDTOs, student);
 
         verify(repository, times(1)).saveAll(anyList());
 
@@ -91,8 +91,8 @@ public class TranscriptComponentServiceTest {
         assertEquals(componentDTOs.size(), result.size());
 
         for (int i = 0; i < result.size(); i++) {
-            TranscriptComponentEntity actual = result.get(i);
-            TranscriptComponentDTO dto = componentDTOs.get(i);
+            TakenComponentEntity actual = result.get(i);
+            TakenComponentDTO dto = componentDTOs.get(i);
 
             assertEquals(dto.absences(), actual.getAbsences());
             assertEquals(dto.registerDate(), actual.getRegisterDate());
@@ -105,7 +105,7 @@ public class TranscriptComponentServiceTest {
 
     @Test
     void testBatchInsertDTOs_EmptyList() {
-        List<TranscriptComponentEntity> result = service.batchInsertDTOs(List.of(), student);
+        List<TakenComponentEntity> result = service.batchInsertDTOs(List.of(), student);
 
         verify(repository, times(1)).saveAll(anyList());
         assertNotNull(result);

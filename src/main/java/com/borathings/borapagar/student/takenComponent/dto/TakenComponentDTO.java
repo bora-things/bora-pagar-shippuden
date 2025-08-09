@@ -1,8 +1,8 @@
-package com.borathings.borapagar.student.transcript.dto;
+package com.borathings.borapagar.student.takenComponent.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record TranscriptComponentDTO(
+public record TakenComponentDTO(
         @JsonProperty("ano") int year,
         @JsonProperty("periodo") int period,
         @JsonProperty("data-cadastro") long registerDate,

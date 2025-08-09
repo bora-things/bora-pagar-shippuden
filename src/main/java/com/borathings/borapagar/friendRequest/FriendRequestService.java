@@ -1,9 +1,9 @@
 package com.borathings.borapagar.friendRequest;
 
+import com.borathings.borapagar.friendRequest.dto.response.FriendRequestResponseDto;
 import com.borathings.borapagar.friendRequest.exception.AlreadyFriendsException;
 import com.borathings.borapagar.friendRequest.exception.DuplicateFriendRequestException;
 import com.borathings.borapagar.friendRequest.exception.FriendRequestCooldownException;
-import com.borathings.borapagar.friendRequest.dto.response.FriendRequestResponseDto;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.UserEntity;

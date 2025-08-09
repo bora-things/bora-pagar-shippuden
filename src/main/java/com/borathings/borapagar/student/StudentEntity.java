@@ -5,7 +5,7 @@ import com.borathings.borapagar.core.persistence.SoftDeletableModel;
 import com.borathings.borapagar.student.enums.StudentSituation;
 import com.borathings.borapagar.student.enums.StudentType;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestEntity;
-import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
+import com.borathings.borapagar.student.takenComponent.TakenComponentEntity;
 import com.borathings.borapagar.user.UserEntity;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -109,7 +109,7 @@ public class StudentEntity extends SoftDeletableModel {
     private List<StudentSubjectInterestEntity> interests = new ArrayList<>();
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TranscriptComponentEntity> transcriptComponents = new ArrayList<>();
+    private List<TakenComponentEntity> takenComponents = new ArrayList<>();
 
     public int getUserPeriod() {
         Set<String> periods = new HashSet<>();

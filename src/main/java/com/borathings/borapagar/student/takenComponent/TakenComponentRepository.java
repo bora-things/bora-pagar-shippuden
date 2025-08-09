@@ -1,4 +1,4 @@
-package com.borathings.borapagar.student.transcript;
+package com.borathings.borapagar.student.takenComponent;
 
 import com.borathings.borapagar.student.StudentEntity;
 import java.util.List;
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public interface TranscriptComponentRepository extends JpaRepository<TranscriptComponentEntity, Long> {
+public interface TakenComponentRepository extends JpaRepository<TakenComponentEntity, Long> {
 
-    List<TranscriptComponentEntity> findAllByStudent(StudentEntity student);
+    List<TakenComponentEntity> findAllByStudent(StudentEntity student);
 
-    Optional<TranscriptComponentEntity> findByComponentId(Integer componentId);
+    Optional<TakenComponentEntity> findByComponentId(Integer componentId);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM TranscriptComponentEntity t WHERE t.student = :student")
-    void deleteByStudent(@Param("student") StudentEntity student);
+    @Query("DELETE FROM TakenComponentEntity t WHERE t.student = :student")
+    void deleteAllByStudent(@Param("student") StudentEntity student);
 }

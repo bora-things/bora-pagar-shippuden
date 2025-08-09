@@ -9,12 +9,12 @@ import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
-import com.borathings.borapagar.student.interest.exception.InterestInCompletedSubjectException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentHelperService;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
-import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
+import com.borathings.borapagar.student.interest.exception.InterestInCompletedSubjectException;
+import com.borathings.borapagar.student.takenComponent.TakenComponentEntity;
 import com.borathings.borapagar.user.UserEntity;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Collections;
@@ -100,7 +100,7 @@ public class StudentSubjectInterestServiceTest {
         component.setCode("63313");
 
         // Student não tem histórico, nem turma, nem interesse
-        student.setTranscriptComponents(List.of());
+        student.setTakenComponents(List.of());
         student.setClassrooms(Set.of());
 
         when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
@@ -134,10 +134,10 @@ public class StudentSubjectInterestServiceTest {
         component.setComponentId(10);
         component.setCode("63313");
 
-        TranscriptComponentEntity transcript = new TranscriptComponentEntity();
+        TakenComponentEntity transcript = new TakenComponentEntity();
         transcript.setComponentId(10);
 
-        student.setTranscriptComponents(List.of(transcript));
+        student.setTakenComponents(List.of(transcript));
 
         StudentSubjectAddInterestDTO semesterDTO = new StudentSubjectAddInterestDTO("63313", 2025, 1);
 
@@ -160,7 +160,7 @@ public class StudentSubjectInterestServiceTest {
         ClassroomEntity classroom = new ClassroomEntity();
         classroom.setComponentCode("63313");
         student.setClassrooms(Set.of(classroom));
-        student.setTranscriptComponents(List.of());
+        student.setTakenComponents(List.of());
 
         when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
 
@@ -178,7 +178,7 @@ public class StudentSubjectInterestServiceTest {
         component.setCode("63313");
 
         student.setClassrooms(Set.of());
-        student.setTranscriptComponents(List.of());
+        student.setTakenComponents(List.of());
 
         when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
         when(studentSubjectInterestRepository.findBySubjectCodeAndStudentId("63313", student.getId()))

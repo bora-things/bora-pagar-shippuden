@@ -1,6 +1,9 @@
-package com.borathings.borapagar.student.transcript.enums;
+package com.borathings.borapagar.student.takenComponent.enums;
 
-public enum TranscriptComponentSituationEnum {
+import lombok.Getter;
+
+@Getter
+public enum TakenComponentSituationEnum {
     APROVADO(4),
     REPROVADO(6),
     REPROVADO_POR_FALTAS(7),
@@ -26,16 +29,12 @@ public enum TranscriptComponentSituationEnum {
 
     private final int id;
 
-    TranscriptComponentSituationEnum(int id) {
+    TakenComponentSituationEnum(int id) {
         this.id = id;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public static TranscriptComponentSituationEnum fromId(int id) {
-        for (TranscriptComponentSituationEnum situation : values()) {
+    public static TakenComponentSituationEnum fromId(int id) {
+        for (TakenComponentSituationEnum situation : values()) {
             if (situation.id == id) {
                 return situation;
             }

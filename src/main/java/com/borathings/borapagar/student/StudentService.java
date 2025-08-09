@@ -15,10 +15,10 @@ import com.borathings.borapagar.student.index.StudentIndexEntity;
 import com.borathings.borapagar.student.index.StudentIndexRepository;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestEntity;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestService;
-import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
-import com.borathings.borapagar.student.transcript.TranscriptComponentService;
-import com.borathings.borapagar.student.transcript.dto.TranscriptComponentDTO;
-import com.borathings.borapagar.student.transcript.enums.TranscriptComponentSituationEnum;
+import com.borathings.borapagar.student.takenComponent.TakenComponentEntity;
+import com.borathings.borapagar.student.takenComponent.TakenComponentService;
+import com.borathings.borapagar.student.takenComponent.dto.TakenComponentDTO;
+import com.borathings.borapagar.student.takenComponent.enums.TakenComponentSituationEnum;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.UserService;
@@ -68,7 +68,7 @@ public class StudentService {
     private WorkloadRepository workloadRepository;
 
     @Autowired
-    private TranscriptComponentService transcriptComponentService;
+    private TakenComponentService takenComponentService;
 
     @Autowired
     private UserMapper userMapper;
@@ -98,7 +98,7 @@ public class StudentService {
         List<ComponentEntity> components = componentPage.getContent();
 
         // Buscar histórico do aluno (disciplinas cursadas)
-        List<TranscriptComponentEntity> transcriptComponents = student.getTranscriptComponents();
+        List<TakenComponentEntity> transcriptComponents = student.getTakenComponents();
         // Mapear turmas do aluno por código da disciplina
         Map<String, ClassroomEntity> classroomMap = student.getClassrooms().stream()
                 .collect(
@@ -109,11 +109,11 @@ public class StudentService {
                 .collect(Collectors.toMap(StudentSubjectInterestEntity::getSubjectCode, Function.identity()));
 
         // Mapear componentes que o aluno não foi aprovado ainda
-        Map<Integer, TranscriptComponentEntity> notApprovedTranscriptMap = transcriptComponents.stream()
-                .filter(tc -> !TranscriptComponentSituationEnum.fromId(tc.getSituation())
-                        .isApproved())
+        Map<Integer, TakenComponentEntity> notApprovedTranscriptMap = transcriptComponents.stream()
+                .filter(tc ->
+                        !TakenComponentSituationEnum.fromId(tc.getSituation()).isApproved())
                 .collect(Collectors.toMap(
-                        TranscriptComponentEntity::getComponentId, Function.identity(), (first, second) -> first));
+                        TakenComponentEntity::getComponentId, Function.identity(), (first, second) -> first));
 
         List<StudentEntity> studentFriends = student.getUser().getFriends().stream()
                 .map(item -> findByUserIdOrError(item.getUserId()))
@@ -267,14 +267,14 @@ public class StudentService {
     public CompletableFuture<Void> fetchAcademicRecord(StudentEntity student) {
         try {
 
-            List<TranscriptComponentDTO> components = userRestClient
+            List<TakenComponentDTO> components = userRestClient
                     .get()
                     .uri("/matricula/v1/matriculas-componentes?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<TranscriptComponentDTO>>() {});
+                    .body(new ParameterizedTypeReference<List<TakenComponentDTO>>() {});
 
-            transcriptComponentService.batchInsertDTOs(components, student);
+            takenComponentService.batchInsertDTOs(components, student);
             return CompletableFuture.completedFuture(null);
 
         } catch (Exception ex) {

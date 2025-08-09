@@ -6,16 +6,16 @@ import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.core.persistence.AbstractModel;
-import com.borathings.borapagar.student.interest.exception.InterestInCompletedSubjectException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentHelperService;
 import com.borathings.borapagar.student.interest.dto.FriendsInterestsDTO;
 import com.borathings.borapagar.student.interest.dto.StudentFriendInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectAddInterestDTO;
 import com.borathings.borapagar.student.interest.dto.StudentSubjectInterestDTO;
+import com.borathings.borapagar.student.interest.exception.InterestInCompletedSubjectException;
 import com.borathings.borapagar.student.interest.util.RequisiteParser;
-import com.borathings.borapagar.student.transcript.TranscriptComponentEntity;
-import com.borathings.borapagar.student.transcript.enums.TranscriptComponentSituationEnum;
+import com.borathings.borapagar.student.takenComponent.TakenComponentEntity;
+import com.borathings.borapagar.student.takenComponent.enums.TakenComponentSituationEnum;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
@@ -124,15 +124,14 @@ public class StudentSubjectInterestService {
                         () -> new EntityNotFoundException("Componente não encontrado: " + semesterDTO.subjectCode()));
 
         List<ComponentEntity> transcriptComponents =
-                componentService.findAllByComponentId(student.getTranscriptComponents().stream()
-                        .map(TranscriptComponentEntity::getComponentId)
+                componentService.findAllByComponentId(student.getTakenComponents().stream()
+                        .map(TakenComponentEntity::getComponentId)
                         .toList());
 
         Set<String> completedOrEnrolledCodes = Stream.concat(
                         transcriptComponents.stream().map(ComponentEntity::getCode),
                         student.getClassrooms().stream().map(ClassroomEntity::getComponentCode))
                 .collect(Collectors.toSet());
-        System.out.println(completedOrEnrolledCodes);
 
         if (completedOrEnrolledCodes.contains(component.getCode())) {
             throw new InterestInCompletedSubjectException();
@@ -190,8 +189,8 @@ public class StudentSubjectInterestService {
                             .map(StudentSubjectInterestEntity::getSubjectCode)
                             .distinct()
                             .toList();
-                    List<String> subjectsFinished = s.getTranscriptComponents().stream()
-                            .filter(item -> TranscriptComponentSituationEnum.fromId(item.getSituation())
+                    List<String> subjectsFinished = s.getTakenComponents().stream()
+                            .filter(item -> TakenComponentSituationEnum.fromId(item.getSituation())
                                     .isApproved())
                             .map(item -> componentMap.get(item.getComponentId()))
                             .filter(Objects::nonNull)

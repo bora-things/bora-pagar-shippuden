@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS transcript_components
+CREATE TABLE IF NOT EXISTS taken_components
 (
     id BIGSERIAL PRIMARY KEY,
     absences INTEGER ,

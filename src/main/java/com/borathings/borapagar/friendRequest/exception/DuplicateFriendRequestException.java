@@ -5,6 +5,6 @@ import org.springframework.http.HttpStatus;
 
 public class DuplicateFriendRequestException extends ApiException {
     public DuplicateFriendRequestException() {
-        super(HttpStatus.BAD_REQUEST,"Pedido de amizade já existente");
+        super(HttpStatus.BAD_REQUEST, "Pedido de amizade já existente");
     }
 }

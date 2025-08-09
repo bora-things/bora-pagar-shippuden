@@ -1,4 +1,4 @@
-package com.borathings.borapagar.student.transcript.dto;
+package com.borathings.borapagar.student.takenComponent.dto;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
-public class TranscriptComponentDTOTest {
+public class TakenComponentDTOTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -22,7 +22,7 @@ public class TranscriptComponentDTOTest {
         int registrationSituationId = 1;
         int sigaaClassId = 201;
 
-        TranscriptComponentDTO dto = new TranscriptComponentDTO(
+        TakenComponentDTO dto = new TakenComponentDTO(
                 year,
                 period,
                 registerDate,
@@ -49,14 +49,11 @@ public class TranscriptComponentDTOTest {
     void testEquality() {
         long registerDate = LocalDate.of(2023, 1, 15).toEpochDay();
 
-        TranscriptComponentDTO dto1 =
-                new TranscriptComponentDTO(2023, 1, registerDate, 5, 101, 10, 1901001, 2001, 1, 201);
+        TakenComponentDTO dto1 = new TakenComponentDTO(2023, 1, registerDate, 5, 101, 10, 1901001, 2001, 1, 201);
 
-        TranscriptComponentDTO dto2 =
-                new TranscriptComponentDTO(2023, 1, registerDate, 5, 101, 10, 1901001, 2001, 1, 201);
+        TakenComponentDTO dto2 = new TakenComponentDTO(2023, 1, registerDate, 5, 101, 10, 1901001, 2001, 1, 201);
 
-        TranscriptComponentDTO differentDto =
-                new TranscriptComponentDTO(2023, 2, registerDate, 5, 101, 10, 1001, 2001, 1, 201);
+        TakenComponentDTO differentDto = new TakenComponentDTO(2023, 2, registerDate, 5, 101, 10, 1001, 2001, 1, 201);
 
         assertEquals(dto1, dto2, "Equal DTOs should be equal");
         assertNotEquals(dto1, differentDto, "DTOs with different values should not be equal");
@@ -80,7 +77,7 @@ public class TranscriptComponentDTOTest {
 				}
 				""";
 
-        TranscriptComponentDTO dto = objectMapper.readValue(json, TranscriptComponentDTO.class);
+        TakenComponentDTO dto = objectMapper.readValue(json, TakenComponentDTO.class);
 
         assertEquals(2023, dto.year());
         assertEquals(1, dto.period());
@@ -96,7 +93,7 @@ public class TranscriptComponentDTOTest {
     @Test
     void testJsonSerialization() throws Exception {
         long epochDay = LocalDate.of(2023, 1, 15).toEpochDay();
-        TranscriptComponentDTO dto = new TranscriptComponentDTO(2023, 1, epochDay, 5, 101, 10, 1001, 2001, 1, 201);
+        TakenComponentDTO dto = new TakenComponentDTO(2023, 1, epochDay, 5, 101, 10, 1001, 2001, 1, 201);
 
         String json = objectMapper.writeValueAsString(dto);
 
@@ -114,7 +111,7 @@ public class TranscriptComponentDTOTest {
     @Test
     void testToString() {
         long registerDate = LocalDate.of(2023, 1, 15).toEpochDay();
-        TranscriptComponentDTO dto = new TranscriptComponentDTO(2023, 1, registerDate, 5, 101, 10, 1001, 2001, 1, 201);
+        TakenComponentDTO dto = new TakenComponentDTO(2023, 1, registerDate, 5, 101, 10, 1001, 2001, 1, 201);
 
         String dtoString = dto.toString();
 

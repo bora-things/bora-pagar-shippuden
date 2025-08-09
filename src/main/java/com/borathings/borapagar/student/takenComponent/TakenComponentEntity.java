@@ -1,4 +1,4 @@
-package com.borathings.borapagar.student.transcript;
+package com.borathings.borapagar.student.takenComponent;
 
 import com.borathings.borapagar.core.persistence.AbstractModel;
 import com.borathings.borapagar.student.StudentEntity;
@@ -11,14 +11,14 @@ import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(
-        name = "transcript_components",
+        name = "taken_components",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"year", "student_id", "component_id", "period"})})
 @SuperBuilder(toBuilder = true)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TranscriptComponentEntity extends AbstractModel {
+public class TakenComponentEntity extends AbstractModel {
     @Column(name = "absences", nullable = false)
     private Integer absences;
 

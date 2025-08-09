@@ -1,11 +1,11 @@
 package com.borathings.borapagar.user;
 
-import com.borathings.borapagar.user.exception.UsersNotFriendsException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.UserDTO;
 import com.borathings.borapagar.user.dto.response.UserFriendResponseDto;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
+import com.borathings.borapagar.user.exception.UsersNotFriendsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;
