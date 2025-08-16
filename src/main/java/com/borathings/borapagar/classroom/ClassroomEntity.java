@@ -2,7 +2,6 @@ package com.borathings.borapagar.classroom;
 
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.core.persistence.AbstractModel;
-import com.borathings.borapagar.docent.DocentEntity;
 import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -78,10 +77,6 @@ public class ClassroomEntity extends AbstractModel {
 
     @ManyToMany(mappedBy = "classrooms")
     private List<StudentEntity> students = new ArrayList<>();
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "docent_id")
-    private DocentEntity docent;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "component_id")
