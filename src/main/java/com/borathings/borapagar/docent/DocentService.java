@@ -54,20 +54,9 @@ public class DocentService {
             if (docentsEvaluation != null && !docentsEvaluation.isEmpty()) {
                 for (DocentEvaluationDTO item : docentsEvaluation) {
                     DocentEvaluationDTO dto = new DocentEvaluationDTO();
-                    dto.setEvaluationId(item.getEvaluationId());
                     dto.setTeacherName(item.getTeacherName());
                     dto.setTeacherId(item.getTeacherId());
-                    dto.setUnitCode(item.getUnitCode());
-                    dto.setUnitId(item.getUnitId());
-                    dto.setComponentName(item.getComponentName());
-                    dto.setComponentCode(item.getComponentCode());
-                    dto.setClassCode(item.getClassCode());
-                    dto.setClassSchedule(item.getClassSchedule());
-                    dto.setStudentCount(item.getStudentCount());
                     dto.setGeneralAverage(item.getGeneralAverage());
-                    dto.setGeneralStandardDeviation(item.getGeneralStandardDeviation());
-                    dto.setClassYear(item.getClassYear());
-                    dto.setClassPeriod(item.getClassPeriod());
                     dto.setCpf(docent.cpf());
                     docentsEvaluationSet.add(dto);
                 }
