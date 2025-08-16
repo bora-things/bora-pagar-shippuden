@@ -24,19 +24,14 @@ public class StudentMapperTest {
         entity.setStudentName("John Doe");
         entity.setEnrollmentId("456");
         entity.setAdmissionYear(2020);
-        entity.setAcademicManagerId(789);
-        entity.setParticipantTypeId(10);
         entity.setCourseId(112);
         entity.setCourseName("Computer Science");
         entity.setLevel("BSc");
-        entity.setEducationalInstitution("University");
         entity.setCampus("Main Campus");
         entity.setAdmissionSemester(1); // Required, but not in DTO
         entity.setUser(user); // Required
 
         // Add optional fields that can be mapped
-        entity.setIngressMethodDescription("Admission Description");
-        entity.setEducationalInstitutionId(101);
         entity.setCampusId(2); // Maps to DTO's campusId (different name, not mapped)
 
         // Map to DTO

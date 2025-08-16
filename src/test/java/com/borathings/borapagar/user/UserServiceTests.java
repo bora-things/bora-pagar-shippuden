@@ -16,7 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-class UserServiceTest {
+class UserServiceTests {
 
     @Mock
     private UserRepository userRepository;
@@ -40,11 +40,9 @@ class UserServiceTest {
         MockitoAnnotations.openMocks(this);
         existingUser = UserEntity.builder()
                 .userId(1)
-                .email("test@example.com")
                 .personName("Test User")
                 .login("testuser")
                 .institutionalId(67890L)
-                .cpf("12345678901L")
                 .imageUrl("http://image.url")
                 .build();
     }
@@ -71,7 +69,6 @@ class UserServiceTest {
         UserEntity result = userService.findByIdUserOrError(userId);
 
         assertThat(result).isNotNull();
-        assertThat(result.getEmail()).isEqualTo(existingUser.getEmail());
         assertThat(result.getUserId()).isEqualTo(existingUser.getUserId());
     }
 
@@ -93,7 +90,6 @@ class UserServiceTest {
         UserEntity result = userService.findByLoginOrError(login);
 
         assertThat(result).isNotNull();
-        assertThat(result.getEmail()).isEqualTo(existingUser.getEmail());
         assertThat(result.getLogin()).isEqualTo(existingUser.getLogin());
     }
 
@@ -114,14 +110,12 @@ class UserServiceTest {
                 .login("user1")
                 .personName("User One")
                 .friends(new HashSet<>())
-                .email("user1@example.com")
                 .build();
         UserEntity user2 = UserEntity.builder()
                 .userId(2)
                 .login("user2")
                 .friends(new HashSet<>())
                 .personName("User Two")
-                .email("user2@example.com")
                 .build();
 
         when(userRepository.findByUserId(1)).thenReturn(Optional.of(user1));
@@ -141,7 +135,6 @@ class UserServiceTest {
                 .userId(1)
                 .login("user1")
                 .personName("User One")
-                .email("user1@example.com")
                 .friends(new HashSet<>())
                 .build();
 
@@ -149,7 +142,6 @@ class UserServiceTest {
                 .userId(2)
                 .login("user2")
                 .personName("User Two")
-                .email("user2@example.com")
                 .friends(new HashSet<>())
                 .build();
 
@@ -157,7 +149,6 @@ class UserServiceTest {
                 .userId(3)
                 .login("user3")
                 .personName("User Three")
-                .email("user3@example.com")
                 .friends(new HashSet<>())
                 .build();
 

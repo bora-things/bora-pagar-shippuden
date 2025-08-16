@@ -69,23 +69,7 @@ public class StudentEntity extends SoftDeletableModel {
     @Column(name = "admission_semester")
     private int admissionSemester;
 
-    @Column(name = "ingress_method_id")
-    private int ingressMethodId;
 
-    @Column(name = "ingress_method_description")
-    private String ingressMethodDescription;
-
-    @Column(name = "academic_manager_id")
-    private int academicManagerId;
-
-    @Column(name = "participant_type_id")
-    private int participantTypeId;
-
-    @Column(name = "educational_institution_id")
-    private int educationalInstitutionId;
-
-    @Column(name = "educational_institution")
-    private String educationalInstitution;
 
     @Column(name = "id_polo")
     private int campusId;

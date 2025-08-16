@@ -14,14 +14,12 @@ public class FriendRequestEntityTest {
                 .id(1L)
                 .personName("User From")
                 .login("userfrom")
-                .email("userfrom@example.com")
                 .build();
 
         UserEntity toUser = UserEntity.builder()
                 .id(2L)
                 .personName("User To")
                 .login("userto")
-                .email("userto@example.com")
                 .build();
 
         FriendRequestEntity friendRequest = FriendRequestEntity.builder()
@@ -42,14 +40,12 @@ public class FriendRequestEntityTest {
                 .id(1L)
                 .personName("User From")
                 .login("userfrom")
-                .email("userfrom@example.com")
                 .build();
 
         UserEntity toUser = UserEntity.builder()
                 .id(2L)
                 .personName("User To")
                 .login("userto")
-                .email("userto@example.com")
                 .build();
 
         FriendRequestEntity friendRequest1 = FriendRequestEntity.builder()
@@ -74,14 +70,12 @@ public class FriendRequestEntityTest {
                 .id(1L)
                 .personName("User From")
                 .login("userfrom")
-                .email("userfrom@example.com")
                 .build();
 
         UserEntity toUser = UserEntity.builder()
                 .id(2L)
                 .personName("User To")
                 .login("userto")
-                .email("userto@example.com")
                 .build();
 
         FriendRequestEntity friendRequest = FriendRequestEntity.builder()
@@ -103,14 +97,12 @@ public class FriendRequestEntityTest {
                 .id(1L)
                 .personName("User From")
                 .login("userfrom")
-                .email("userfrom@example.com")
                 .build();
 
         UserEntity toUser = UserEntity.builder()
                 .id(2L)
                 .personName("User To")
                 .login("userto")
-                .email("userto@example.com")
                 .build();
 
         FriendRequestEntity friendRequest = FriendRequestEntity.builder()
