@@ -61,8 +61,7 @@ class UserMapperTests {
 
     @Test
     void testToEntity() {
-        UserDTO dto = new UserDTO(
-                "user123", "User", 111, 123456789L, "http://example.com/image.jpg", false);
+        UserDTO dto = new UserDTO("user123", "User", 111, 123456789L, "http://example.com/image.jpg", false);
         UserEntity entity = userMapper.toEntity(dto);
 
         assertThat(entity).isNotNull();

@@ -19,5 +19,4 @@ public record UserDTO(
                 user.getAttribute("url-foto"),
                 false);
     }
-
 }

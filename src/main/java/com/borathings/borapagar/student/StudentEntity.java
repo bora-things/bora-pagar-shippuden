@@ -69,8 +69,6 @@ public class StudentEntity extends SoftDeletableModel {
     @Column(name = "admission_semester")
     private int admissionSemester;
 
-
-
     @Column(name = "id_polo")
     private int campusId;
 

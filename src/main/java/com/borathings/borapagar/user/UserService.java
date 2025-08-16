@@ -63,17 +63,14 @@ public class UserService {
     private void insertNewUser(OAuth2User user) {
         UserDTO u = UserDTO.fromSigaaUser(user);
 
-        logger.info("Novo usuário logado, criando conta com SIGAA ID {}",  user.getName());
+        logger.info("Novo usuário logado, criando conta com SIGAA ID {}", user.getName());
 
         userRepository.save(userMapper.toEntity(u));
     }
 
     /** Atualiza as informações que podem ter mudado do OidcUser */
     private void updateExistingOidcUser(UserEntity existingUser, OAuth2User oidcUser) {
-        logger.info(
-                "Usuário com SIGAA ID {} já existe no sistema, atualizando dados",
-                existingUser.getId()
-                );
+        logger.info("Usuário com SIGAA ID {} já existe no sistema, atualizando dados", existingUser.getId());
         existingUser.setImageUrl(oidcUser.getAttribute("imagem_url"));
         userRepository.save(existingUser);
     }
