@@ -1,6 +1,5 @@
 package com.borathings.borapagar.student;
 
-import com.borathings.borapagar.student.dto.StudentClassResponseDTO;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import org.mapstruct.Mapper;
@@ -16,6 +15,4 @@ public interface StudentMapper {
 
     @Mapping(target = "period", expression = "java(entity.getUserPeriod())")
     public StudentResponseDTO toResponseDTO(StudentEntity entity);
-
-    public StudentClassResponseDTO toClassResponse(StudentDTO entity);
 }

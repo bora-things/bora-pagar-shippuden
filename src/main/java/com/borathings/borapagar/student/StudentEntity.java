@@ -3,7 +3,6 @@ package com.borathings.borapagar.student;
 import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.core.persistence.SoftDeletableModel;
 import com.borathings.borapagar.student.enums.StudentSituation;
-import com.borathings.borapagar.student.enums.StudentType;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestEntity;
 import com.borathings.borapagar.student.takenComponent.TakenComponentEntity;
 import com.borathings.borapagar.user.UserEntity;
@@ -40,16 +39,9 @@ public class StudentEntity extends SoftDeletableModel {
     @Column(name = "login", nullable = false)
     private String login;
 
-    @Column(name = "enrollment_id")
-    private String enrollmentId;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "situation")
     private StudentSituation studentSituation;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type")
-    private StudentType studentType;
 
     @Column(name = "course_id")
     private int courseId;
@@ -59,21 +51,6 @@ public class StudentEntity extends SoftDeletableModel {
 
     @Column(name = "course_name")
     private String courseName;
-
-    @Column(name = "level")
-    private String level;
-
-    @Column(name = "admission_year")
-    private int admissionYear;
-
-    @Column(name = "admission_semester")
-    private int admissionSemester;
-
-    @Column(name = "id_polo")
-    private int campusId;
-
-    @Column(name = "campus")
-    private String campus;
 
     @ManyToMany
     @JoinTable(
