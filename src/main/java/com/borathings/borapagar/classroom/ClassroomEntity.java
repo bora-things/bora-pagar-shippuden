@@ -1,6 +1,5 @@
 package com.borathings.borapagar.classroom;
 
-import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.core.persistence.AbstractModel;
 import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;
@@ -27,29 +26,11 @@ public class ClassroomEntity extends AbstractModel {
     @Column(nullable = false)
     private int year;
 
-    @Column(name = "student_capacity", nullable = false)
-    private int studentCapacity;
-
     @Column(name = "component_code", nullable = false)
     private String componentCode;
 
     @Column(name = "classroom_code", nullable = false)
     private String classroomCode;
-
-    @Column(name = "schedule_description")
-    private String scheduleDescription;
-
-    @Column(name = "external_teacher_id")
-    private Long externalTeacherId;
-
-    @Column(name = "education_mode_id")
-    private Long educationModeId;
-
-    @Column(name = "classroom_status_id")
-    private Long classroomStatusId;
-
-    @Column(name = "grouping_classroom_id")
-    private Long groupingClassroomId;
 
     @Column(name = "unit_id")
     private Long unitId;
@@ -72,21 +53,13 @@ public class ClassroomEntity extends AbstractModel {
     @Column(nullable = false)
     private int type;
 
-    @Column(name = "uses_new_virtual_classroom", nullable = false)
-    private boolean usesNewVirtualClassroom;
-
     @ManyToMany(mappedBy = "classrooms")
     private List<StudentEntity> students = new ArrayList<>();
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "component_id")
-    private ComponentEntity component;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ClassroomEntity)) return false;
-        ClassroomEntity that = (ClassroomEntity) o;
+        if (!(o instanceof ClassroomEntity that)) return false;
         return Objects.equals(classroomId, that.classroomId);
     }
 

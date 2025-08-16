@@ -51,7 +51,7 @@ public class ClassroomService {
 
     @Async
     public CompletableFuture<Void> fetchClassroomAsync(StudentEntity student) {
-        fetchClassroom(student.getId()); // Chama o método síncrono e transacional
+        fetchClassroom(student.getId());
         return CompletableFuture.completedFuture(null);
     }
 
@@ -124,23 +124,6 @@ public class ClassroomService {
             logger.error("Erro", ex.getMessage());
             return null;
         }
-    }
-
-    public List<ClassroomEntity> findClassroomsByComponentCode(String code) {
-
-        List<ClassroomDTO> classroomDTOs = serviceRestClient
-                .get()
-                .uri("https://api.info.ufrn.br/turma/v1/turmas?codigo-componente=" + code)
-                .attributes(clientRegistrationId("sigaa"))
-                .retrieve()
-                .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {});
-
-        if (classroomDTOs != null && !classroomDTOs.isEmpty()) {
-            return classroomDTOs.stream()
-                    .map(item -> classroomMapper.toEntity(item))
-                    .toList();
-        }
-        return null;
     }
 
     public static <T> CompletableFuture<List<T>> sequence(List<CompletableFuture<T>> futures) {

@@ -1,9 +1,7 @@
 package com.borathings.borapagar.component;
 
-import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.core.persistence.AbstractModel;
 import jakarta.persistence.*;
-import java.util.List;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -75,7 +73,4 @@ public class ComponentEntity extends AbstractModel {
 
     @Column(name = "offered_semester", nullable = false)
     private Integer offeredSemester;
-
-    @OneToMany(mappedBy = "component")
-    private List<ClassroomEntity> classes;
 }

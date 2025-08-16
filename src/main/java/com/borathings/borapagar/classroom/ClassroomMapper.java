@@ -14,8 +14,6 @@ public interface ClassroomMapper {
 
     ClassroomEntity toEntity(ClassroomDTO classroomDTO);
 
-    ClassroomDTO toDTO(ClassroomEntity classroomEntity);
-
     @Mapping(source = "component", target = "component")
     @Mapping(expression = "java(classroomEntity.getPeriod())", target = "period")
     ClassroomResponseDTO toResponseDTO(
