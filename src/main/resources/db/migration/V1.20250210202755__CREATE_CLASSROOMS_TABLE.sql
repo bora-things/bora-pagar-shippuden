@@ -26,6 +26,5 @@ CREATE TABLE IF NOT EXISTS classrooms
     updated_at               TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     deleted_at               TIMESTAMPTZ,
     CONSTRAINT fk_classroom_student FOREIGN KEY (student_id) REFERENCES students(id),
-    CONSTRAINT fk_classroom_docent FOREIGN KEY (docent_id) REFERENCES docents(id),
     CONSTRAINT fk_classroom_subject FOREIGN KEY (component_id) REFERENCES components(id)
 );

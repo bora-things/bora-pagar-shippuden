@@ -19,12 +19,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TakenComponentEntity extends AbstractModel {
-    @Column(name = "absences", nullable = false)
-    private Integer absences;
-
-    @Column(name = "register_date")
-    private Long registerDate;
-
     @Column(name = "period", nullable = false)
     private Integer period;
 
@@ -34,14 +28,8 @@ public class TakenComponentEntity extends AbstractModel {
     @Column(name = "component_id")
     private Integer componentId;
 
-    @Column(name = "final_grade")
-    private Float finalGrade;
-
     @Column(name = "situation")
     private Integer situation;
-
-    @Column(name = "sigaa_class_id", nullable = false)
-    private Integer sigaaClassId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", updatable = false)

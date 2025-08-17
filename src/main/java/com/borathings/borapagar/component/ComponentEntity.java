@@ -44,9 +44,6 @@ public class ComponentEntity extends AbstractModel {
     @Column(name = "curricular_matrix_id", nullable = false)
     private Integer curricularMatrixId;
 
-    @Column(name = "unit_id", nullable = false)
-    private Integer unitId;
-
     @Column(name = "name", nullable = false)
     private String name;
 

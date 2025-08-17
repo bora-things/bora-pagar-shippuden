@@ -28,11 +28,7 @@ public class TakenComponentService {
         List<TakenComponentEntity> componentEntities = filteredDTOs.stream()
                 .map(dto -> {
                     return TakenComponentEntity.builder()
-                            .absences(dto.absences())
-                            .registerDate(dto.registerDate())
-                            .finalGrade(dto.finalGrade())
                             .componentId(dto.componentId())
-                            .sigaaClassId(dto.sigaaClassId())
                             .situation(dto.registrationSituationId())
                             .period(dto.period())
                             .year(dto.year())

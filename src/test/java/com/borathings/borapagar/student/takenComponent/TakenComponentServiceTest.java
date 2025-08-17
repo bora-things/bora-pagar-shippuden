@@ -63,17 +63,11 @@ public class TakenComponentServiceTest {
 
         expectedEntities = Arrays.asList(
                 TakenComponentEntity.builder()
-                        .absences(5)
-                        .registerDate(date1.toEpochDay())
-                        .sigaaClassId(101)
                         .period(1)
                         .year(2023)
                         .student(student)
                         .build(),
                 TakenComponentEntity.builder()
-                        .absences(2)
-                        .registerDate(date2.toEpochDay())
-                        .sigaaClassId(102)
                         .period(1)
                         .year(2023)
                         .student(student)
@@ -94,9 +88,6 @@ public class TakenComponentServiceTest {
             TakenComponentEntity actual = result.get(i);
             TakenComponentDTO dto = componentDTOs.get(i);
 
-            assertEquals(dto.absences(), actual.getAbsences());
-            assertEquals(dto.registerDate(), actual.getRegisterDate());
-            assertEquals(dto.sigaaClassId(), actual.getSigaaClassId());
             assertEquals(dto.period(), actual.getPeriod());
             assertEquals(dto.year(), actual.getYear());
             assertEquals(student, actual.getStudent());
