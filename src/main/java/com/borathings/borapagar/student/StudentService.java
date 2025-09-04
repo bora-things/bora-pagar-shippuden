@@ -15,10 +15,12 @@ import com.borathings.borapagar.student.index.StudentIndexEntity;
 import com.borathings.borapagar.student.index.StudentIndexRepository;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestEntity;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestService;
+import com.borathings.borapagar.student.interest.exception.PreRequisitesNotCompletedException;
 import com.borathings.borapagar.student.takenComponent.TakenComponentEntity;
 import com.borathings.borapagar.student.takenComponent.TakenComponentService;
 import com.borathings.borapagar.student.takenComponent.dto.TakenComponentDTO;
 import com.borathings.borapagar.student.takenComponent.enums.TakenComponentSituationEnum;
+import com.borathings.borapagar.student.util.RequisiteParser;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserMapper;
 import com.borathings.borapagar.user.UserService;
@@ -32,6 +34,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,17 +120,35 @@ public class StudentService {
 
         List<StudentEntity> studentFriends = student.getUser().getFriends().stream()
                 .map(item -> findByUserIdOrError(item.getUserId()))
-                .collect(Collectors.toList());
+                .toList();
 
         Map<Long, Set<String>> friendInterestsMap = studentFriends.stream()
                 .collect(Collectors.toMap(StudentEntity::getId, friend -> friend.getInterests().stream()
                         .map(StudentSubjectInterestEntity::getSubjectCode)
                         .collect(Collectors.toSet())));
 
-        List<ClassroomResponseDTO> result = components.stream()
-                .filter(component -> !notApprovedTranscriptMap.containsKey(component.getComponentId())
-                        && !interestMap.containsKey(component.getCode())
-                        && !classroomMap.containsKey(component.getCode()))
+        List<ComponentEntity> takenComponentsEntity =
+                componentService.findAllByComponentId(student.getTakenComponents().stream()
+                        .map(TakenComponentEntity::getComponentId)
+                        .toList());
+
+        Set<String> completedOrEnrolledCodes = Stream.concat(
+                        takenComponentsEntity.stream().map(ComponentEntity::getCode),
+                        student.getClassrooms().stream().map(ClassroomEntity::getComponentCode))
+                .collect(Collectors.toSet());
+
+        return components.stream()
+                .filter(component -> {
+                    RequisiteParser parser = new RequisiteParser(completedOrEnrolledCodes);
+                    try {
+                        parser.assertRequisitesAreMet(component.getPreRequisites());
+                        return !notApprovedTranscriptMap.containsKey(component.getComponentId())
+                                && !interestMap.containsKey(component.getCode())
+                                && !classroomMap.containsKey(component.getCode());
+                    } catch (PreRequisitesNotCompletedException ex) {
+                        return false;
+                    }
+                })
                 .map(component -> {
                     List<UserResponseDTO> interestedFriends = studentFriends.stream()
                             .filter(friend ->
@@ -139,8 +160,6 @@ public class StudentService {
                             0, 0, 0, componentMapper.toResponseDTO(component), interestedFriends);
                 })
                 .toList();
-
-        return result;
     }
 
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
