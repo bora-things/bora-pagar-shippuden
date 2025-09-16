@@ -96,13 +96,13 @@ public class ClassroomService {
         Set<ClassroomEntity> classrooms = student.getClassrooms();
         List<String> componentCodes =
                 classrooms.stream().map(ClassroomEntity::getComponentCode).toList();
-        List<ComponentEntity> components = componentRepository.findAllByCodeIn(componentCodes);
+        List<ComponentEntity> components = componentRepository.findAllByCodeInAndCurricularMatrixId(
+                componentCodes, Integer.valueOf(student.getCurricularMatrix()));
         Map<String, ComponentResponseDTO> componentMap = components.stream()
                 .collect(Collectors.toMap(
                         ComponentEntity::getCode,
                         component -> componentMapper.toResponseDTO(component),
-                        (existing, replacement) -> existing // mantém o primeiro, ignora os duplicados
-                        ));
+                        (existing, replacement) -> existing));
         try {
             List<CompletableFuture<ClassroomResponseDTO>> futures = classrooms.stream()
                     .map(item -> {
