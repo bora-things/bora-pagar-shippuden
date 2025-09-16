@@ -62,7 +62,7 @@ public class ClassroomService {
 
             List<ClassroomDTO> classroomDTOs = serviceRestClient
                     .get()
-                    .uri("https://api.info.ufrn.br/turma/v1/turmas?id-discente=" + student.getStudentId())
+                    .uri("/turma/v1/turmas?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
                     .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {});
@@ -107,8 +107,8 @@ public class ClassroomService {
             List<CompletableFuture<ClassroomResponseDTO>> futures = classrooms.stream()
                     .map(item -> {
                         if (item.getComponentCode() != null) {
-                            CompletableFuture<List<UserResponseDTO>> friendsFuture =
-                                    studentService.findFriendsInClass(student.getUser(), item);
+                            CompletableFuture<List<UserResponseDTO>> friendsFuture = studentService.findFriendsInClass(
+                                    student.getUser(), item, student.getUser().getFriends());
                             ComponentResponseDTO component = componentMap.get(item.getComponentCode());
 
                             return friendsFuture.thenApply(
@@ -119,7 +119,7 @@ public class ClassroomService {
                     .toList();
 
             CompletableFuture<List<ClassroomResponseDTO>> allDoneFuture = sequence(futures);
-            return allDoneFuture.get(); // .get() bloqueia aqui (só agora)
+            return allDoneFuture.get();
         } catch (Exception ex) {
             logger.error("Erro", ex.getMessage());
             return null;

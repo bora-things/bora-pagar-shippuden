@@ -141,7 +141,6 @@ public class UserService {
     }
 
     public UserDTO fetchUserByCpf(String cpf) {
-
         List<UserDTO> users = serviceRestClient
                 .get()
                 .uri("/usuario/v1/usuarios?cpf-cnpj=" + cpf)

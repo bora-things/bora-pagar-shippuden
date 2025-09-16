@@ -221,7 +221,7 @@ public class StudentService {
 
             WorkloadDto workloadDto = userRestClient
                     .get()
-                    .uri("https://api.info.ufrn.br/discente/v1/discentes/" + student.getStudentId() + "/carga-horaria")
+                    .uri("/discente/v1/discentes/" + student.getStudentId() + "/carga-horaria")
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
                     .body(new ParameterizedTypeReference<WorkloadDto>() {});
@@ -304,7 +304,8 @@ public class StudentService {
     }
 
     @Async
-    public CompletableFuture<List<UserResponseDTO>> findFriendsInClass(UserEntity user, ClassroomEntity classroom) {
+    public CompletableFuture<List<UserResponseDTO>> findFriendsInClass(
+            UserEntity user, ClassroomEntity classroom, Set<UserEntity> userFriends) {
         try {
             List<FriendClassUserDTO> studentsDto = userRestClient
                     .get()
@@ -314,7 +315,6 @@ public class StudentService {
                     .body(new ParameterizedTypeReference<List<FriendClassUserDTO>>() {});
 
             if (studentsDto != null && !studentsDto.isEmpty()) {
-                Set<UserEntity> userFriends = user.getFriends();
                 Map<Long, UserEntity> userFriendsMap = userFriends.stream()
                         .collect(Collectors.toMap(UserEntity::getInstitutionalId, Function.identity()));
 

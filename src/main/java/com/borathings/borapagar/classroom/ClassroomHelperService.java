@@ -25,7 +25,7 @@ public class ClassroomHelperService {
 
         List<ClassroomDTO> classroomDTOs = serviceRestClient
                 .get()
-                .uri("https://api.info.ufrn.br/turma/v1/turmas?codigo-componente=" + code)
+                .uri("/turma/v1/turmas?codigo-componente=" + code)
                 .attributes(clientRegistrationId("sigaa"))
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {});
