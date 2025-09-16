@@ -176,6 +176,8 @@ public class StudentService {
 
             StudentDTO studentDto = students.getFirst();
             StudentEntity studentEntity = studentMapper.toEntity(studentDto);
+            // Atualmente a api não retorna o id da matriz curricular, por isso setamos como padrão a matriz de T.I - MT
+            studentEntity.setCurricularMatrix("133795010");
             studentEntity.setImageUrl(userEntity.getImageUrl());
             studentEntity.setLogin(userEntity.getLogin());
             studentEntity.setUser(userEntity);

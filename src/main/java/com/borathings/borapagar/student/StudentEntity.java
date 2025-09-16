@@ -46,6 +46,9 @@ public class StudentEntity extends SoftDeletableModel {
     @Column(name = "course_id")
     private int courseId;
 
+    @Column(name = "curricular_matrix")
+    private String curricularMatrix;
+
     @Column(name = "image_url")
     private String imageUrl;
 
