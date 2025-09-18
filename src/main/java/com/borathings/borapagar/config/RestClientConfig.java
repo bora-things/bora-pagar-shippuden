@@ -26,6 +26,9 @@ public class RestClientConfig {
     @Value("${sigaa.token-uri}")
     private String tokenUri;
 
+    @Value("${sigaa.api-base-url}")
+    private String apiBaseUrl;
+
     @Bean
     public OAuth2AuthorizedClientManager authorizedClientManager(
             ClientRegistrationRepository clientRegistrationRepository,
@@ -44,7 +47,7 @@ public class RestClientConfig {
     @Bean(name = "userRestClient")
     public RestClient UserRestClient(OAuth2AuthorizedClientManager authorizedClientManager) {
         return RestClient.builder()
-                .baseUrl("https://api.info.ufrn.br")
+                .baseUrl(apiBaseUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader("X-API-KEY", apiKey)
@@ -55,7 +58,7 @@ public class RestClientConfig {
     @Bean(name = "serviceRestClient")
     public RestClient ServiceRestClient() {
         return RestClient.builder()
-                .baseUrl("https://api.info.ufrn.br")
+                .baseUrl(apiBaseUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader("X-API-KEY", apiKey)

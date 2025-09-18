@@ -23,19 +23,21 @@ spring:
         provider:
           sigaa:
             userNameAttribute: login
-            authorization-uri: https://autenticacao.info.ufrn.br/authz-server/oauth/authorize
-            token-uri: https://autenticacao.info.ufrn.br/authz-server/oauth/token
-            user-info-uri: https://api.info.ufrn.br/usuario/v1/usuarios/info
+            authorization-uri: ${sigaa.auth-base-url}/authz-server/oauth/authorize
+            token-uri: ${sigaa.auth-base-url}/authz-server/oauth/token
+            user-info-uri: ${sigaa.api-base-url}/usuario/v1/usuarios/info
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
 sigaa:
-  api-key: ${SIGAA_API_KEY:}
-  client-id: ${SIGAA_CLIENT_ID:}
-  client-secret: ${SIGAA_CLIENT_SECRET:}
-  token-uri: https://api.info.ufrn.br/authz-server/oauth/token
+    auth-base-url: https://autenticacao.ufrn.br
+    api-base-url: https://api.ufrn.br
+    api-key: ${SIGAA_API_KEY:}
+    client-id: ${SIGAA_CLIENT_ID:}
+    client-secret: ${SIGAA_CLIENT_SECRET:}
+    token-uri: ${sigaa.auth-base-url}/authz-server/oauth/token
 
 frontend:
   url: ${FRONTEND_URL:http://localhost:8080}
