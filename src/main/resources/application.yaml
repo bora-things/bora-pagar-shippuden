@@ -32,14 +32,17 @@ springdoc:
     path: /swagger-ui.html
 
 sigaa:
-    auth-base-url: https://autenticacao.ufrn.br
-    api-base-url: https://api.ufrn.br
+    auth-base-url: https://autenticacao.info.ufrn.br
+    api-base-url: https://api.info.ufrn.br
     api-key: ${SIGAA_API_KEY:}
     client-id: ${SIGAA_CLIENT_ID:}
     client-secret: ${SIGAA_CLIENT_SECRET:}
-    token-uri: ${sigaa.auth-base-url}/authz-server/oauth/token
+    token-uri: ${sigaa.api-base-url}/authz-server/oauth/token
 
 frontend:
   url: ${FRONTEND_URL:http://localhost:8080}
   redirect: ${FRONTEND_URL:http://localhost:8080}/dashboard
 
+app:
+  security:
+    allowed-logins-csv: ${WHITE_LIST:login.padrao}

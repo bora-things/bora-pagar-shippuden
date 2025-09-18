@@ -1,8 +1,12 @@
 package com.borathings.borapagar.auth;
 
+import com.borathings.borapagar.auth.exceptions.WhiteListException;
 import com.borathings.borapagar.user.UserService;
+
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +23,17 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-/** CustomOidcUserService */
+/**
+ * CustomOidcUserService
+ */
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
     UserService userService;
+
+    @Value("${app.security.allowed-logins-csv}")
+    private String allowedLoginsCsv;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -44,6 +53,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
+        String userLogin = oAuth2User.getName();
+        List<String> allowedLogins = Arrays.stream(allowedLoginsCsv.split(","))
+                .map(String::trim)
+                .filter(login -> !login.isEmpty())
+                .toList();
+
+        if (allowedLogins.isEmpty() || !allowedLogins.contains(userLogin)) {
+            logger.warn("Usuário não autorizado tentou login: {}", userLogin);
+            throw new WhiteListException();
+        }
+
         logger.info(
                 "Usuário com ID SIGAA {} e email {} carregado com sucesso",
                 oAuth2User.getAttribute("nome-pessoa"),

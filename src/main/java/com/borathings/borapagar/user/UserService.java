@@ -50,7 +50,6 @@ public class UserService {
      */
     public void upsert(OAuth2User user) {
         logger.info("Recebido login de usuário {}", user.getName());
-        String oidcUserGoogleId = user.getName();
         Optional<UserEntity> maybeUser = userRepository.findByUserId(user.getAttribute("id-usuario"));
         maybeUser.ifPresentOrElse(
                 existingUser -> this.updateExistingOidcUser(existingUser, user), () -> insertNewUser(user));

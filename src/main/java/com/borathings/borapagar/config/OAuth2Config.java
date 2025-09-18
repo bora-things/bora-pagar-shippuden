@@ -1,8 +1,11 @@
 package com.borathings.borapagar.config;
 
 import com.borathings.borapagar.auth.CustomOAuth2UserService;
+import com.borathings.borapagar.auth.OAuth2AuthenticationFailureHandler;
 import com.borathings.borapagar.auth.OAuth2AuthenticationSuccessHandler;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +21,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-/** AuthConfig Class responsável por fazer configurações relacionadas ao spring-security */
+/**
+ * AuthConfig Class responsável por fazer configurações relacionadas ao spring-security
+ */
 @Configuration
 @EnableWebSecurity
 public class OAuth2Config {
@@ -49,7 +54,7 @@ public class OAuth2Config {
      *     "https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html"/>OAuth2 Resource
      *     Server</a>
      */
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v3/api-docs/**")
@@ -61,7 +66,9 @@ public class OAuth2Config {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .oauth2Login(oauthLogin -> oauthLogin
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        .successHandler(oAuth2AuthenticationSuccessHandler))
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+                        .failureHandler(oAuth2AuthenticationFailureHandler)
+                )
                 .logout(logout -> logout.logoutUrl("/logout")
                         .logoutSuccessUrl(frontendUrl)
                         .invalidateHttpSession(true)
