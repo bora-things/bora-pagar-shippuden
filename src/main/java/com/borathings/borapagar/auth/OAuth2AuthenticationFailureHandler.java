@@ -13,18 +13,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class OAuth2AuthenticationFailureHandler implements AuthenticationFailureHandler {
 
-
     @Value("${frontend.url}")
     String frontendUrl;
 
     @Override
     public void onAuthenticationFailure(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AuthenticationException exception) throws IOException, ServletException {
+            HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
+            throws IOException, ServletException {
 
         String redirectUrl;
-
 
         if (exception instanceof WhiteListException) {
             redirectUrl = frontendUrl + "/acesso-negado";

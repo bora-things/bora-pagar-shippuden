@@ -2,11 +2,9 @@ package com.borathings.borapagar.auth;
 
 import com.borathings.borapagar.auth.exceptions.WhiteListException;
 import com.borathings.borapagar.user.UserService;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +21,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * CustomOidcUserService
- */
+/** CustomOidcUserService */
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
