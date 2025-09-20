@@ -7,6 +7,7 @@ import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
+import com.borathings.borapagar.student.dto.SearchedStudentResponseDTO;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import com.borathings.borapagar.student.index.IndexDTO;
@@ -275,9 +276,16 @@ public class StudentService {
         });
     }
 
-    public StudentResponseDTO findStudentResponseDTOById(Long studentId) {
+    public SearchedStudentResponseDTO findStudentResponseDTOById(String userLogin, Long studentId) {
         StudentEntity student = findByIdOrError(studentId);
-        return studentMapper.toResponseDTO(student);
+        Boolean isOwner = student.getLogin().equals(userLogin);
+        Boolean isFriend = false;
+        if (!isOwner) {
+            isFriend = student.getUser().getFriends().stream()
+                    .anyMatch(item -> item.getLogin().equals(userLogin));
+        }
+        SearchedStudentResponseDTO response = studentMapper.toSearchedResponseDTO(student, isOwner, isFriend);
+        return response;
     }
 
     public void saveStudent(StudentEntity student) {

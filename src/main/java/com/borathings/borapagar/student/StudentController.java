@@ -1,6 +1,7 @@
 package com.borathings.borapagar.student;
 
 import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
+import com.borathings.borapagar.student.dto.SearchedStudentResponseDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -20,5 +21,6 @@ public interface StudentController {
             Authentication currentUser, @PageableDefault(size = 20, page = 0) Pageable pageable);
 
     @GetMapping("/{studentId}")
-    public ResponseEntity<StudentResponseDTO> getById(@PathVariable Long studentId);
+    public ResponseEntity<SearchedStudentResponseDTO> getById(
+            Authentication authentication, @PathVariable Long studentId);
 }

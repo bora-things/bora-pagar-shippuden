@@ -30,11 +30,18 @@ public class StudentSubjectInterestControllerImpl implements StudentSubjectInter
     @Autowired
     private StudentSubjectInterestService studentSubjectInterestService;
 
-    public ResponseEntity<List<StudentSubjectInterestDTO>> listInterests(Authentication currentUser) {
+    public ResponseEntity<List<StudentSubjectInterestDTO>> listMyInterests(Authentication currentUser) {
         UserEntity user = userService.findByLoginOrError(currentUser.getName());
         StudentEntity student = studentService.findByUserIdOrError(user.getUserId());
         List<StudentSubjectInterestDTO> interests = interestService.listInterests(student.getId());
 
+        return ResponseEntity.ok(interests);
+    }
+
+    @Override
+    public ResponseEntity<List<StudentSubjectInterestDTO>> listInterestsByUserId(
+            Authentication authentication, Long userId) {
+        List<StudentSubjectInterestDTO> interests = interestService.listInterests(userId);
         return ResponseEntity.ok(interests);
     }
 

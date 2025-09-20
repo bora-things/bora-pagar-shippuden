@@ -1,6 +1,7 @@
 package com.borathings.borapagar.student;
 
 import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
+import com.borathings.borapagar.student.dto.SearchedStudentResponseDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,10 @@ public class StudentControllerImpl implements StudentController {
         return ResponseEntity.ok(s);
     }
 
-    public ResponseEntity<StudentResponseDTO> getById(Long studentId) {
-        StudentResponseDTO s = studentService.findStudentResponseDTOById(studentId);
+    public ResponseEntity<SearchedStudentResponseDTO> getById(Authentication authentication, Long studentId) {
+        String userLogin = authentication.getName();
+        SearchedStudentResponseDTO s = studentService.findStudentResponseDTOById(userLogin, studentId);
+
         return ResponseEntity.ok(s);
     }
 

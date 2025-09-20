@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ClassroomControllerImpl implements ClassroomController {
+
     @Autowired
     private ClassroomService classroomService;
 
@@ -18,5 +19,10 @@ public class ClassroomControllerImpl implements ClassroomController {
     public ResponseEntity<List<ClassroomResponseDTO>> findStudentClassroom(Authentication authentication) {
         String login = authentication.getName();
         return ResponseEntity.ok(classroomService.findClassroomByStudent(login));
+    }
+
+    @Override
+    public ResponseEntity<List<ClassroomResponseDTO>> findStudentClassroomById(long id) {
+        return ResponseEntity.ok(classroomService.findClassroomByStudentId(id));
     }
 }
