@@ -19,16 +19,16 @@ public interface FriendRequestController {
             Authentication authentication, @RequestParam Optional<FriendRequestStatus> status);
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Void> createFriendRequest(
             Authentication authentication, @RequestBody FriendRequestCreateDto friendRequestCreateDto);
 
     @ResponseStatus(HttpStatus.OK)
-    @PatchMapping("/update")
+    @PatchMapping("")
     public ResponseEntity<Void> updateFriendRequest(
             Authentication authentication, @RequestBody FriendRequestUpdateDto friendRequestUpdateDto);
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("")
     public ResponseEntity<Void> deleteFriendRequest(
             Authentication authentication, @RequestParam("id") Long friendRequestId);
 }

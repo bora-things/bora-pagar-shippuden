@@ -2,12 +2,16 @@ package com.borathings.borapagar.friendRequest;
 
 import com.borathings.borapagar.core.persistence.SoftDeletableRepository;
 import com.borathings.borapagar.user.UserEntity;
+
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface FriendRequestRepository extends SoftDeletableRepository<FriendRequestEntity> {
+
+    boolean existsByFromUserAndToUserAndDeletedAtIsNull(UserEntity fromUser, UserEntity toUser);
 
     @Query(
             "SELECT f FROM friend_requests f WHERE f.toUser = :toUser AND f.deletedAt IS NULL AND f.status <> 'CANCELLED' AND f.status <> 'REJECTED'")
@@ -22,11 +26,11 @@ public interface FriendRequestRepository extends SoftDeletableRepository<FriendR
 
     @Query(
             """
-		SELECT r FROM friend_requests r
-		WHERE r.toUser = :toUser
-		AND (:status IS NULL or r.status = :status)
-		AND r.deletedAt IS NULL
-		""")
+                    SELECT r FROM friend_requests r
+                    WHERE r.toUser = :toUser
+                    AND (:status IS NULL or r.status = :status)
+                    AND r.deletedAt IS NULL
+                    """)
     List<FriendRequestEntity> findAllByToUserAndOptionalStatus(
             @Param("toUser") UserEntity toUser, @Param("status") FriendRequestStatus status);
 }

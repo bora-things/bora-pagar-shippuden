@@ -24,18 +24,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /**
-     * Trata exceções lançadas pela aplicação que não foram pegas pelos outros handlers.
-     *
-     * @param ex - Exception - Exceção lançada
-     * @return ResponseEntity<Object> - Exceção serializada
-     */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleGenericException(Exception ex) {
-        logger.error("Erro inesperado", ex);
-        ApiException apiException = new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado");
-        return ApiException.toResponseEntity(apiException);
-    }
 
     /**
      * Trata exceções lançadas pela aplicação quando uma entidade não é encontrada.
@@ -45,7 +33,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
-        ApiException apiException = new ApiException(HttpStatus.NOT_FOUND, ex);
+        ApiException apiException = new ApiException(HttpStatus.BAD_REQUEST, ex);
         return ApiException.toResponseEntity(apiException);
     }
 
@@ -84,6 +72,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ApiException.toResponseEntity(apiException);
     }
 
+
     /**
      * Trata exceções lançadas pela aplicação quando uma entidade falha na validação. Este método constrói uma instância
      * da classe <code>ApiFieldException</code> extende a classe <code>
@@ -113,4 +102,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ApiFieldException apiException = new ApiFieldException(HttpStatus.BAD_REQUEST, fieldErrors);
         return ApiException.toResponseEntity(apiException);
     }
+
+    /**
+     * Trata exceções lançadas pela aplicação que não foram pegas pelos outros handlers.
+     *
+     * @param ex - Exception - Exceção lançada
+     * @return ResponseEntity<Object> - Exceção serializada
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleGenericException(Exception ex) {
+        logger.error("Erro inesperado", ex);
+        ApiException apiException = new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado");
+        return ApiException.toResponseEntity(apiException);
+    }
+
 }

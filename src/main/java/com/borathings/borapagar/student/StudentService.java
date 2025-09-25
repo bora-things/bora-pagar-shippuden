@@ -7,9 +7,12 @@ import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
 import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
+import com.borathings.borapagar.friendRequest.FriendRequestEntity;
+import com.borathings.borapagar.friendRequest.FriendRequestService;
 import com.borathings.borapagar.student.dto.SearchedStudentResponseDTO;
 import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
+import com.borathings.borapagar.student.enums.FriendStatus;
 import com.borathings.borapagar.student.index.IndexDTO;
 import com.borathings.borapagar.student.index.IndexEnum;
 import com.borathings.borapagar.student.index.StudentIndexEntity;
@@ -85,6 +88,8 @@ public class StudentService {
 
     @Autowired
     private StudentSubjectInterestService studentSubjectInterestService;
+    @Autowired
+    private FriendRequestService friendRequestService;
 
     public StudentEntity findByIdWithClassrooms(Long studentId) {
         StudentEntity student = studentRepository
@@ -278,14 +283,36 @@ public class StudentService {
 
     public SearchedStudentResponseDTO findStudentResponseDTOById(String userLogin, Long studentId) {
         StudentEntity student = findByIdOrError(studentId);
-        Boolean isOwner = student.getLogin().equals(userLogin);
-        Boolean isFriend = false;
-        if (!isOwner) {
-            isFriend = student.getUser().getFriends().stream()
-                    .anyMatch(item -> item.getLogin().equals(userLogin));
+        UserEntity currentUser=userService.findByLoginOrError(userLogin);
+        FriendStatus status;
+        Long requestId = null;
+
+        if (student.getUser().getId().equals(currentUser.getId())) {
+            status = FriendStatus.SELF;
+
+        } else if (userService.areFriends(currentUser.getId(), student.getUser().getId())) {
+            status = FriendStatus.FRIENDS;
+
+        } else {
+            Optional<FriendRequestEntity> sentRequest = friendRequestService.findRequest(currentUser, student.getUser());
+
+            if (sentRequest.isPresent()) {
+                status = FriendStatus.REQUEST_SENT;
+                requestId = sentRequest.get().getId();
+
+            } else {
+                Optional<FriendRequestEntity> receivedRequest = friendRequestService.findRequest(student.getUser(), currentUser);
+
+                if (receivedRequest.isPresent()) {
+                    status = FriendStatus.REQUEST_RECEIVED;
+                    requestId = receivedRequest.get().getId();
+                } else {
+                    status = FriendStatus.NOT_FRIENDS;
+                }
+            }
         }
-        SearchedStudentResponseDTO response = studentMapper.toSearchedResponseDTO(student, isOwner, isFriend);
-        return response;
+
+        return studentMapper.toSearchedResponseDTO(student, status, requestId);
     }
 
     public void saveStudent(StudentEntity student) {

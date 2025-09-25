@@ -5,6 +5,7 @@ import com.borathings.borapagar.friendRequest.exception.AlreadyFriendsException;
 import com.borathings.borapagar.friendRequest.exception.DuplicateFriendRequestException;
 import com.borathings.borapagar.friendRequest.exception.FriendRequestCooldownException;
 import com.borathings.borapagar.student.StudentEntity;
+import com.borathings.borapagar.student.StudentHelperService;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserService;
@@ -31,7 +32,12 @@ public class FriendRequestService {
     private FriendRequestMapper friendRequestMapper;
 
     @Autowired
-    private StudentService studentService;
+    private StudentHelperService studentService;
+
+
+    public Optional<FriendRequestEntity> findRequest(UserEntity fromUser, UserEntity toUser) {
+        return friendRequestRepository.findByFromUserAndToUser(fromUser,toUser);
+    }
 
     public List<FriendRequestResponseDto> findAllByToUserIdWithStatus(
             String toUserLogin, Optional<FriendRequestStatus> status) {
@@ -54,9 +60,9 @@ public class FriendRequestService {
                 .toList();
     }
 
-    public void createFriendRequest(String fromUserLogin, Integer toId) {
+    public void createFriendRequest(String fromUserLogin, Long toId) {
         UserEntity fromUser = userService.findByLoginOrError(fromUserLogin);
-        UserEntity toUser = userService.findByIdUserOrError(toId);
+        UserEntity toUser = userService.findByIdOrError(toId);
         List<FriendRequestEntity> requests = friendRequestRepository.findAllByFromUserAndToUser(fromUser, toUser);
 
         if (toUser.getFriends().contains(fromUser)) {

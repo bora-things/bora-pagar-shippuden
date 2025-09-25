@@ -22,6 +22,6 @@ public interface UserController {
     public ResponseEntity<List<UserFriendResponseDto>> getUserFriends(Authentication authentication);
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("me/friends/delete")
+    @DeleteMapping("me/friends")
     public ResponseEntity<Void> deleteUserFriends(Authentication authentication, @RequestParam("id") Long friendId);
 }

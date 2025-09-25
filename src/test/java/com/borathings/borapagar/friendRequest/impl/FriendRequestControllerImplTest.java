@@ -42,10 +42,10 @@ class FriendRequestControllerImplTest {
 
     @Test
     void testCreateFriendRequest_Success() {
-        FriendRequestCreateDto requestDto = new FriendRequestCreateDto(1);
+        FriendRequestCreateDto requestDto = new FriendRequestCreateDto(1L);
 
         when(authentication.getName()).thenReturn("user123");
-        doNothing().when(friendRequestService).createFriendRequest("user123", 1);
+        doNothing().when(friendRequestService).createFriendRequest("user123", 1L);
 
         ResponseEntity<Void> response = friendRequestController.createFriendRequest(authentication, requestDto);
 
@@ -54,12 +54,12 @@ class FriendRequestControllerImplTest {
 
     @Test
     void testCreateFriendRequest_Failure() {
-        FriendRequestCreateDto requestDto = new FriendRequestCreateDto(1);
+        FriendRequestCreateDto requestDto = new FriendRequestCreateDto(1L);
 
         when(authentication.getName()).thenReturn("user123");
         doThrow(new RuntimeException("Erro ao criar solicitação"))
                 .when(friendRequestService)
-                .createFriendRequest("user123", 1);
+                .createFriendRequest("user123", 1L);
 
         RuntimeException exception = assertThrows(
                 RuntimeException.class, () -> friendRequestController.createFriendRequest(authentication, requestDto));

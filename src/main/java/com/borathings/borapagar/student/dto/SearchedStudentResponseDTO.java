@@ -1,13 +1,15 @@
 package com.borathings.borapagar.student.dto;
 
+import com.borathings.borapagar.student.enums.FriendStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record SearchedStudentResponseDTO(
-        @JsonProperty("id") long id,
-        @JsonProperty("name") String studentName,
-        @JsonProperty("course_name") String courseName,
-        @JsonProperty("image_url") String imageUrl,
-        @JsonProperty("isOwner") boolean isOwner,
-        @JsonProperty("isFriend") boolean isFriend,
+        long id,
+        String studentName,
+        String courseName,
+        String imageUrl,
         Integer friends,
-        @JsonProperty("period") Integer period) {}
+        FriendStatus friendStatus,
+        Long requestId,
+        Integer period) {
+}

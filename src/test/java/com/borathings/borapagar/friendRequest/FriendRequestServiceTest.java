@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.borathings.borapagar.friendRequest.dto.response.FriendRequestResponseDto;
+import com.borathings.borapagar.student.StudentHelperService;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserService;
@@ -30,7 +31,7 @@ class FriendRequestServiceTest {
     private FriendRequestMapper friendRequestMapper;
 
     @Mock
-    private StudentService studentService;
+    private StudentHelperService studentService;
 
     @InjectMocks
     private FriendRequestService friendRequestService;
@@ -74,10 +75,10 @@ class FriendRequestServiceTest {
     @Test
     void testCreateFriendRequest() {
         when(userService.findByLoginOrError("fromUser")).thenReturn(fromUser);
-        when(userService.findByIdUserOrError(2)).thenReturn(toUser);
+        when(userService.findByIdOrError(2L)).thenReturn(toUser);
         when(friendRequestRepository.save(any())).thenReturn(friendRequest);
 
-        assertDoesNotThrow(() -> friendRequestService.createFriendRequest("fromUser", 2));
+        assertDoesNotThrow(() -> friendRequestService.createFriendRequest("fromUser", 2L));
         verify(friendRequestRepository, times(1)).save(any());
     }
 

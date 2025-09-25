@@ -24,7 +24,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<UserResponseDTO> getUserById(Long userId) {
-        UserResponseDTO u = userService.findByIdOrError(userId);
+        UserResponseDTO u = userService.findByIdOrErrorMapped(userId);
         return ResponseEntity.ok(u);
     }
 
