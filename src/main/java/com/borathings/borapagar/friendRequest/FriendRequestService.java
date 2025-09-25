@@ -6,7 +6,6 @@ import com.borathings.borapagar.friendRequest.exception.DuplicateFriendRequestEx
 import com.borathings.borapagar.friendRequest.exception.FriendRequestCooldownException;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentHelperService;
-import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,9 +33,8 @@ public class FriendRequestService {
     @Autowired
     private StudentHelperService studentService;
 
-
     public Optional<FriendRequestEntity> findRequest(UserEntity fromUser, UserEntity toUser) {
-        return friendRequestRepository.findByFromUserAndToUser(fromUser,toUser);
+        return friendRequestRepository.findByFromUserAndToUser(fromUser, toUser);
     }
 
     public List<FriendRequestResponseDto> findAllByToUserIdWithStatus(

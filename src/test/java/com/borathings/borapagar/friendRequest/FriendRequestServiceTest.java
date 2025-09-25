@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import com.borathings.borapagar.friendRequest.dto.response.FriendRequestResponseDto;
 import com.borathings.borapagar.student.StudentHelperService;
-import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.UserEntity;
 import com.borathings.borapagar.user.UserService;
 import jakarta.persistence.EntityNotFoundException;

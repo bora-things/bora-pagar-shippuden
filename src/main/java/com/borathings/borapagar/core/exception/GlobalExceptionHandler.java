@@ -24,7 +24,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
     /**
      * Trata exceções lançadas pela aplicação quando uma entidade não é encontrada.
      *
@@ -72,7 +71,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ApiException.toResponseEntity(apiException);
     }
 
-
     /**
      * Trata exceções lançadas pela aplicação quando uma entidade falha na validação. Este método constrói uma instância
      * da classe <code>ApiFieldException</code> extende a classe <code>
@@ -115,5 +113,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ApiException apiException = new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado");
         return ApiException.toResponseEntity(apiException);
     }
-
 }

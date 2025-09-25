@@ -88,6 +88,7 @@ public class StudentService {
 
     @Autowired
     private StudentSubjectInterestService studentSubjectInterestService;
+
     @Autowired
     private FriendRequestService friendRequestService;
 
@@ -283,7 +284,7 @@ public class StudentService {
 
     public SearchedStudentResponseDTO findStudentResponseDTOById(String userLogin, Long studentId) {
         StudentEntity student = findByIdOrError(studentId);
-        UserEntity currentUser=userService.findByLoginOrError(userLogin);
+        UserEntity currentUser = userService.findByLoginOrError(userLogin);
         FriendStatus status;
         Long requestId = null;
 
@@ -294,14 +295,16 @@ public class StudentService {
             status = FriendStatus.FRIENDS;
 
         } else {
-            Optional<FriendRequestEntity> sentRequest = friendRequestService.findRequest(currentUser, student.getUser());
+            Optional<FriendRequestEntity> sentRequest =
+                    friendRequestService.findRequest(currentUser, student.getUser());
 
             if (sentRequest.isPresent()) {
                 status = FriendStatus.REQUEST_SENT;
                 requestId = sentRequest.get().getId();
 
             } else {
-                Optional<FriendRequestEntity> receivedRequest = friendRequestService.findRequest(student.getUser(), currentUser);
+                Optional<FriendRequestEntity> receivedRequest =
+                        friendRequestService.findRequest(student.getUser(), currentUser);
 
                 if (receivedRequest.isPresent()) {
                     status = FriendStatus.REQUEST_RECEIVED;

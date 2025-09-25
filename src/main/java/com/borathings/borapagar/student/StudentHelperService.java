@@ -2,10 +2,9 @@ package com.borathings.borapagar.student;
 
 import com.borathings.borapagar.user.UserEntity;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class StudentHelperService {
@@ -20,7 +19,7 @@ public class StudentHelperService {
                         () -> new EntityNotFoundException("Estudante com id: " + studentId + " não foi encontrado"));
     }
 
-    public List<StudentEntity> findAllStudentsById(List<UserEntity> users){
+    public List<StudentEntity> findAllStudentsById(List<UserEntity> users) {
         return studentRepository.findAllByUserIn(users);
     }
 }

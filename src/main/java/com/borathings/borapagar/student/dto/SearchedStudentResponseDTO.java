@@ -1,7 +1,6 @@
 package com.borathings.borapagar.student.dto;
 
 import com.borathings.borapagar.student.enums.FriendStatus;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record SearchedStudentResponseDTO(
         long id,
@@ -11,5 +10,4 @@ public record SearchedStudentResponseDTO(
         Integer friends,
         FriendStatus friendStatus,
         Long requestId,
-        Integer period) {
-}
+        Integer period) {}

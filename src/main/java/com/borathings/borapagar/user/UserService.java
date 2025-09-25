@@ -102,13 +102,13 @@ public class UserService {
         return user;
     }
 
-    public UserResponseDTO findByIdOrErrorMapped(Long id){
-        UserEntity user=findByIdOrError(id);
+    public UserResponseDTO findByIdOrErrorMapped(Long id) {
+        UserEntity user = findByIdOrError(id);
         return userMapper.toUserResponseDTO(user);
     }
 
-    public Boolean areFriends(long userId,long friendId){
-        return userRepository.areFriends(userId,friendId);
+    public Boolean areFriends(long userId, long friendId) {
+        return userRepository.areFriends(userId, friendId);
     }
 
     @Transactional

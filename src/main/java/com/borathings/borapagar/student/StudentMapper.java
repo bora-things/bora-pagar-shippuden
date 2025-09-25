@@ -20,5 +20,6 @@ public interface StudentMapper {
 
     @Mapping(target = "period", expression = "java(entity.getUserPeriod())")
     @Mapping(target = "friends", expression = "java(entity.getUser().getFriends().size())")
-    public SearchedStudentResponseDTO toSearchedResponseDTO(StudentEntity entity, FriendStatus friendStatus, Long requestId);
+    public SearchedStudentResponseDTO toSearchedResponseDTO(
+            StudentEntity entity, FriendStatus friendStatus, Long requestId);
 }

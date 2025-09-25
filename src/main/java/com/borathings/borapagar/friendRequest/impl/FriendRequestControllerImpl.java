@@ -8,8 +8,6 @@ import com.borathings.borapagar.friendRequest.dto.FriendRequestUpdateDto;
 import com.borathings.borapagar.friendRequest.dto.response.FriendRequestResponseDto;
 import java.util.List;
 import java.util.Optional;
-
-import com.borathings.borapagar.user.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +37,6 @@ public class FriendRequestControllerImpl implements FriendRequestController {
         friendRequestService.updateFriendRequest(requestId, friendRequestUpdateDto.status());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 
     @Override
     public ResponseEntity<Void> deleteFriendRequest(Authentication authentication, Long friendRequestId) {
