@@ -24,7 +24,9 @@ public interface ComponentRepository extends AbstractRepository<ComponentEntity>
             nativeQuery = true)
     List<ComponentEntity> findAllByCodeInAndCurricularMatrixId(List<String> codes, Integer matrixId);
 
-    List<ComponentEntity> findAllByCodeIn(List<String> codes);
+    @Query("SELECT c FROM components c WHERE c.id IN "
+            + "(SELECT MIN(c2.id) FROM components c2 WHERE c2.code IN :codes GROUP BY c2.code)")
+    List<ComponentEntity> findDistinctByCodeIn(List<String> codes);
 
     Page<ComponentEntity> findAll(Pageable pageable);
 

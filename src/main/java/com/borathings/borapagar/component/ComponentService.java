@@ -64,7 +64,7 @@ public class ComponentService {
     }
 
     public List<ComponentEntity> findAllByCodeIn(List<String> codes) {
-        return componentRepository.findAllByCodeIn(codes);
+        return componentRepository.findDistinctByCodeIn(codes);
     }
 
     public List<ComponentEntity> findAllByComponentId(List<Integer> ids) {
