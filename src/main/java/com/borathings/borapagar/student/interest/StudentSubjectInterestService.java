@@ -169,7 +169,6 @@ public class StudentSubjectInterestService {
                 .toList();
 
         List<ComponentEntity> components = componentService.findAllByCodeIn(uniqueSubjectCodes);
-        System.out.println(components.toArray().length);
 
         List<ComponentResponseDTO> componentResponseDTOS = components.stream()
                 .map(item -> componentMapper.toResponseDTO(item))

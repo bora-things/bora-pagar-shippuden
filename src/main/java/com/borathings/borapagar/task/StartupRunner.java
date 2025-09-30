@@ -1,5 +1,6 @@
 package com.borathings.borapagar.task;
 
+import com.borathings.borapagar.academicCalendar.AcademicCalendarService;
 import com.borathings.borapagar.component.ComponentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -12,8 +13,12 @@ public class StartupRunner implements ApplicationRunner {
     @Autowired
     private ComponentService componentService;
 
+    @Autowired
+    private AcademicCalendarService calendarService;
+
     @Override
     public void run(ApplicationArguments args) {
         componentService.fetchComponents();
+        calendarService.fetchCalendar();
     }
 }
