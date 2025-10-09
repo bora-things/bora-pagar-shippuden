@@ -148,6 +148,10 @@ public class UserService {
         }
     }
 
+    public Set<Long> findFriendsFromList(Long userId, List<Long> targetUserIds) {
+        return userRepository.findFriendIdsFromTargetList(userId, targetUserIds);
+    }
+
     public UserDTO fetchUserByCpf(String cpf) {
         List<UserDTO> users = serviceRestClient
                 .get()

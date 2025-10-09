@@ -58,6 +58,14 @@ public class FriendRequestService {
                 .toList();
     }
 
+    public List<FriendRequestEntity> findReceivedRequestsFromUsers(UserEntity currentUser, List<Long> targetIds) {
+        return friendRequestRepository.findReceivedRequestsFromUsers(currentUser, targetIds);
+    }
+
+    public List<FriendRequestEntity> findSentRequestsToUsers(UserEntity currentUser, List<Long> targetIds) {
+        return friendRequestRepository.findSentRequestsToUsers(currentUser, targetIds);
+    }
+
     public void createFriendRequest(String fromUserLogin, Long toId) {
         UserEntity fromUser = userService.findByLoginOrError(fromUserLogin);
         UserEntity toUser = userService.findByIdOrError(toId);

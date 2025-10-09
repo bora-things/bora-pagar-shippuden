@@ -4,7 +4,9 @@ import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
 import com.borathings.borapagar.student.dto.SearchedStudentResponseDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,4 +25,18 @@ public interface StudentController {
     @GetMapping("/{studentId}")
     public ResponseEntity<SearchedStudentResponseDTO> getById(
             Authentication authentication, @PathVariable Long studentId);
+
+    @GetMapping
+    public ResponseEntity<Page<SearchedStudentResponseDTO>> getAllStudents(
+            Authentication authentication,
+            @RequestParam(required = false) String studentName,
+            @PageableDefault(size = 10, page = 0, sort = "studentName", direction = Sort.Direction.ASC)
+                    Pageable pageable);
+
+    @GetMapping("/me/friends")
+    public ResponseEntity<Page<SearchedStudentResponseDTO>> getAllFriends(
+            Authentication authentication,
+            @RequestParam(required = false) String studentName,
+            @PageableDefault(size = 10, page = 0, sort = "studentName", direction = Sort.Direction.ASC)
+                    Pageable pageable);
 }

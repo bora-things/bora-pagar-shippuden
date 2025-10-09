@@ -39,6 +39,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.flywaydb.core.internal.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -279,6 +280,78 @@ public class StudentService {
 
         return studentRepository.findById(studentId).orElseThrow(() -> {
             return new EntityNotFoundException("Estudante com id: " + studentId + " não foi encontrado");
+        });
+    }
+
+    public Page<SearchedStudentResponseDTO> findFriendsByName(String userLogin, String name, Pageable page) {
+
+        StudentEntity student = findByUserLoginOrError(userLogin);
+        UserEntity currentUser = student.getUser();
+
+        Page<StudentEntity> studentPage;
+
+        if (StringUtils.hasText(name)) {
+            studentPage = studentRepository.findFriendsByName(name, student.getStudentId(), page);
+        } else {
+            studentPage = studentRepository.findFriends(student.getStudentId(), page);
+        }
+
+        return studentPage.map(item -> {
+            return studentMapper.toSearchedResponseDTO(item, FriendStatus.FRIENDS, null);
+        });
+    }
+
+    public Page<SearchedStudentResponseDTO> findStudentsByName(String userLogin, String name, Pageable page) {
+
+        StudentEntity student = findByUserLoginOrError(userLogin);
+        UserEntity currentUser = student.getUser();
+
+        Page<StudentEntity> studentPage;
+
+        if (StringUtils.hasText(name)) {
+            studentPage = studentRepository.findByStudentNameContainingIgnoreCaseAndIdNot(name, student.getId(), page);
+        } else {
+            studentPage = studentRepository.findFriendsOfFriends(student.getStudentId(), page);
+        }
+
+        List<Long> targetUserIds = studentPage.getContent().stream()
+                .map(item -> item.getUser().getId())
+                .toList();
+
+        Set<Long> friendIds = userService.findFriendsFromList(currentUser.getId(), targetUserIds);
+
+        Map<Long, FriendRequestEntity> sentRequestsMap =
+                friendRequestService.findSentRequestsToUsers(currentUser, targetUserIds).stream()
+                        .collect(Collectors.toMap(req -> req.getToUser().getId(), Function.identity()));
+
+        Map<Long, FriendRequestEntity> receivedRequestsMap =
+                friendRequestService.findReceivedRequestsFromUsers(currentUser, targetUserIds).stream()
+                        .collect(Collectors.toMap(req -> req.getFromUser().getId(), Function.identity()));
+
+        return studentPage.map(item -> {
+            Long targetUserId = item.getUser().getId();
+            FriendStatus status;
+            Long requestId = null;
+
+            if (targetUserId.equals(currentUser.getId())) {
+                status = FriendStatus.SELF;
+
+            } else if (friendIds.contains(targetUserId)) {
+                status = FriendStatus.FRIENDS;
+
+            } else if (sentRequestsMap.containsKey(targetUserId)) {
+                status = FriendStatus.REQUEST_SENT;
+                requestId = sentRequestsMap.get(targetUserId).getId();
+
+            } else if (receivedRequestsMap.containsKey(targetUserId)) {
+                status = FriendStatus.REQUEST_RECEIVED;
+                requestId = receivedRequestsMap.get(targetUserId).getId();
+
+            } else {
+                status = FriendStatus.NOT_FRIENDS;
+            }
+
+            return studentMapper.toSearchedResponseDTO(item, status, requestId);
         });
     }
 
