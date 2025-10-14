@@ -35,13 +35,11 @@ import com.borathings.borapagar.workload.WorkloadDto;
 import com.borathings.borapagar.workload.WorkloadEntity;
 import com.borathings.borapagar.workload.WorkloadRepository;
 import jakarta.persistence.EntityNotFoundException;
-
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.flywaydb.core.internal.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,8 +181,7 @@ public class StudentService {
                     .uri("/discente/v1/discentes?id-curso=92127264&id-institucional=" + institutionalId)
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<StudentDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<StudentDTO>>() {});
 
             StudentDTO studentDto = students.getFirst();
             StudentSituation studentSituation = StudentSituation.getById(studentDto.studentStatusId());
@@ -207,8 +204,7 @@ public class StudentService {
                     .uri("/discente/v1/indices-discentes?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<IndexDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<IndexDTO>>() {});
 
             List<StudentIndexEntity> studentIndexEntities = indexes.stream()
                     .map(idx -> StudentIndexEntity.builder()
@@ -239,8 +235,7 @@ public class StudentService {
                     .uri("/discente/v1/discentes/" + student.getStudentId() + "/carga-horaria")
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<WorkloadDto>() {
-                    });
+                    .body(new ParameterizedTypeReference<WorkloadDto>() {});
 
             if (workloadDto != null) {
                 WorkloadEntity workload = workloadRepository
@@ -410,8 +405,7 @@ public class StudentService {
                     .uri("/matricula/v1/matriculas-componentes?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<TakenComponentDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<TakenComponentDTO>>() {});
 
             takenComponentService.batchInsertDTOs(components, student);
             return CompletableFuture.completedFuture(null);
@@ -432,8 +426,7 @@ public class StudentService {
                     .uri("/turma/v1/participantes?limit=100&id-turma=" + classroom.getClassroomId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<FriendClassUserDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<FriendClassUserDTO>>() {});
 
             if (studentsDto != null && !studentsDto.isEmpty()) {
                 Map<Long, UserEntity> userFriendsMap = userFriends.stream()

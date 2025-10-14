@@ -15,8 +15,8 @@ public interface StudentMapper {
     public StudentDTO toDto(StudentEntity entity);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target="curricularMatrix",expression = "java(curricularMatrix)")
-    public StudentEntity toEntity(StudentDTO dto,Integer curricularMatrix, StudentSituation studentSituation);
+    @Mapping(target = "curricularMatrix", expression = "java(curricularMatrix)")
+    public StudentEntity toEntity(StudentDTO dto, Integer curricularMatrix, StudentSituation studentSituation);
 
     @Mapping(target = "period", expression = "java(entity.getUserPeriod())")
     public StudentResponseDTO toResponseDTO(StudentEntity entity);
