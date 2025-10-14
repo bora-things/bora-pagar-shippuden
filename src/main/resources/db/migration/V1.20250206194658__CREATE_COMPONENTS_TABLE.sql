@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS components
     description                  TEXT ,
     equivalent                TEXT ,
     component_id              INTEGER ,
-    curricular_matrix_id      INTEGER ,
+    curricular_matrix_id      BIGINT ,
     name                      VARCHAR(255) ,
     pre_requisites            TEXT ,
     created_at                TIMESTAMPTZ DEFAULT NOW(),

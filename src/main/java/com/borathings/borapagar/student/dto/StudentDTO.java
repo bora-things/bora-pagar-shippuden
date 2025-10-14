@@ -13,6 +13,8 @@ public record StudentDTO(
         @JsonProperty("id-foto") Integer photoId,
         @JsonProperty("id-gestora-academica") Long academicManagerId,
         @JsonProperty("id-institucional") Long institutionalId,
+        @JsonProperty("id-matriz-curricular") Integer curricularMatrix,
+        @JsonProperty("enfase") String emphasis,
         @JsonProperty("id-instituicao-ensino") Integer educationalInstitutionId,
         @JsonProperty("id-polo") Integer campusId,
         @JsonProperty("id-situacao-discente") Integer studentStatusId,

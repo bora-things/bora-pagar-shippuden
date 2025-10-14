@@ -8,6 +8,8 @@ CREATE TABLE students
     enrollment_id VARCHAR(255) ,
     situation VARCHAR(50) ,
     course_id INT ,
+    curricular_matrix INT,
+    emphasis VARCHAR(255),
     course_name VARCHAR(255) ,
     user_id BIGINT  UNIQUE,
     workload_id BIGINT UNIQUE,

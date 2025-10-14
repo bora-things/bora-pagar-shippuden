@@ -33,6 +33,15 @@ public enum StudentSituation {
         }
     }
 
+    public static StudentSituation getById(int id) {
+        for (StudentSituation situation : values()) {
+            if (situation.getId() == id) {
+                return situation;
+            }
+        }
+        return DESCONHECIDO;
+    }
+
     public static String getDescriptionById(int id) {
         return lookup.getOrDefault(id, "");
     }

@@ -11,11 +11,13 @@ import com.borathings.borapagar.component.repository.ComponentRepository;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +67,8 @@ public class ClassroomService {
                     .uri("/turma/v1/turmas?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {});
+                    .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {
+                    });
 
             if (classroomDTOs != null && !classroomDTOs.isEmpty()) {
 
@@ -97,7 +100,8 @@ public class ClassroomService {
         List<String> componentCodes =
                 classrooms.stream().map(ClassroomEntity::getComponentCode).toList();
         List<ComponentEntity> components = componentRepository.findAllByCodeInAndCurricularMatrixId(
-                componentCodes, Integer.valueOf(student.getCurricularMatrix()));
+                componentCodes, student.getCurricularMatrix());
+
         Map<String, ComponentResponseDTO> componentMap = components.stream()
                 .collect(Collectors.toMap(
                         ComponentEntity::getCode,
