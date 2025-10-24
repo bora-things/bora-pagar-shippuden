@@ -1,6 +1,10 @@
 package com.borathings.borapagar.config;
 
+    import java.time.Instant;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +32,11 @@ public class RestClientConfig {
 
     @Value("${sigaa.api-base-url}")
     private String apiBaseUrl;
+
+    private final RestTemplate tokenRestTemplate = new RestTemplate();
+    private final Lock serviceTokenLock = new ReentrantLock();
+    private volatile String cachedServiceToken = null;
+    private volatile Instant tokenExpiryTime = null;
 
     @Bean
     public OAuth2AuthorizedClientManager authorizedClientManager(
@@ -71,17 +80,34 @@ public class RestClientConfig {
     }
 
     private String getServiceToken() {
-        RestTemplate restTemplate = new RestTemplate();
+        if (cachedServiceToken != null && Instant.now().isBefore(tokenExpiryTime)) {
+            return cachedServiceToken;
+        }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        serviceTokenLock.lock();
+        try {
+            if (cachedServiceToken != null && Instant.now().isBefore(tokenExpiryTime)) {
+                return cachedServiceToken;
+            }
 
-        String body = "client_id=" + clientId + "&client_secret=" + clientSecret + "&grant_type=client_credentials";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        HttpEntity<String> request = new HttpEntity<>(body, headers);
+            String body = "client_id=" + clientId + "&client_secret=" + clientSecret + "&grant_type=client_credentials";
+            HttpEntity<String> request = new HttpEntity<>(body, headers);
 
-        ResponseEntity<Map> response = restTemplate.exchange(tokenUri, HttpMethod.POST, request, Map.class);
+            ResponseEntity<Map> response = tokenRestTemplate.exchange(tokenUri, HttpMethod.POST, request, Map.class);
+            Map<String, Object> responseBody = Objects.requireNonNull(response.getBody());
 
-        return (String) response.getBody().get("access_token");
+            this.cachedServiceToken = (String) responseBody.get("access_token");
+            Integer expiresIn = (Integer) responseBody.get("expires_in");
+
+            this.tokenExpiryTime = Instant.now().plusSeconds(expiresIn - 60);
+
+            return this.cachedServiceToken;
+        } finally {
+            serviceTokenLock.unlock();
+        }
     }
 }
+

@@ -35,11 +35,14 @@ import com.borathings.borapagar.workload.WorkloadDto;
 import com.borathings.borapagar.workload.WorkloadEntity;
 import com.borathings.borapagar.workload.WorkloadRepository;
 import jakarta.persistence.EntityNotFoundException;
+
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.flywaydb.core.internal.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +65,11 @@ public class StudentService {
     RestClient userRestClient;
 
     @Autowired
+    @Qualifier("serviceRestClient")
+    RestClient serviceRestClient;
+
+
+    @Autowired
     StudentRepository studentRepository;
 
     @Autowired
@@ -69,9 +77,6 @@ public class StudentService {
 
     @Autowired
     StudentMapper studentMapper;
-
-    @Autowired
-    private StudentIndexRepository studentIndexRepository;
 
     @Autowired
     private WorkloadRepository workloadRepository;
@@ -93,6 +98,10 @@ public class StudentService {
 
     @Autowired
     private FriendRequestService friendRequestService;
+
+    public Set<Long> findAllStudents() {
+        return studentRepository.findAll().stream().map(StudentEntity::getId).collect(Collectors.toSet());
+    }
 
     public StudentEntity findByIdWithClassrooms(Long studentId) {
         StudentEntity student = studentRepository
@@ -181,7 +190,8 @@ public class StudentService {
                     .uri("/discente/v1/discentes?id-curso=92127264&id-institucional=" + institutionalId)
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<StudentDTO>>() {});
+                    .body(new ParameterizedTypeReference<List<StudentDTO>>() {
+                    });
 
             StudentDTO studentDto = students.getFirst();
             StudentSituation studentSituation = StudentSituation.getById(studentDto.studentStatusId());
@@ -195,35 +205,6 @@ public class StudentService {
         return student.get();
     }
 
-    @Async
-    public CompletableFuture<Void> fetchIndexes(StudentEntity student) {
-        try {
-
-            List<IndexDTO> indexes = userRestClient
-                    .get()
-                    .uri("/discente/v1/indices-discentes?id-discente=" + student.getStudentId())
-                    .attributes(clientRegistrationId("sigaa"))
-                    .retrieve()
-                    .body(new ParameterizedTypeReference<List<IndexDTO>>() {});
-
-            List<StudentIndexEntity> studentIndexEntities = indexes.stream()
-                    .map(idx -> StudentIndexEntity.builder()
-                            .student(student)
-                            .value(idx.value())
-                            .name(IndexEnum.fromId(idx.indexId().intValue()).name())
-                            .indexId(idx.indexId())
-                            .studentIndexId(idx.studentIndexId())
-                            .build())
-                    .collect(Collectors.toList());
-
-            studentIndexRepository.saveAll(studentIndexEntities);
-
-        } catch (Exception ex) {
-            logger.error("Exception at fetchIndexes: {}", ex.getMessage());
-        }
-
-        return CompletableFuture.completedFuture(null);
-    }
 
     @Async
     @Transactional
@@ -235,7 +216,8 @@ public class StudentService {
                     .uri("/discente/v1/discentes/" + student.getStudentId() + "/carga-horaria")
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<WorkloadDto>() {});
+                    .body(new ParameterizedTypeReference<WorkloadDto>() {
+                    });
 
             if (workloadDto != null) {
                 WorkloadEntity workload = workloadRepository
@@ -405,7 +387,8 @@ public class StudentService {
                     .uri("/matricula/v1/matriculas-componentes?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<TakenComponentDTO>>() {});
+                    .body(new ParameterizedTypeReference<List<TakenComponentDTO>>() {
+                    });
 
             takenComponentService.batchInsertDTOs(components, student);
             return CompletableFuture.completedFuture(null);
@@ -426,7 +409,8 @@ public class StudentService {
                     .uri("/turma/v1/participantes?limit=100&id-turma=" + classroom.getClassroomId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<FriendClassUserDTO>>() {});
+                    .body(new ParameterizedTypeReference<List<FriendClassUserDTO>>() {
+                    });
 
             if (studentsDto != null && !studentsDto.isEmpty()) {
                 Map<Long, UserEntity> userFriendsMap = userFriends.stream()
@@ -444,4 +428,71 @@ public class StudentService {
         }
         return CompletableFuture.completedFuture(null);
     }
+
+    public List<Long> fetchAllStudentsFromTI() {
+        final int LIMIT = 100;
+        int idCursoES = 17848940;
+        int idCursoTI = 92127264;
+        int idCursoCS = 2000013;
+        List<Long> studentIds = new ArrayList<>();
+
+        Set<Integer> coursesId = Set.of(idCursoCS, idCursoTI, idCursoES);
+
+
+        Iterator<Integer> courseIterator = coursesId.iterator();
+        while (courseIterator.hasNext()) {
+            int offset = 0;
+            Integer courseId= courseIterator.next();
+            boolean hasMoreStudents = true;
+            while (hasMoreStudents) {
+                logger.info("Buscando estudantes de {}, partindo de {} até {}", coursesId, offset, offset + LIMIT);
+                int finalOffset = offset;
+                List<StudentDTO> currentPageStudents = serviceRestClient
+                        .get()
+                        .uri(uriBuilder -> uriBuilder
+                                .path("discente/v1/discentes")
+                                .queryParam("id-curso", courseId)
+                                .queryParam("id-tipo-discente", "1")
+                                .queryParam("offset", finalOffset)
+                                .queryParam("limit", LIMIT)
+                                .build())
+                        .retrieve()
+                        .body(new ParameterizedTypeReference<>() {
+                        });
+
+                if (currentPageStudents != null && !currentPageStudents.isEmpty()) {
+                    studentIds.addAll(currentPageStudents.stream().filter(item ->
+                            StudentSituation.getById(item.studentStatusId()).isActive()).map(item -> item.studentId()).toList());
+                    offset += LIMIT;
+                } else {
+                    hasMoreStudents = false;
+                }
+            }
+            if (courseIterator.hasNext()) {
+                try {
+                    logger.info("Pausa de 1 minuto antes de buscar o próximo curso...");
+                    TimeUnit.MINUTES.sleep(1);
+                    logger.info("Retomando processamento.");
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt(); // Boa prática
+                    logger.warn("Pausa de 1 minuto foi interrompida.", e);
+                }
+            }
+        }
+
+        return studentIds;
+    }
+
+
+    public Map<Long, StudentEntity> getAllStudents() {
+
+        List<StudentEntity> students = studentRepository.findAll();
+        Map<Long, StudentEntity> studentsMap = new HashMap<>();
+        students.forEach(student -> {
+            studentsMap.put(student.getStudentId(), student);
+        });
+        return studentsMap;
+
+    }
+
 }

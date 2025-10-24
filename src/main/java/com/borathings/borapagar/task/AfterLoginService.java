@@ -4,6 +4,8 @@ import com.borathings.borapagar.classroom.ClassroomService;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import java.util.concurrent.CompletableFuture;
+
+import com.borathings.borapagar.student.index.StudentIndexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,13 @@ public class AfterLoginService {
 
     @Autowired
     private ClassroomService classroomService;
+    @Autowired
+    private StudentIndexService studentIndexService;
 
     @Async
     public void completeProfileAfterLogin(StudentEntity student) {
         CompletableFuture.allOf(
-                        studentService.fetchIndexes(student),
+                        studentIndexService.fetchIndexes(student),
                         studentService.fetchWorkload(student),
                         studentService.fetchAcademicRecord(student),
                         classroomService.fetchClassroomAsync(student))

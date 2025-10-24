@@ -11,11 +11,14 @@ import com.borathings.borapagar.component.repository.ComponentRepository;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +68,8 @@ public class ClassroomService {
                     .uri("/turma/v1/turmas?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {});
+                    .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {
+                    });
 
             if (classroomDTOs != null && !classroomDTOs.isEmpty()) {
 
@@ -127,6 +131,7 @@ public class ClassroomService {
         }
     }
 
+
     public static <T> CompletableFuture<List<T>> sequence(List<CompletableFuture<T>> futures) {
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
                 .thenApply(v -> futures.stream().map(CompletableFuture::join).toList());
@@ -136,4 +141,25 @@ public class ClassroomService {
         StudentEntity student = studentService.findByIdWithClassrooms(studentId);
         return findClassroomByStudent(student.getUser().getLogin());
     }
+
+    public List<ClassroomDTO> fetchClassrooms(Set<Long> classroomIds) {
+
+        List<ClassroomDTO> classrooms = new ArrayList<>();
+
+        for (Long classroomId : classroomIds) {
+            ClassroomDTO classroomDTO = serviceRestClient
+                    .get()
+                    .uri("/turma/v1/turmas/" + classroomId)
+                    .attributes(clientRegistrationId("sigaa"))
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<ClassroomDTO>() {
+                    });
+            if (classroomDTO != null) {
+                classrooms.add(classroomDTO);
+            }
+
+        }
+        return classrooms;
+    }
+
 }
