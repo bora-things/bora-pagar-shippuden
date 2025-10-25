@@ -12,17 +12,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface ComponentRepository extends AbstractRepository<ComponentEntity> {
 
-    @Query(
-            value =
-                    """
-    SELECT DISTINCT ON (c.code) *
-    FROM components c
-    WHERE c.code IN (:codes)
-    AND c.curricular_matrix_id=(:matrixId)
-    ORDER BY c.code, c.id DESC
-""",
-            nativeQuery = true)
-    List<ComponentEntity> findAllByCodeInAndCurricularMatrixId(List<String> codes, Integer matrixId);
+
+    List<ComponentEntity> findAllByCodeIn(List<String> codes);
 
     @Query("SELECT c FROM components c WHERE c.id IN "
             + "(SELECT MIN(c2.id) FROM components c2 WHERE c2.code IN :codes GROUP BY c2.code)")

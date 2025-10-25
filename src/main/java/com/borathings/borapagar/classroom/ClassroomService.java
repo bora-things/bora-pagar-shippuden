@@ -12,10 +12,7 @@ import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -96,25 +93,66 @@ public class ClassroomService {
 
     public List<ClassroomResponseDTO> findClassroomByStudent(String login) {
         StudentEntity student = studentService.findByUserLoginOrError(login);
-
         Set<ClassroomEntity> classrooms = student.getClassrooms();
         List<String> componentCodes =
                 classrooms.stream().map(ClassroomEntity::getComponentCode).toList();
-        List<ComponentEntity> components =
-                componentRepository.findAllByCodeInAndCurricularMatrixId(componentCodes, student.getCurricularMatrix());
 
-        Map<String, ComponentResponseDTO> componentMap = components.stream()
+        // 1. Pega a matriz de referência do aluno
+        final Integer studentMatrix = student.getCurricularMatrix();
+
+        List<ComponentEntity> allComponents =
+                componentRepository.findAllByCodeIn(componentCodes);
+
+        Map<String, ComponentEntity> prioritizedComponentMap = allComponents.stream()
                 .collect(Collectors.toMap(
                         ComponentEntity::getCode,
-                        component -> componentMapper.toResponseDTO(component),
-                        (existing, replacement) -> existing));
+                        component -> component,
+                        (existing, replacement) -> {
+
+                            if (studentMatrix == null) {
+                                return existing;
+                            }
+
+                            boolean existingIsPreferred = studentMatrix.equals(existing.getCurricularMatrixId());
+                            boolean replacementIsPreferred = studentMatrix.equals(replacement.getCurricularMatrixId());
+
+                            if (existingIsPreferred && !replacementIsPreferred) {
+                                return existing;
+                            } else if (!existingIsPreferred && replacementIsPreferred) {
+                                return replacement;
+                            } else {
+                                return existing;
+                            }
+                        }
+                ));
+
+        Map<String, ComponentResponseDTO> componentMap = prioritizedComponentMap.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> {
+                            ComponentEntity entity = entry.getValue();
+                            boolean mandatorySubject = entity.getCurricularMatrixId().equals(studentMatrix)
+                                    ? Boolean.TRUE.equals(entity.getMandatorySubject())
+                                    : false;
+                            entity.setMandatorySubject(mandatorySubject);
+                            return componentMapper.toResponseDTO(entity);
+                        }
+                ));
+
         try {
             List<CompletableFuture<ClassroomResponseDTO>> futures = classrooms.stream()
                     .map(item -> {
                         if (item.getComponentCode() != null) {
                             CompletableFuture<List<UserResponseDTO>> friendsFuture = studentService.findFriendsInClass(
                                     student.getUser(), item, student.getUser().getFriends());
+
                             ComponentResponseDTO component = componentMap.get(item.getComponentCode());
+
+                            if (component == null) {
+                                logger.warn("Componente com código {} não encontrado para a turma {}",
+                                        item.getComponentCode(), item.getId());
+                                return CompletableFuture.completedFuture((ClassroomResponseDTO) null);
+                            }
 
                             return friendsFuture.thenApply(
                                     friends -> classroomMapper.toResponseDTO(item, component, friends));
@@ -124,9 +162,13 @@ public class ClassroomService {
                     .toList();
 
             CompletableFuture<List<ClassroomResponseDTO>> allDoneFuture = sequence(futures);
-            return allDoneFuture.get();
+
+            return allDoneFuture.get().stream()
+                    .filter(Objects::nonNull)
+                    .toList();
+
         } catch (Exception ex) {
-            logger.error("Erro", ex.getMessage());
+            logger.error("Erro ao buscar turmas do aluno: {}", ex.getMessage(), ex);
             return null;
         }
     }
