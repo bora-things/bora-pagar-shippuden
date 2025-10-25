@@ -6,7 +6,5 @@ public interface AcademicCalendarRepository extends JpaRepository<AcademicCalend
 
     void deleteAllByYear(int year);
 
-
     AcademicCalendarEntity findByIsCurrentTrue();
-
 }

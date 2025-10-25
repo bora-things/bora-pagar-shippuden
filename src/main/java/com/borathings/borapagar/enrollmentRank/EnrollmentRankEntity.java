@@ -1,9 +1,8 @@
 package com.borathings.borapagar.enrollmentRank;
 
 import jakarta.persistence.*;
-import lombok.Data;
-
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Entity
 @Table(name = "enrollment_rank")
@@ -14,10 +13,10 @@ public class EnrollmentRankEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="year" ,nullable = false)
+    @Column(name = "year", nullable = false)
     private Integer year;
 
-    @Column(name="period",nullable = false)
+    @Column(name = "period", nullable = false)
     private Integer period;
 
     @Column(name = "class_id", nullable = false)
@@ -37,6 +36,4 @@ public class EnrollmentRankEntity {
 
     @Column(name = "uncertain_rank", nullable = false)
     private boolean uncertainRanking = false;
-
 }
-

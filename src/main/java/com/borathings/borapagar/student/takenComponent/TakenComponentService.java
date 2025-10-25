@@ -2,12 +2,10 @@ package com.borathings.borapagar.student.takenComponent;
 
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.takenComponent.dto.TakenComponentDTO;
-
+import com.borathings.borapagar.student.takenComponent.enums.TakenComponentSituationEnum;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import com.borathings.borapagar.student.takenComponent.enums.TakenComponentSituationEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,25 +52,15 @@ public class TakenComponentService {
     }
 
     public Map<Long, Boolean> findDroppedOrFailedByAbsence(Set<Long> studentIds, String componentCode) {
-        Set<Long> studentsWhoFailed = repository.findStudentIdsWithFailedHistory(
-                studentIds,
-                componentCode,
-                FAILED_SITUATIONS
-        );
+        Set<Long> studentsWhoFailed =
+                repository.findStudentIdsWithFailedHistory(studentIds, componentCode, FAILED_SITUATIONS);
 
-        return studentIds.stream()
-                .collect(Collectors.toMap(
-                        Function.identity(),
-                        studentsWhoFailed::contains
-                ));
+        return studentIds.stream().collect(Collectors.toMap(Function.identity(), studentsWhoFailed::contains));
     }
 
     private static final Set<Integer> FAILED_SITUATIONS = Set.of(
             TakenComponentSituationEnum.TRANCADO.getId(),
             TakenComponentSituationEnum.REPROVADO_POR_FALTAS.getId(),
             TakenComponentSituationEnum.REPROVADO_POR_MEDIA_E_POR_FALTAS.getId(),
-            TakenComponentSituationEnum.REPROVADO_POR_NOTA_E_FALTA.getId()
-    );
-
-
+            TakenComponentSituationEnum.REPROVADO_POR_NOTA_E_FALTA.getId());
 }

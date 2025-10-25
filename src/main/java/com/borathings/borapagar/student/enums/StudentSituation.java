@@ -60,7 +60,4 @@ public enum StudentSituation {
                 return true;
         }
     }
-
-
-
 }

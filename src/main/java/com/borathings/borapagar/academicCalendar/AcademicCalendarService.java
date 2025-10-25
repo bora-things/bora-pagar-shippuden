@@ -2,9 +2,7 @@ package com.borathings.borapagar.academicCalendar;
 
 import com.borathings.borapagar.academicCalendar.dto.AcademicCalendarDTO;
 import com.borathings.borapagar.academicCalendar.dto.AcademicCalendarResponseDTO;
-
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +28,10 @@ public class AcademicCalendarService {
     @Transactional
     public void fetchCalendar() {
 
-        Integer year= LocalDate.now().getYear();
+        Integer year = LocalDate.now().getYear();
         List<AcademicCalendarDTO> calendars = serviceRestClient
                 .get()
-                .uri("/calendario/v1/calendarios?ano="+year+"&sigla-nivel-ensino=G")
+                .uri("/calendario/v1/calendarios?ano=" + year + "&sigla-nivel-ensino=G")
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<AcademicCalendarDTO>>() {});
 
@@ -52,8 +50,8 @@ public class AcademicCalendarService {
                 .collect(Collectors.toList());
     }
 
-    public AcademicCalendarResponseDTO getCurrentCalendar(){
-        AcademicCalendarEntity calendar=repository.findByIsCurrentTrue();
+    public AcademicCalendarResponseDTO getCurrentCalendar() {
+        AcademicCalendarEntity calendar = repository.findByIsCurrentTrue();
         return mapper.toResponseDTO(calendar);
     }
 }

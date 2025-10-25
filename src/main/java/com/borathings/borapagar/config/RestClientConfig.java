@@ -1,6 +1,6 @@
 package com.borathings.borapagar.config;
 
-    import java.time.Instant;
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
@@ -110,4 +110,3 @@ public class RestClientConfig {
         }
     }
 }
-

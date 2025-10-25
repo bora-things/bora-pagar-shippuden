@@ -14,10 +14,6 @@ import com.borathings.borapagar.student.dto.StudentDTO;
 import com.borathings.borapagar.student.dto.StudentResponseDTO;
 import com.borathings.borapagar.student.enums.FriendStatus;
 import com.borathings.borapagar.student.enums.StudentSituation;
-import com.borathings.borapagar.student.index.IndexDTO;
-import com.borathings.borapagar.student.index.IndexEnum;
-import com.borathings.borapagar.student.index.StudentIndexEntity;
-import com.borathings.borapagar.student.index.StudentIndexRepository;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestEntity;
 import com.borathings.borapagar.student.interest.StudentSubjectInterestService;
 import com.borathings.borapagar.student.interest.exception.PreRequisitesNotCompletedException;
@@ -35,14 +31,11 @@ import com.borathings.borapagar.workload.WorkloadDto;
 import com.borathings.borapagar.workload.WorkloadEntity;
 import com.borathings.borapagar.workload.WorkloadRepository;
 import jakarta.persistence.EntityNotFoundException;
-
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.flywaydb.core.internal.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +60,6 @@ public class StudentService {
     @Autowired
     @Qualifier("serviceRestClient")
     RestClient serviceRestClient;
-
 
     @Autowired
     StudentRepository studentRepository;
@@ -179,16 +171,16 @@ public class StudentService {
                 })
                 .toList();
     }
+
     private Integer mapCurricularMatrix(Integer matrix) {
         Map<Integer, Integer> map = new HashMap<>();
-        map.put(102199826, 133804382); //TI-C
-        map.put(134044402, 134044403); //TI-DS
-        map.put(92127271, 133795010); //TI-MT
-        map.put(92127278, 133797961); //TI-N
+        map.put(102199826, 133804382); // TI-C
+        map.put(134044402, 134044403); // TI-DS
+        map.put(92127271, 133795010); // TI-MT
+        map.put(92127278, 133797961); // TI-N
 
         return map.get(matrix);
     }
-
 
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
         Optional<StudentEntity> student = studentRepository.findByUserId(userId);
@@ -200,12 +192,12 @@ public class StudentService {
                     .uri("/discente/v1/discentes?id-curso=92127264&id-institucional=" + institutionalId)
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<StudentDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<StudentDTO>>() {});
 
             StudentDTO studentDto = students.getFirst();
             StudentSituation studentSituation = StudentSituation.getById(studentDto.studentStatusId());
-            StudentEntity studentEntity = studentMapper.toEntity(studentDto, mapCurricularMatrix(studentDto.curricularMatrix()), studentSituation);
+            StudentEntity studentEntity = studentMapper.toEntity(
+                    studentDto, mapCurricularMatrix(studentDto.curricularMatrix()), studentSituation);
             studentEntity.setImageUrl(userEntity.getImageUrl());
             studentEntity.setLogin(userEntity.getLogin());
             studentEntity.setUser(userEntity);
@@ -213,7 +205,6 @@ public class StudentService {
         }
         return student.get();
     }
-
 
     @Async
     @Transactional
@@ -225,8 +216,7 @@ public class StudentService {
                     .uri("/discente/v1/discentes/" + student.getStudentId() + "/carga-horaria")
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<WorkloadDto>() {
-                    });
+                    .body(new ParameterizedTypeReference<WorkloadDto>() {});
 
             if (workloadDto != null) {
                 WorkloadEntity workload = workloadRepository
@@ -396,8 +386,7 @@ public class StudentService {
                     .uri("/matricula/v1/matriculas-componentes?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<TakenComponentDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<TakenComponentDTO>>() {});
 
             takenComponentService.batchInsertDTOs(components, student);
             return CompletableFuture.completedFuture(null);
@@ -418,8 +407,7 @@ public class StudentService {
                     .uri("/turma/v1/participantes?limit=100&id-turma=" + classroom.getClassroomId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<FriendClassUserDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<FriendClassUserDTO>>() {});
 
             if (studentsDto != null && !studentsDto.isEmpty()) {
                 Map<Long, UserEntity> userFriendsMap = userFriends.stream()
@@ -447,7 +435,6 @@ public class StudentService {
 
         Set<Integer> coursesId = Set.of(idCursoCS, idCursoTI, idCursoES);
 
-
         Iterator<Integer> courseIterator = coursesId.iterator();
         while (courseIterator.hasNext()) {
             int offset = 0;
@@ -466,12 +453,14 @@ public class StudentService {
                                 .queryParam("limit", LIMIT)
                                 .build())
                         .retrieve()
-                        .body(new ParameterizedTypeReference<>() {
-                        });
+                        .body(new ParameterizedTypeReference<>() {});
 
                 if (currentPageStudents != null && !currentPageStudents.isEmpty()) {
-                    studentIds.addAll(currentPageStudents.stream().filter(item ->
-                            StudentSituation.getById(item.studentStatusId()).isActive()).map(item -> item.studentId()).toList());
+                    studentIds.addAll(currentPageStudents.stream()
+                            .filter(item -> StudentSituation.getById(item.studentStatusId())
+                                    .isActive())
+                            .map(item -> item.studentId())
+                            .toList());
                     offset += LIMIT;
                 } else {
                     hasMoreStudents = false;
@@ -482,7 +471,6 @@ public class StudentService {
         return studentIds;
     }
 
-
     public Map<Long, StudentEntity> getAllStudents() {
 
         List<StudentEntity> students = studentRepository.findAll();
@@ -491,7 +479,5 @@ public class StudentService {
             studentsMap.put(student.getStudentId(), student);
         });
         return studentsMap;
-
     }
-
 }

@@ -23,7 +23,7 @@ public class AcademicCalendarController {
 
     @GetMapping("/current")
     public ResponseEntity<AcademicCalendarResponseDTO> getCurrentCalendar() {
-        AcademicCalendarResponseDTO calendar=academicCalendarService.getCurrentCalendar();
+        AcademicCalendarResponseDTO calendar = academicCalendarService.getCurrentCalendar();
         return ResponseEntity.ok(calendar);
     }
 }

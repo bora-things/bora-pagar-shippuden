@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StartupRunner implements ApplicationRunner {
 
-
     private final ComponentService componentService;
 
     private final AcademicCalendarService calendarService;
@@ -22,7 +21,7 @@ public class StartupRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         componentService.fetchComponents();
         calendarService.fetchCalendar();
-//        enrollmentRankService.processAndSaveEnrollmentRanks();
+        //        enrollmentRankService.processAndSaveEnrollmentRanks();
 
     }
 }

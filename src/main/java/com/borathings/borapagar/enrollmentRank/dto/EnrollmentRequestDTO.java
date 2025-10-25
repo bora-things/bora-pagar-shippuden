@@ -16,8 +16,7 @@ public record EnrollmentRequestDTO(
         @JsonProperty("prioritario") boolean isPriority,
         @JsonProperty("rematricula") boolean isReEnrollment,
         @JsonProperty("reserva") boolean isReservation,
-        boolean uncertainRanking
-) {
+        boolean uncertainRanking) {
 
     public EnrollmentRequestDTO(EnrollmentRequestDTO original, boolean uncertainRanking) {
         this(
@@ -34,7 +33,6 @@ public record EnrollmentRequestDTO(
                 original.isPriority(),
                 original.isReEnrollment(),
                 original.isReservation(),
-                uncertainRanking
-        );
+                uncertainRanking);
     }
 }

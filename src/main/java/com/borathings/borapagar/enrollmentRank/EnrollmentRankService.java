@@ -1,6 +1,7 @@
 package com.borathings.borapagar.enrollmentRank;
 
-import com.borathings.borapagar.academicCalendar.AcademicCalendarEntity;
+import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
+
 import com.borathings.borapagar.academicCalendar.AcademicCalendarService;
 import com.borathings.borapagar.academicCalendar.dto.AcademicCalendarResponseDTO;
 import com.borathings.borapagar.classroom.ClassroomService;
@@ -10,6 +11,10 @@ import com.borathings.borapagar.enrollmentRank.dto.EnrollmentResponseDTO;
 import com.borathings.borapagar.enrollmentRank.enums.PriorityType;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,14 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
-
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
-import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 @Service
 @RequiredArgsConstructor
@@ -47,9 +44,9 @@ public class EnrollmentRankService {
 
     public Map<Long, List<EnrollmentRequestDTO>> getEnrollmentRequests(List<Long> studentsIds) {
 
-        AcademicCalendarResponseDTO calendar=calendarService.getCurrentCalendar();
-        Integer year=calendar.year();
-        Integer period=calendar.period();
+        AcademicCalendarResponseDTO calendar = calendarService.getCurrentCalendar();
+        Integer year = calendar.year();
+        Integer period = calendar.period();
 
         Map<Long, List<EnrollmentRequestDTO>> map = new HashMap<>();
         logger.info("Buscando enrollments para {} estudantes", studentsIds.size());
@@ -60,11 +57,11 @@ public class EnrollmentRankService {
             try {
                 List<EnrollmentRequestDTO> list = serviceRestClient
                         .get()
-                        .uri("/matricula/v1/solicitacoes-matriculas?id-discente=" + studentId + "&ano=" + year + "&periodo="+period)
+                        .uri("/matricula/v1/solicitacoes-matriculas?id-discente=" + studentId + "&ano=" + year
+                                + "&periodo=" + period)
                         .attributes(clientRegistrationId("sigaa"))
                         .retrieve()
-                        .body(new ParameterizedTypeReference<List<EnrollmentRequestDTO>>() {
-                        });
+                        .body(new ParameterizedTypeReference<List<EnrollmentRequestDTO>>() {});
 
                 map.put(studentId, list != null ? list : new ArrayList<>());
 
@@ -107,16 +104,13 @@ public class EnrollmentRankService {
         return finalRequestsByClass;
     }
 
-
     private Map<Long, List<EnrollmentRequestDTO>> fetchAllRequestsGroupedByClass(List<Long> studentsIds) {
         Map<Long, List<EnrollmentRequestDTO>> requestsByStudent = getEnrollmentRequests(studentsIds);
 
-        List<EnrollmentRequestDTO> allRequests = requestsByStudent.values().stream()
-                .flatMap(List::stream)
-                .toList();
+        List<EnrollmentRequestDTO> allRequests =
+                requestsByStudent.values().stream().flatMap(List::stream).toList();
 
-        return allRequests.stream()
-                .collect(Collectors.groupingBy(EnrollmentRequestDTO::classId));
+        return allRequests.stream().collect(Collectors.groupingBy(EnrollmentRequestDTO::classId));
     }
 
     private Map<Long, ClassroomDTO> fetchClassroomMap(Set<Long> classIds) {
@@ -126,13 +120,11 @@ public class EnrollmentRankService {
 
         List<ClassroomDTO> classrooms = classroomService.fetchClassrooms(classIds);
 
-        return classrooms.stream().collect(Collectors.toMap(
-                ClassroomDTO::classroomId,
-                classroom -> classroom
-        ));
+        return classrooms.stream().collect(Collectors.toMap(ClassroomDTO::classroomId, classroom -> classroom));
     }
 
-    private List<EnrollmentRequestDTO> processClassEnrollments(List<EnrollmentRequestDTO> requestList, ClassroomDTO classroom) {
+    private List<EnrollmentRequestDTO> processClassEnrollments(
+            List<EnrollmentRequestDTO> requestList, ClassroomDTO classroom) {
         requestList.sort(PRIORITY_SORTER);
 
         Integer capacity = classroom.capacity();
@@ -141,8 +133,10 @@ public class EnrollmentRankService {
             return requestList;
         }
 
-        PriorityType lastInPriority = PriorityType.fromId(requestList.get(capacity - 1).priorityTypeId());
-        PriorityType firstOutPriority = PriorityType.fromId(requestList.get(capacity).priorityTypeId());
+        PriorityType lastInPriority =
+                PriorityType.fromId(requestList.get(capacity - 1).priorityTypeId());
+        PriorityType firstOutPriority =
+                PriorityType.fromId(requestList.get(capacity).priorityTypeId());
 
         if (lastInPriority.ordinal() < firstOutPriority.ordinal()) {
             return requestList;
@@ -151,7 +145,8 @@ public class EnrollmentRankService {
         return handleBubbleCase(requestList, lastInPriority);
     }
 
-    private List<EnrollmentRequestDTO> handleBubbleCase(List<EnrollmentRequestDTO> sortedRequestList, PriorityType bubblePriority) {
+    private List<EnrollmentRequestDTO> handleBubbleCase(
+            List<EnrollmentRequestDTO> sortedRequestList, PriorityType bubblePriority) {
         List<EnrollmentRequestDTO> safeApproved = new ArrayList<>();
         List<EnrollmentRequestDTO> flaggedBubbleGroup = new ArrayList<>();
         List<EnrollmentRequestDTO> autoRejected = new ArrayList<>();
@@ -176,7 +171,6 @@ public class EnrollmentRankService {
 
         return finalClassList;
     }
-
 
     @Transactional
     @CacheEvict(value = "enrollmentRankByComponent", allEntries = true)
@@ -250,28 +244,26 @@ public class EnrollmentRankService {
         Integer year = calendar.year();
         Integer period = calendar.period();
 
-        List<EnrollmentRankEntity> enrollments = enrollmentRankRepository.findAllByStudentIdAndYearAndPeriod(student.getStudentId(), year, period);
+        List<EnrollmentRankEntity> enrollments =
+                enrollmentRankRepository.findAllByStudentIdAndYearAndPeriod(student.getStudentId(), year, period);
 
         if (enrollments.isEmpty()) {
             return Collections.emptyList();
         }
 
-        Set<Long> allClassIds = enrollments.stream()
-                .map(EnrollmentRankEntity::getClassId)
-                .collect(Collectors.toSet());
+        Set<Long> allClassIds =
+                enrollments.stream().map(EnrollmentRankEntity::getClassId).collect(Collectors.toSet());
 
         Map<Long, ClassroomDTO> enrollmentClassroomsMap = fetchClassroomMap(allClassIds);
 
         List<EnrollmentRankEntity> uncertainRanks = enrollments.stream()
                 .filter(EnrollmentRankEntity::isUncertainRanking)
                 .toList();
-        List<EnrollmentRankEntity> certainRanks = enrollments.stream()
-                .filter(item -> !item.isUncertainRanking())
-                .toList();
+        List<EnrollmentRankEntity> certainRanks =
+                enrollments.stream().filter(item -> !item.isUncertainRanking()).toList();
 
-        Set<Long> uncertainClassIds = uncertainRanks.stream()
-                .map(EnrollmentRankEntity::getClassId)
-                .collect(Collectors.toSet());
+        Set<Long> uncertainClassIds =
+                uncertainRanks.stream().map(EnrollmentRankEntity::getClassId).collect(Collectors.toSet());
 
         Map<Long, Map<Long, Long>> concurrenceMap = buildConcurrenceMap(uncertainClassIds);
 
@@ -286,13 +278,13 @@ public class EnrollmentRankService {
                     period,
                     concorrence.intValue(),
                     uncertainRank,
-                    enrollmentClassroomsMap.get(uncertainRank.getClassId())
-            );
+                    enrollmentClassroomsMap.get(uncertainRank.getClassId()));
             uncertainEnrollmentsResponseDtos.add(response);
         }
 
         List<EnrollmentResponseDTO> certainEnrollmentResponseDTOs = certainRanks.stream()
-                .map(item -> new EnrollmentResponseDTO(year, period, 0, item, enrollmentClassroomsMap.get(item.getClassId())))
+                .map(item -> new EnrollmentResponseDTO(
+                        year, period, 0, item, enrollmentClassroomsMap.get(item.getClassId())))
                 .toList();
 
         List<EnrollmentResponseDTO> responses = new ArrayList<>(certainEnrollmentResponseDTOs);
@@ -314,9 +306,7 @@ public class EnrollmentRankService {
             Long priorityId = (Long) result[1];
             Long count = (Long) result[2];
 
-            concurrenceMap
-                    .computeIfAbsent(classId, k -> new HashMap<>())
-                    .put(priorityId, count);
+            concurrenceMap.computeIfAbsent(classId, k -> new HashMap<>()).put(priorityId, count);
         }
         return concurrenceMap;
     }

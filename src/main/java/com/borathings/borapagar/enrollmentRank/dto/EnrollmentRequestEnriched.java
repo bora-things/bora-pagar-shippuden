@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 
 public record EnrollmentRequestEnriched(
-        EnrollmentRequestDTO originalRequest,
-        boolean hasDroppedOrFailedByAbsence,
-        BigDecimal iea) {
+        EnrollmentRequestDTO originalRequest, boolean hasDroppedOrFailedByAbsence, BigDecimal iea) {
 
     public static Comparator<EnrollmentRequestEnriched> getTieBreakerComparator() {
 

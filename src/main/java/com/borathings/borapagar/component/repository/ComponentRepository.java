@@ -12,7 +12,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface ComponentRepository extends AbstractRepository<ComponentEntity> {
 
-
     List<ComponentEntity> findAllByCodeIn(List<String> codes);
 
     @Query("SELECT c FROM components c WHERE c.id IN "

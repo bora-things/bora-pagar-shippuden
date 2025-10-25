@@ -11,11 +11,9 @@ import com.borathings.borapagar.component.repository.ComponentRepository;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
-
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,8 +63,7 @@ public class ClassroomService {
                     .uri("/turma/v1/turmas?id-discente=" + student.getStudentId())
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<ClassroomDTO>>() {});
 
             if (classroomDTOs != null && !classroomDTOs.isEmpty()) {
 
@@ -100,44 +97,35 @@ public class ClassroomService {
         // 1. Pega a matriz de referência do aluno
         final Integer studentMatrix = student.getCurricularMatrix();
 
-        List<ComponentEntity> allComponents =
-                componentRepository.findAllByCodeIn(componentCodes);
+        List<ComponentEntity> allComponents = componentRepository.findAllByCodeIn(componentCodes);
 
         Map<String, ComponentEntity> prioritizedComponentMap = allComponents.stream()
-                .collect(Collectors.toMap(
-                        ComponentEntity::getCode,
-                        component -> component,
-                        (existing, replacement) -> {
+                .collect(Collectors.toMap(ComponentEntity::getCode, component -> component, (existing, replacement) -> {
+                    if (studentMatrix == null) {
+                        return existing;
+                    }
 
-                            if (studentMatrix == null) {
-                                return existing;
-                            }
+                    boolean existingIsPreferred = studentMatrix.equals(existing.getCurricularMatrixId());
+                    boolean replacementIsPreferred = studentMatrix.equals(replacement.getCurricularMatrixId());
 
-                            boolean existingIsPreferred = studentMatrix.equals(existing.getCurricularMatrixId());
-                            boolean replacementIsPreferred = studentMatrix.equals(replacement.getCurricularMatrixId());
-
-                            if (existingIsPreferred && !replacementIsPreferred) {
-                                return existing;
-                            } else if (!existingIsPreferred && replacementIsPreferred) {
-                                return replacement;
-                            } else {
-                                return existing;
-                            }
-                        }
-                ));
+                    if (existingIsPreferred && !replacementIsPreferred) {
+                        return existing;
+                    } else if (!existingIsPreferred && replacementIsPreferred) {
+                        return replacement;
+                    } else {
+                        return existing;
+                    }
+                }));
 
         Map<String, ComponentResponseDTO> componentMap = prioritizedComponentMap.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> {
-                            ComponentEntity entity = entry.getValue();
-                            boolean mandatorySubject = entity.getCurricularMatrixId().equals(studentMatrix)
-                                    ? Boolean.TRUE.equals(entity.getMandatorySubject())
-                                    : false;
-                            entity.setMandatorySubject(mandatorySubject);
-                            return componentMapper.toResponseDTO(entity);
-                        }
-                ));
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+                    ComponentEntity entity = entry.getValue();
+                    boolean mandatorySubject = entity.getCurricularMatrixId().equals(studentMatrix)
+                            ? Boolean.TRUE.equals(entity.getMandatorySubject())
+                            : false;
+                    entity.setMandatorySubject(mandatorySubject);
+                    return componentMapper.toResponseDTO(entity);
+                }));
 
         try {
             List<CompletableFuture<ClassroomResponseDTO>> futures = classrooms.stream()
@@ -149,8 +137,10 @@ public class ClassroomService {
                             ComponentResponseDTO component = componentMap.get(item.getComponentCode());
 
                             if (component == null) {
-                                logger.warn("Componente com código {} não encontrado para a turma {}",
-                                        item.getComponentCode(), item.getId());
+                                logger.warn(
+                                        "Componente com código {} não encontrado para a turma {}",
+                                        item.getComponentCode(),
+                                        item.getId());
                                 return CompletableFuture.completedFuture((ClassroomResponseDTO) null);
                             }
 
@@ -163,16 +153,13 @@ public class ClassroomService {
 
             CompletableFuture<List<ClassroomResponseDTO>> allDoneFuture = sequence(futures);
 
-            return allDoneFuture.get().stream()
-                    .filter(Objects::nonNull)
-                    .toList();
+            return allDoneFuture.get().stream().filter(Objects::nonNull).toList();
 
         } catch (Exception ex) {
             logger.error("Erro ao buscar turmas do aluno: {}", ex.getMessage(), ex);
             return null;
         }
     }
-
 
     public static <T> CompletableFuture<List<T>> sequence(List<CompletableFuture<T>> futures) {
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
@@ -194,14 +181,11 @@ public class ClassroomService {
                     .uri("/turma/v1/turmas/" + classroomId)
                     .attributes(clientRegistrationId("sigaa"))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<ClassroomDTO>() {
-                    });
+                    .body(new ParameterizedTypeReference<ClassroomDTO>() {});
             if (classroomDTO != null) {
                 classrooms.add(classroomDTO);
             }
-
         }
         return classrooms;
     }
-
 }
