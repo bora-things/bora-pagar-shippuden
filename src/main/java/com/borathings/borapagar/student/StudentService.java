@@ -179,6 +179,16 @@ public class StudentService {
                 })
                 .toList();
     }
+    private Integer mapCurricularMatrix(Integer matrix) {
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(102199826, 133804382); //TI-C
+        map.put(134044402, 134044403); //TI-DS
+        map.put(92127271, 133795010); //TI-MT
+        map.put(92127278, 133797961); //TI-N
+
+        return map.get(matrix);
+    }
+
 
     public StudentEntity createFromInstitutionalId(Long institutionalId, int userId) {
         Optional<StudentEntity> student = studentRepository.findByUserId(userId);
@@ -195,8 +205,7 @@ public class StudentService {
 
             StudentDTO studentDto = students.getFirst();
             StudentSituation studentSituation = StudentSituation.getById(studentDto.studentStatusId());
-            Integer matrix = studentDto.curricularMatrix() == 134044402 ? 134044403 : studentDto.curricularMatrix();
-            StudentEntity studentEntity = studentMapper.toEntity(studentDto, matrix, studentSituation);
+            StudentEntity studentEntity = studentMapper.toEntity(studentDto, mapCurricularMatrix(studentDto.curricularMatrix()), studentSituation);
             studentEntity.setImageUrl(userEntity.getImageUrl());
             studentEntity.setLogin(userEntity.getLogin());
             studentEntity.setUser(userEntity);
@@ -442,10 +451,10 @@ public class StudentService {
         Iterator<Integer> courseIterator = coursesId.iterator();
         while (courseIterator.hasNext()) {
             int offset = 0;
-            Integer courseId= courseIterator.next();
+            Integer courseId = courseIterator.next();
             boolean hasMoreStudents = true;
             while (hasMoreStudents) {
-                logger.info("Buscando estudantes de {}, partindo de {} até {}", coursesId, offset, offset + LIMIT);
+                logger.info("Buscando estudantes de {}, partindo de {} até {}", courseId, offset, offset + LIMIT);
                 int finalOffset = offset;
                 List<StudentDTO> currentPageStudents = serviceRestClient
                         .get()
@@ -466,16 +475,6 @@ public class StudentService {
                     offset += LIMIT;
                 } else {
                     hasMoreStudents = false;
-                }
-            }
-            if (courseIterator.hasNext()) {
-                try {
-                    logger.info("Pausa de 1 minuto antes de buscar o próximo curso...");
-                    TimeUnit.MINUTES.sleep(1);
-                    logger.info("Retomando processamento.");
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt(); // Boa prática
-                    logger.warn("Pausa de 1 minuto foi interrompida.", e);
                 }
             }
         }
