@@ -20,4 +20,10 @@ public class AcademicCalendarController {
         List<AcademicCalendarResponseDTO> calendars = academicCalendarService.getCalendar();
         return ResponseEntity.ok(calendars);
     }
+
+    @GetMapping("/current")
+    public ResponseEntity<AcademicCalendarResponseDTO> getCurrentCalendar() {
+        AcademicCalendarResponseDTO calendar=academicCalendarService.getCurrentCalendar();
+        return ResponseEntity.ok(calendar);
+    }
 }
