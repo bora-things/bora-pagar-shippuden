@@ -41,10 +41,8 @@
 
         public EnrollmentResponseDTO(int year, int period,int concorrence, EnrollmentRankEntity enrollmentRank, ClassroomDTO classroomDTO) {
             this.year = year;
-            this.componentCode = enrollmentRank.getComponentCode();
             this.priorityTypeId = enrollmentRank.getPriorityTypeId();
             this.classId = enrollmentRank.getClassId();
-            this.componentName = enrollmentRank.getComponentName();
             this.period = period;
             this.isReEnrollment = false;
             this.capacity=classroomDTO.capacity();

@@ -22,7 +22,7 @@ public class StartupRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         componentService.fetchComponents();
         calendarService.fetchCalendar();
-        enrollmentRankService.processAndSaveEnrollmentRanks();
+//        enrollmentRankService.processAndSaveEnrollmentRanks();
 
     }
 }

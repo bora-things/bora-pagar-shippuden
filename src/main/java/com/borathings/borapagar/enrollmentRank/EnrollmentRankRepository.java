@@ -11,13 +11,9 @@ import java.util.Set;
 @Repository
 public interface EnrollmentRankRepository extends JpaRepository<EnrollmentRankEntity, Long> {
 
-    List<EnrollmentRankEntity> findByComponentCodeOrderByRankPositionAsc(String componentCode);
-
     void deleteAllByClassIdIn(List<Long> classIds);
 
-    List<EnrollmentRankEntity> findAllByStudentId(Long studentId);
-
-    Integer countAllByClassIdAndPriorityTypeId(Long classIds, Long priorityTypeId);
+    List<EnrollmentRankEntity> findAllByStudentIdAndYearAndPeriod(Long studentId, Integer year, Integer period);
 
     @Query("SELECT er.classId, er.priorityTypeId, COUNT(er) " +
             "FROM EnrollmentRankEntity er " +

@@ -14,8 +14,11 @@ public class EnrollmentRankEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "component_code", nullable = false)
-    private String componentCode;
+    @Column(name="year" ,nullable = false)
+    private Integer year;
+
+    @Column(name="period",nullable = false)
+    private Integer period;
 
     @Column(name = "class_id", nullable = false)
     private Long classId;
@@ -24,22 +27,15 @@ public class EnrollmentRankEntity {
     private Long studentId;
 
     @Column(name = "rank_position", nullable = false)
-    private int rankPosition; // A posição do aluno na fila (1, 2, 3...)
+    private int rankPosition;
 
     @Column(name = "priority_type_id", nullable = false)
     private long priorityTypeId;
 
-    // Opcional: Guardar mais dados para referência
-    @Column(name = "component_name")
-    private String componentName;
-
-    @Column(name = "enrollment_component_id")
-    private long enrollmentComponentId;
-
     @Column(name = "processing_timestamp", nullable = false)
     private LocalDateTime processingTimestamp;
 
-    @Column(name = "uncertain_ranking", nullable = false)
+    @Column(name = "uncertain_rank", nullable = false)
     private boolean uncertainRanking = false;
 
 }
