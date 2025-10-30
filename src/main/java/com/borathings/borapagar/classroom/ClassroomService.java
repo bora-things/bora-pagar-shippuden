@@ -4,19 +4,17 @@ import static org.springframework.security.oauth2.client.web.client.RequestAttri
 
 import com.borathings.borapagar.classroom.dto.ClassroomDTO;
 import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
-import com.borathings.borapagar.component.ComponentEntity;
+import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.dto.ComponentResponseDTO;
-import com.borathings.borapagar.component.mapper.ComponentMapper;
-import com.borathings.borapagar.component.repository.ComponentRepository;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
@@ -25,27 +23,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 @Service
+@RequiredArgsConstructor
 public class ClassroomService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
     @Qualifier("serviceRestClient")
-    RestClient serviceRestClient;
+    final RestClient serviceRestClient;
 
-    @Autowired
-    private ClassroomMapper classroomMapper;
+    private final ClassroomMapper classroomMapper;
 
-    @Autowired
-    private StudentService studentService;
+    private final StudentService studentService;
 
-    @Autowired
-    private ClassroomRepository classroomRepository;
+    private final ClassroomRepository classroomRepository;
 
-    @Autowired
-    private ComponentRepository componentRepository;
-
-    @Autowired
-    private ComponentMapper componentMapper;
+    private final ComponentService componentService;
 
     @Async
     public CompletableFuture<Void> fetchClassroomAsync(StudentEntity student) {
@@ -91,41 +82,13 @@ public class ClassroomService {
     public List<ClassroomResponseDTO> findClassroomByStudent(String login) {
         StudentEntity student = studentService.findByUserLoginOrError(login);
         Set<ClassroomEntity> classrooms = student.getClassrooms();
-        List<String> componentCodes =
-                classrooms.stream().map(ClassroomEntity::getComponentCode).toList();
+        Set<String> componentCodes =
+                classrooms.stream().map(ClassroomEntity::getComponentCode).collect(Collectors.toSet());
 
-        // 1. Pega a matriz de referência do aluno
         final Integer studentMatrix = student.getCurricularMatrix();
 
-        List<ComponentEntity> allComponents = componentRepository.findAllByCodeIn(componentCodes);
-
-        Map<String, ComponentEntity> prioritizedComponentMap = allComponents.stream()
-                .collect(Collectors.toMap(ComponentEntity::getCode, component -> component, (existing, replacement) -> {
-                    if (studentMatrix == null) {
-                        return existing;
-                    }
-
-                    boolean existingIsPreferred = studentMatrix.equals(existing.getCurricularMatrixId());
-                    boolean replacementIsPreferred = studentMatrix.equals(replacement.getCurricularMatrixId());
-
-                    if (existingIsPreferred && !replacementIsPreferred) {
-                        return existing;
-                    } else if (!existingIsPreferred && replacementIsPreferred) {
-                        return replacement;
-                    } else {
-                        return existing;
-                    }
-                }));
-
-        Map<String, ComponentResponseDTO> componentMap = prioritizedComponentMap.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-                    ComponentEntity entity = entry.getValue();
-                    boolean mandatorySubject = entity.getCurricularMatrixId().equals(studentMatrix)
-                            ? Boolean.TRUE.equals(entity.getMandatorySubject())
-                            : false;
-                    entity.setMandatorySubject(mandatorySubject);
-                    return componentMapper.toResponseDTO(entity);
-                }));
+        Map<String, ComponentResponseDTO> componentMap =
+                componentService.findComponentMapPriorityMatrix(componentCodes, studentMatrix);
 
         try {
             List<CompletableFuture<ClassroomResponseDTO>> futures = classrooms.stream()
