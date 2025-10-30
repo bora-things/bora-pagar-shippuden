@@ -6,6 +6,8 @@ import com.borathings.borapagar.academicCalendar.AcademicCalendarService;
 import com.borathings.borapagar.academicCalendar.dto.AcademicCalendarResponseDTO;
 import com.borathings.borapagar.classroom.ClassroomService;
 import com.borathings.borapagar.classroom.dto.ClassroomDTO;
+import com.borathings.borapagar.component.ComponentService;
+import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.enrollmentRank.dto.EnrollmentRequestDTO;
 import com.borathings.borapagar.enrollmentRank.dto.EnrollmentResponseDTO;
 import com.borathings.borapagar.enrollmentRank.enums.PriorityType;
@@ -41,6 +43,7 @@ public class EnrollmentRankService {
 
     private static final Comparator<EnrollmentRequestDTO> PRIORITY_SORTER =
             Comparator.comparing(req -> PriorityType.fromId(req.priorityTypeId()));
+    private final ComponentService componentService;
 
     public Map<Long, List<EnrollmentRequestDTO>> getEnrollmentRequests(List<Long> studentsIds) {
 
@@ -256,6 +259,13 @@ public class EnrollmentRankService {
 
         Map<Long, ClassroomDTO> enrollmentClassroomsMap = fetchClassroomMap(allClassIds);
 
+        Set<String> classComponentsCode = enrollmentClassroomsMap.values().stream()
+                .map(item -> item.componentCode())
+                .collect(Collectors.toSet());
+
+        Map<String, ComponentResponseDTO> componentsMap =
+                componentService.findComponentMapPriorityMatrix(classComponentsCode, student.getCurricularMatrix());
+
         List<EnrollmentRankEntity> uncertainRanks = enrollments.stream()
                 .filter(EnrollmentRankEntity::isUncertainRanking)
                 .toList();
@@ -273,18 +283,19 @@ public class EnrollmentRankService {
                     .getOrDefault(uncertainRank.getClassId(), Collections.emptyMap())
                     .getOrDefault(uncertainRank.getPriorityTypeId(), 0L);
 
+            ClassroomDTO classroom = enrollmentClassroomsMap.get(uncertainRank.getClassId());
+            ComponentResponseDTO component = componentsMap.get(classroom.componentCode());
             EnrollmentResponseDTO response = new EnrollmentResponseDTO(
-                    year,
-                    period,
-                    concorrence.intValue(),
-                    uncertainRank,
-                    enrollmentClassroomsMap.get(uncertainRank.getClassId()));
+                    year, period, concorrence.intValue(), uncertainRank, classroom, component);
             uncertainEnrollmentsResponseDtos.add(response);
         }
 
         List<EnrollmentResponseDTO> certainEnrollmentResponseDTOs = certainRanks.stream()
-                .map(item -> new EnrollmentResponseDTO(
-                        year, period, 0, item, enrollmentClassroomsMap.get(item.getClassId())))
+                .map(item -> {
+                    ClassroomDTO classroom = enrollmentClassroomsMap.get(item.getClassId());
+                    ComponentResponseDTO component = componentsMap.get(classroom.componentCode());
+                    return new EnrollmentResponseDTO(year, period, 0, item, classroom, component);
+                })
                 .toList();
 
         List<EnrollmentResponseDTO> responses = new ArrayList<>(certainEnrollmentResponseDTOs);

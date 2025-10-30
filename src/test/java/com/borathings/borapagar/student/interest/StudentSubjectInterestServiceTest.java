@@ -75,7 +75,7 @@ public class StudentSubjectInterestServiceTest {
         ComponentEntity component = new ComponentEntity();
         component.setCode(subjectCode);
         component.setName("Programação I");
-        when(componentService.findAllByCodeIn(List.of(subjectCode))).thenReturn(List.of(component));
+        when(componentService.findAllDiscinctByCodeIn(List.of(subjectCode))).thenReturn(List.of(component));
 
         ComponentDTO componentDto = null;
         when(componentMapper.toDto(any(ComponentEntity.class))).thenReturn(componentDto);

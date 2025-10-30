@@ -1,6 +1,7 @@
 package com.borathings.borapagar.enrollmentRank.dto;
 
 import com.borathings.borapagar.classroom.dto.ClassroomDTO;
+import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.enrollmentRank.EnrollmentRankEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,17 +15,11 @@ public class EnrollmentResponseDTO {
     @JsonProperty("ano")
     private int year;
 
-    @JsonProperty("codigo-componente")
-    private String componentCode;
-
     @JsonProperty("prioridade")
     private long priorityTypeId;
 
     @JsonProperty("id-turma")
     private long classId;
-
-    @JsonProperty("nome-componente")
-    private String componentName;
 
     @JsonProperty("periodo")
     private int period;
@@ -34,6 +29,9 @@ public class EnrollmentResponseDTO {
 
     @JsonProperty("capacidade")
     private int capacity;
+
+    @JsonProperty("componente")
+    private ComponentResponseDTO component;
 
     @JsonProperty("data_processamento")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
@@ -49,11 +47,17 @@ public class EnrollmentResponseDTO {
     private Integer concorrence;
 
     public EnrollmentResponseDTO(
-            int year, int period, int concorrence, EnrollmentRankEntity enrollmentRank, ClassroomDTO classroomDTO) {
+            int year,
+            int period,
+            int concorrence,
+            EnrollmentRankEntity enrollmentRank,
+            ClassroomDTO classroomDTO,
+            ComponentResponseDTO componentDTO) {
         this.year = year;
         this.priorityTypeId = enrollmentRank.getPriorityTypeId();
         this.classId = enrollmentRank.getClassId();
         this.period = period;
+        this.component = componentDTO;
         this.isReEnrollment = false;
         this.capacity = classroomDTO.capacity();
         this.processingTimestamp = enrollmentRank.getProcessingTimestamp();

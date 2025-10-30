@@ -5,7 +5,6 @@ import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
-import com.borathings.borapagar.core.persistence.AbstractModel;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentHelperService;
 import com.borathings.borapagar.student.interest.dto.FriendsInterestsDTO;
@@ -36,13 +35,6 @@ public class StudentSubjectInterestService {
     ComponentService componentService;
     ComponentMapper componentMapper;
 
-    public List<StudentSubjectInterestEntity> getFriendsInterestsInComponent(StudentEntity student, String code) {
-        List<Long> friendsIds = student.getUser().getFriends().stream()
-                .map(AbstractModel::getId)
-                .toList();
-        return studentSubjectInterestRepository.findAllBySubjectCodeAndStudentIn(code, friendsIds);
-    }
-
     public List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId) {
         return studentSubjectInterestRepository.findAllByStudentId(studentId);
     }
@@ -59,7 +51,7 @@ public class StudentSubjectInterestService {
                 .map(StudentSubjectInterestEntity::getSubjectCode)
                 .toList();
 
-        Map<String, ComponentEntity> componentMap = componentService.findAllByCodeIn(subjectCodes).stream()
+        Map<String, ComponentEntity> componentMap = componentService.findAllDiscinctByCodeIn(subjectCodes).stream()
                 .collect(Collectors.toMap(
                         ComponentEntity::getCode, component -> component, (existingValue, newValue) -> existingValue));
 
@@ -168,7 +160,7 @@ public class StudentSubjectInterestService {
                 .distinct()
                 .toList();
 
-        List<ComponentEntity> components = componentService.findAllByCodeIn(uniqueSubjectCodes);
+        List<ComponentEntity> components = componentService.findAllDiscinctByCodeIn(uniqueSubjectCodes);
 
         List<ComponentResponseDTO> componentResponseDTOS = components.stream()
                 .map(item -> componentMapper.toResponseDTO(item))
