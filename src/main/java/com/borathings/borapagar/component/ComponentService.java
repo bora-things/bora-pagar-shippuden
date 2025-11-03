@@ -109,7 +109,7 @@ public class ComponentService {
 
     @Async
     public void fetchComponents() {
-        List<Integer> curricularMatrixIdList = List.of(134044403, 133795010, 133797961, 133804382);
+        List<Integer> curricularMatrixIdList = List.of(105694093,165191073,134044403, 133795010, 133797961, 133804382);
 
         curricularMatrixIdList.forEach(componentFetchService::fetchComponentsByMatrix);
     }
