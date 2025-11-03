@@ -1,7 +1,7 @@
 CREATE TABLE students
 (
     id BIGSERIAL PRIMARY KEY,
-    student_id INT  UNIQUE,
+    student_id BIGINT  UNIQUE,
     login TEXT UNIQUE,
     image_url  VARCHAR,
     student_name VARCHAR(255) ,
@@ -15,6 +15,7 @@ CREATE TABLE students
     workload_id BIGINT UNIQUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    deleted_at TIMESTAMPTZ
+    deleted_at TIMESTAMPTZ,
+    version BIGSERIAL
 );
 

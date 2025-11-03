@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS student_subjects_interests
     year INTEGER NOT NULL,
     period INTEGER NOT NULL,
     student_id BIGINT,
-    subject_code INTEGER,
+    subject_code VARCHAR(255),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES students (id) ON DELETE CASCADE

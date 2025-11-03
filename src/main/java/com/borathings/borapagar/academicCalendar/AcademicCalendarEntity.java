@@ -44,9 +44,6 @@ public class AcademicCalendarEntity {
     @Column(name = "vacation_period_end")
     private Instant vacationPeriodEnd;
 
-    @Column(name = "education_level_acronym", length = 10)
-    private String educationLevelAcronym;
-
     @Column(name = "period_start")
     private Instant periodStart;
 
