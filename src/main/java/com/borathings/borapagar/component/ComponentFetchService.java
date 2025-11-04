@@ -4,10 +4,8 @@ import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.component.repository.ComponentRepository;
 import jakarta.persistence.EntityManager;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
@@ -47,8 +45,7 @@ public class ComponentFetchService {
                     .uri("/curso/v1/componentes-curriculares?nivel=G&limit=100&offset=" + offset
                             + "&id-matriz-curricular=" + curricularMatrixId)
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<ComponentDTO>>() {
-                    });
+                    .body(new ParameterizedTypeReference<List<ComponentDTO>>() {});
 
             if (components != null) {
                 if (components.size() < 100) {
@@ -59,13 +56,9 @@ public class ComponentFetchService {
             }
         }
 
+        List<ComponentEntity> entitiesToSave =
+                componentsFetched.stream().map(componentMapper::toEntity).toList();
 
-        List<ComponentEntity> entitiesToSave = componentsFetched.stream()
-                .map(componentMapper::toEntity)
-                .toList();
-
-
-        componentRepository.saveAll(
-                entitiesToSave);
+        componentRepository.saveAll(entitiesToSave);
     }
 }

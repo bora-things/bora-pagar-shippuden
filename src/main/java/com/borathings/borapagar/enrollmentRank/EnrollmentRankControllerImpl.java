@@ -13,9 +13,11 @@ public class EnrollmentRankControllerImpl implements EnrollmentRankController {
 
     private final EnrollmentRankService enrollmentRankService;
 
-    public ResponseEntity<List<EnrollmentResponseDTO>> getEnrollmentRanksByStudent(Authentication authentication) {
+    public ResponseEntity<List<EnrollmentResponseDTO>> getEnrollmentRanksByStudent(
+            Authentication authentication, boolean reEnrollment) {
         String userLogin = authentication.getName();
-        List<EnrollmentResponseDTO> enrollments = enrollmentRankService.getEnrollmentRanksByStudent(userLogin);
+        List<EnrollmentResponseDTO> enrollments =
+                enrollmentRankService.getEnrollmentRanksByStudent(userLogin, reEnrollment);
         return ResponseEntity.ok(enrollments);
     }
 }

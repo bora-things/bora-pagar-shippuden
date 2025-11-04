@@ -20,7 +20,7 @@ public class ComponentEntity extends AbstractModel {
     @Column(nullable = false)
     private Integer totalWorkload;
 
-    @Column(nullable = false,columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String coRequisites;
 
     @Column(nullable = false)
@@ -32,7 +32,7 @@ public class ComponentEntity extends AbstractModel {
     @Column(nullable = false)
     private Boolean mandatorySubject;
 
-    @Column(nullable = false,columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
@@ -47,6 +47,6 @@ public class ComponentEntity extends AbstractModel {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false,columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String preRequisites;
 }

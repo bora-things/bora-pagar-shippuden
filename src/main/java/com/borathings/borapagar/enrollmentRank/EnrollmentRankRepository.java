@@ -12,7 +12,8 @@ public interface EnrollmentRankRepository extends JpaRepository<EnrollmentRankEn
 
     void deleteAllByClassIdIn(List<Long> classIds);
 
-    List<EnrollmentRankEntity> findAllByStudentIdAndYearAndPeriod(Long studentId, Integer year, Integer period);
+    List<EnrollmentRankEntity> findAllByStudentIdAndYearAndPeriodAndReenrollment(
+            Long studentId, Integer year, Integer period, Boolean reenrollment);
 
     @Query("SELECT er.classId, er.priorityTypeId, COUNT(er) " + "FROM EnrollmentRankEntity er "
             + "WHERE er.classId IN :classIds "

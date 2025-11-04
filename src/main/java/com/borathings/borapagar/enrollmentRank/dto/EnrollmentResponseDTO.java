@@ -58,7 +58,7 @@ public class EnrollmentResponseDTO {
         this.classId = enrollmentRank.getClassId();
         this.period = period;
         this.component = componentDTO;
-        this.isReEnrollment = false;
+        this.isReEnrollment = enrollmentRank.isReenrollment();
         this.capacity = classroomDTO.capacity();
         this.processingTimestamp = enrollmentRank.getProcessingTimestamp();
         this.rankPosition = enrollmentRank.getRankPosition();

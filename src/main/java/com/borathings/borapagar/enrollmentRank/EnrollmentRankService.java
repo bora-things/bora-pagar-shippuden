@@ -228,6 +228,7 @@ public class EnrollmentRankService {
 
                 EnrollmentRankEntity rankEntity = new EnrollmentRankEntity();
                 rankEntity.setClassId(classId);
+                rankEntity.setReenrollment(requestDTO.isReEnrollment());
                 rankEntity.setStudentId(requestDTO.studentId());
                 rankEntity.setRankPosition(rankPosition);
                 rankEntity.setPriorityTypeId(requestDTO.priorityTypeId());
@@ -241,14 +242,15 @@ public class EnrollmentRankService {
         return entitiesToSave;
     }
 
-    public List<EnrollmentResponseDTO> getEnrollmentRanksByStudent(String userLogin) {
+    public List<EnrollmentResponseDTO> getEnrollmentRanksByStudent(String userLogin, Boolean reEnrollment) {
         StudentEntity student = studentService.findByUserLoginOrError(userLogin);
         AcademicCalendarResponseDTO calendar = calendarService.getCurrentCalendar();
         Integer year = calendar.year();
         Integer period = calendar.period();
 
         List<EnrollmentRankEntity> enrollments =
-                enrollmentRankRepository.findAllByStudentIdAndYearAndPeriod(student.getStudentId(), year, period);
+                enrollmentRankRepository.findAllByStudentIdAndYearAndPeriodAndReenrollment(
+                        student.getStudentId(), year, period, reEnrollment);
 
         if (enrollments.isEmpty()) {
             return Collections.emptyList();
