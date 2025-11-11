@@ -295,7 +295,8 @@ public class EnrollmentRankService {
 
             Map<Long, Long> priorityCounts = concurrenceMap.getOrDefault(classId, Collections.emptyMap());
 
-            int concurrenceCount = priorityCounts.getOrDefault(studentPriorityId, 0L).intValue();
+            int concurrenceCount =
+                    priorityCounts.getOrDefault(studentPriorityId, 0L).intValue();
 
             long higherPriorityRequestsCount = 0;
             for (Map.Entry<Long, Long> entry : priorityCounts.entrySet()) {
@@ -309,14 +310,7 @@ public class EnrollmentRankService {
             ComponentResponseDTO component = componentsMap.get(classroom.componentCode());
 
             EnrollmentResponseDTO response = new EnrollmentResponseDTO(
-                    year,
-                    period,
-                    concurrenceCount,
-                    remainingSlots,
-                    uncertainRank,
-                    classroom,
-                    component
-            );
+                    year, period, concurrenceCount, remainingSlots, uncertainRank, classroom, component);
             uncertainEnrollmentsResponseDtos.add(response);
         }
 
@@ -324,7 +318,7 @@ public class EnrollmentRankService {
                 .map(item -> {
                     ClassroomDTO classroom = enrollmentClassroomsMap.get(item.getClassId());
                     ComponentResponseDTO component = componentsMap.get(classroom.componentCode());
-                    return new EnrollmentResponseDTO(year, period, 0,0, item, classroom, component);
+                    return new EnrollmentResponseDTO(year, period, 0, 0, item, classroom, component);
                 })
                 .toList();
 
