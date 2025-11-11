@@ -44,12 +44,16 @@ public class EnrollmentResponseDTO {
     private boolean isUncertain;
 
     @JsonProperty("concorrencia")
-    private Integer concorrence;
+    private Integer concurrence;
+
+    @JsonProperty("vagas_restantes")
+    private int remainingSlots;
 
     public EnrollmentResponseDTO(
             int year,
             int period,
-            int concorrence,
+            int concurrence,
+            int remainingSlots,
             EnrollmentRankEntity enrollmentRank,
             ClassroomDTO classroomDTO,
             ComponentResponseDTO componentDTO) {
@@ -57,12 +61,13 @@ public class EnrollmentResponseDTO {
         this.priorityTypeId = enrollmentRank.getPriorityTypeId();
         this.classId = enrollmentRank.getClassId();
         this.period = period;
+        this.remainingSlots = remainingSlots;
         this.component = componentDTO;
         this.isReEnrollment = enrollmentRank.isReenrollment();
         this.capacity = classroomDTO.capacity();
         this.processingTimestamp = enrollmentRank.getProcessingTimestamp();
         this.rankPosition = enrollmentRank.getRankPosition();
         this.isUncertain = enrollmentRank.isUncertainRanking();
-        this.concorrence = concorrence;
+        this.concurrence = concurrence;
     }
 }

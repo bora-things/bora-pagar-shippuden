@@ -287,14 +287,36 @@ public class EnrollmentRankService {
 
         List<EnrollmentResponseDTO> uncertainEnrollmentsResponseDtos = new ArrayList<>();
         for (EnrollmentRankEntity uncertainRank : uncertainRanks) {
-            Long concorrence = concurrenceMap
-                    .getOrDefault(uncertainRank.getClassId(), Collections.emptyMap())
-                    .getOrDefault(uncertainRank.getPriorityTypeId(), 0L);
+            Long classId = uncertainRank.getClassId();
+            Long studentPriorityId = uncertainRank.getPriorityTypeId();
 
-            ClassroomDTO classroom = enrollmentClassroomsMap.get(uncertainRank.getClassId());
+            ClassroomDTO classroom = enrollmentClassroomsMap.get(classId);
+            int totalSlots = classroom.capacity();
+
+            Map<Long, Long> priorityCounts = concurrenceMap.getOrDefault(classId, Collections.emptyMap());
+
+            int concurrenceCount = priorityCounts.getOrDefault(studentPriorityId, 0L).intValue();
+
+            long higherPriorityRequestsCount = 0;
+            for (Map.Entry<Long, Long> entry : priorityCounts.entrySet()) {
+                if (entry.getKey() < studentPriorityId) {
+                    higherPriorityRequestsCount += entry.getValue();
+                }
+            }
+
+            int remainingSlots = Math.max(0, (int) (totalSlots - higherPriorityRequestsCount));
+
             ComponentResponseDTO component = componentsMap.get(classroom.componentCode());
+
             EnrollmentResponseDTO response = new EnrollmentResponseDTO(
-                    year, period, concorrence.intValue(), uncertainRank, classroom, component);
+                    year,
+                    period,
+                    concurrenceCount,
+                    remainingSlots,
+                    uncertainRank,
+                    classroom,
+                    component
+            );
             uncertainEnrollmentsResponseDtos.add(response);
         }
 
@@ -302,7 +324,7 @@ public class EnrollmentRankService {
                 .map(item -> {
                     ClassroomDTO classroom = enrollmentClassroomsMap.get(item.getClassId());
                     ComponentResponseDTO component = componentsMap.get(classroom.componentCode());
-                    return new EnrollmentResponseDTO(year, period, 0, item, classroom, component);
+                    return new EnrollmentResponseDTO(year, period, 0,0, item, classroom, component);
                 })
                 .toList();
 
