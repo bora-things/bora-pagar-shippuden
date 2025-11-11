@@ -66,7 +66,13 @@ public class EnrollmentRankService {
                         .retrieve()
                         .body(new ParameterizedTypeReference<List<EnrollmentRequestDTO>>() {});
 
-                map.put(studentId, list != null ? list : new ArrayList<>());
+                List<EnrollmentRequestDTO> filteredList = list != null
+                        ? list.stream()
+                                .filter(item -> item.priorityTypeId() != null)
+                                .toList()
+                        : new ArrayList<>();
+
+                map.put(studentId, filteredList);
 
             } catch (HttpClientErrorException.TooManyRequests e) {
                 logger.warn("Rate limit (429) atingido ao buscar estudante {}. Pausando por 1 minuto...", studentId);

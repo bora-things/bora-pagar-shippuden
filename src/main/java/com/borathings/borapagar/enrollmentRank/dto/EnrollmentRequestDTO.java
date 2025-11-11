@@ -9,7 +9,7 @@ public record EnrollmentRequestDTO(
         @JsonProperty("id-discente") long studentId,
         @JsonProperty("id-matricula-componente") long enrollmentComponentId,
         @JsonProperty("id-situacao-solicitacao") long requestStatusId,
-        @JsonProperty("id-tipo-prioridade") long priorityTypeId,
+        @JsonProperty("id-tipo-prioridade") Long priorityTypeId,
         @JsonProperty("id-turma") long classId,
         @JsonProperty("nome-componente") String componentName,
         @JsonProperty("periodo") int period,
