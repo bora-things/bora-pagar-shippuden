@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EnrollmentRankRepository extends JpaRepository<EnrollmentRankEntity, Long> {
 
-    void deleteAllByClassIdIn(List<Long> classIds);
+    void deleteAllByYearAndPeriod(Integer year, Integer period);
 
     List<EnrollmentRankEntity> findAllByStudentIdAndYearAndPeriodAndReenrollment(
             Long studentId, Integer year, Integer period, Boolean reenrollment);

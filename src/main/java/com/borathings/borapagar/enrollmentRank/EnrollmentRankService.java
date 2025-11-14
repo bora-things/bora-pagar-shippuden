@@ -13,6 +13,7 @@ import com.borathings.borapagar.enrollmentRank.dto.EnrollmentResponseDTO;
 import com.borathings.borapagar.enrollmentRank.enums.PriorityType;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -50,7 +51,16 @@ public class EnrollmentRankService {
         AcademicCalendarResponseDTO calendar = calendarService.getCurrentCalendar();
         Integer year = calendar.year();
         Integer period = calendar.period();
+        Boolean reenrollment;
+        Instant instantNow = Instant.now();
+        if (instantNow.isAfter(calendar.reEnrollmentStart()) && instantNow.isBefore(calendar.reEnrollmentEnd())
+                || true) {
+            reenrollment = true;
+        } else {
+            reenrollment = false;
+        }
 
+        logger.info("Buscando {}", reenrollment ? "Re-Matriculas" : "Matriculas");
         Map<Long, List<EnrollmentRequestDTO>> map = new HashMap<>();
         logger.info("Buscando enrollments para {} estudantes", studentsIds.size());
         for (int i = 0; i < studentsIds.size(); i++) {
@@ -68,7 +78,7 @@ public class EnrollmentRankService {
 
                 List<EnrollmentRequestDTO> filteredList = list != null
                         ? list.stream()
-                                .filter(item -> item.priorityTypeId() != null)
+                                .filter(item -> item.priorityTypeId() != null && item.isReEnrollment() == reenrollment)
                                 .toList()
                         : new ArrayList<>();
 
@@ -196,9 +206,10 @@ public class EnrollmentRankService {
                 return;
             }
 
-            List<Long> classIdsToUpdate = new ArrayList<>(rankedMap.keySet());
-            logger.info("Limpando rankings antigos para {} turmas.", classIdsToUpdate.size());
-            enrollmentRankRepository.deleteAllByClassIdIn(classIdsToUpdate);
+            EnrollmentRequestDTO first =
+                    rankedMap.values().stream().findFirst().get().getFirst();
+            logger.info("Limpando rankings antigos para {} turmas.");
+            enrollmentRankRepository.deleteAllByYearAndPeriod(first.year(), first.period());
 
             List<EnrollmentRankEntity> entitiesToSave = mapRankedRequestsToEntities(rankedMap);
 
