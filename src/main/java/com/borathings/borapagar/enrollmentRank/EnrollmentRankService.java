@@ -53,8 +53,7 @@ public class EnrollmentRankService {
         Integer period = calendar.period();
         Boolean reenrollment;
         Instant instantNow = Instant.now();
-        if (instantNow.isAfter(calendar.reEnrollmentStart()) && instantNow.isBefore(calendar.reEnrollmentEnd())
-                || true) {
+        if (instantNow.isAfter(calendar.reEnrollmentStart()) && instantNow.isBefore(calendar.reEnrollmentEnd())) {
             reenrollment = true;
         } else {
             reenrollment = false;
@@ -109,13 +108,26 @@ public class EnrollmentRankService {
     public Map<Long, List<EnrollmentRequestDTO>> getRankedEnrollmentsByClass(List<Long> studentsIds) {
         Map<Long, List<EnrollmentRequestDTO>> requestsByClass = fetchAllRequestsGroupedByClass(studentsIds);
         Map<Long, ClassroomDTO> classroomMap = fetchClassroomMap(requestsByClass.keySet());
+        AcademicCalendarResponseDTO calendar = calendarService.getCurrentCalendar();
 
         Map<Long, List<EnrollmentRequestDTO>> finalRequestsByClass = new HashMap<>();
+        Map<Long, Integer> participantsCountByClass;
+
+        Boolean reenrollment =
+                requestsByClass.values().stream().findFirst().get().getFirst().isReEnrollment();
+        if (reenrollment) {
+            participantsCountByClass = classroomService.fetchClassroomsParticipants(
+                    requestsByClass.keySet(), calendar.reEnrollmentStart());
+        } else {
+            participantsCountByClass = null;
+        }
+
         requestsByClass.forEach((classId, requestList) -> {
             ClassroomDTO classroom = classroomMap.get(classId);
-
+            int participantsCount = reenrollment ? participantsCountByClass.getOrDefault(classId, 0) : 0;
             if (classroom != null) {
-                List<EnrollmentRequestDTO> processedList = processClassEnrollments(requestList, classroom);
+                List<EnrollmentRequestDTO> processedList =
+                        processClassEnrollments(requestList, classroom, participantsCount);
                 finalRequestsByClass.put(classId, processedList);
             }
         });
@@ -143,13 +155,16 @@ public class EnrollmentRankService {
     }
 
     private List<EnrollmentRequestDTO> processClassEnrollments(
-            List<EnrollmentRequestDTO> requestList, ClassroomDTO classroom) {
+            List<EnrollmentRequestDTO> requestList, ClassroomDTO classroom, int participantsCount) {
         requestList.sort(PRIORITY_SORTER);
 
-        Integer capacity = classroom.capacity();
+        Integer capacity = classroom.capacity() - participantsCount;
 
         if (requestList.size() <= capacity) {
             return requestList;
+        }
+        if (capacity <= 0) {
+            return List.of();
         }
 
         PriorityType lastInPriority =
@@ -295,6 +310,13 @@ public class EnrollmentRankService {
                 uncertainRanks.stream().map(EnrollmentRankEntity::getClassId).collect(Collectors.toSet());
 
         Map<Long, Map<Long, Long>> concurrenceMap = buildConcurrenceMap(uncertainClassIds);
+        Map<Long, Integer> classroomsParticipants;
+        if (reEnrollment) {
+            classroomsParticipants =
+                    classroomService.fetchClassroomsParticipants(allClassIds, calendar.reEnrollmentStart());
+        } else {
+            classroomsParticipants = null;
+        }
 
         List<EnrollmentResponseDTO> uncertainEnrollmentsResponseDtos = new ArrayList<>();
         for (EnrollmentRankEntity uncertainRank : uncertainRanks) {
@@ -302,7 +324,10 @@ public class EnrollmentRankService {
             Long studentPriorityId = uncertainRank.getPriorityTypeId();
 
             ClassroomDTO classroom = enrollmentClassroomsMap.get(classId);
-            int totalSlots = classroom.capacity();
+
+            int totalSlots = reEnrollment
+                    ? classroom.capacity() - classroomsParticipants.getOrDefault(classId, 0)
+                    : classroom.capacity();
 
             Map<Long, Long> priorityCounts = concurrenceMap.getOrDefault(classId, Collections.emptyMap());
 
@@ -328,8 +353,10 @@ public class EnrollmentRankService {
         List<EnrollmentResponseDTO> certainEnrollmentResponseDTOs = certainRanks.stream()
                 .map(item -> {
                     ClassroomDTO classroom = enrollmentClassroomsMap.get(item.getClassId());
+                    int participantsCount = reEnrollment ? classroomsParticipants.get(item.getClassId()) : 0;
+                    int remainingSlots = reEnrollment ? classroom.capacity() - participantsCount : classroom.capacity();
                     ComponentResponseDTO component = componentsMap.get(classroom.componentCode());
-                    return new EnrollmentResponseDTO(year, period, 0, 0, item, classroom, component);
+                    return new EnrollmentResponseDTO(year, period, 0, remainingSlots, item, classroom, component);
                 })
                 .toList();
 

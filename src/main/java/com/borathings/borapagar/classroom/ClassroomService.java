@@ -9,6 +9,7 @@ import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -150,5 +151,70 @@ public class ClassroomService {
             }
         }
         return classrooms;
+    }
+
+    public Map<Long, Integer> fetchClassroomsParticipants(Set<Long> classroomIds, Instant reenrollmentStart) {
+
+        Map<Long, Integer> participantCounts = new HashMap<>();
+
+        ParameterizedTypeReference<List<Map<String, Object>>> responseType = new ParameterizedTypeReference<>() {};
+
+        final long reenrollmentStartMillis = reenrollmentStart.toEpochMilli();
+
+        for (Long classroomId : classroomIds) {
+            try {
+                List<Map<String, Object>> participantsList = serviceRestClient
+                        .get()
+                        .uri(uriBuilder -> uriBuilder
+                                .path("/turma/v1/participantes")
+                                .queryParam("id-turma", classroomId)
+                                .queryParam("id-tipo-participante", 4)
+                                .queryParam("limit", 100)
+                                .build())
+                        .attributes(clientRegistrationId("sigaa"))
+                        .retrieve()
+                        .body(responseType);
+
+                if (participantsList != null) {
+                    long count = participantsList.stream()
+                            .filter(participant -> {
+                                Object entryDateObj = participant.get("data-entrada-participante");
+
+                                if (entryDateObj == null) {
+                                    return false;
+                                }
+
+                                try {
+                                    long entryDateMillis;
+                                    if (entryDateObj instanceof Number) {
+                                        entryDateMillis = ((Number) entryDateObj).longValue();
+                                    } else {
+                                        entryDateMillis = Long.parseLong(entryDateObj.toString());
+                                    }
+
+                                    return entryDateMillis < reenrollmentStartMillis;
+
+                                } catch (Exception e) {
+                                    logger.warn(
+                                            "Não foi possível parsear 'data-entrada-participante': {} para turma {}",
+                                            entryDateObj,
+                                            classroomId);
+                                    return false;
+                                }
+                            })
+                            .count();
+
+                    participantCounts.put(classroomId, (int) count);
+
+                } else {
+                    participantCounts.put(classroomId, 0);
+                }
+
+            } catch (Exception e) {
+                logger.error("Erro ao buscar participantes da turma {}: {}", classroomId, e.getMessage());
+                participantCounts.put(classroomId, 0);
+            }
+        }
+        return participantCounts;
     }
 }
