@@ -16,6 +16,6 @@ public class StudentSubjectInterestHelperService {
         List<Long> friendsIds = student.getUser().getFriends().stream()
                 .map(AbstractModel::getId)
                 .toList();
-        return studentSubjectInterestRepository.findAllBySubjectCodeAndStudentIn(code, friendsIds);
+        return studentSubjectInterestRepository.findAllBySubjectCodeAndStudentInAndDeletedAtIsNull(code, friendsIds);
     }
 }

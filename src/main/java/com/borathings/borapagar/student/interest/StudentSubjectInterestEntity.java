@@ -1,6 +1,7 @@
 package com.borathings.borapagar.student.interest;
 
 import com.borathings.borapagar.core.persistence.AbstractModel;
+import com.borathings.borapagar.core.persistence.SoftDeletableModel;
 import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class StudentSubjectInterestEntity extends AbstractModel {
+public class StudentSubjectInterestEntity extends SoftDeletableModel {
     private Integer year;
     private Integer period;
 

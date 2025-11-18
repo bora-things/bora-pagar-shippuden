@@ -35,13 +35,9 @@ public class StudentSubjectInterestService {
     ComponentService componentService;
     ComponentMapper componentMapper;
 
-    public List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId) {
-        return studentSubjectInterestRepository.findAllByStudentId(studentId);
-    }
-
     public List<StudentSubjectInterestDTO> listInterests(Long studentId) {
         List<StudentSubjectInterestEntity> studentInterests =
-                studentSubjectInterestRepository.findAllByStudentId(studentId);
+                studentSubjectInterestRepository.findAllByStudentIdAndDeletedAtIsNull(studentId);
 
         if (studentInterests.isEmpty()) {
             return Collections.emptyList();
@@ -69,7 +65,7 @@ public class StudentSubjectInterestService {
             List<Long> friendIds = new ArrayList<>(friendsDtoMap.keySet());
 
             List<StudentSubjectInterestEntity> friendsInterests =
-                    studentSubjectInterestRepository.findAllByStudentIdIn(friendIds);
+                    studentSubjectInterestRepository.findAllByStudentIdInAndDeletedAtIsNull(friendIds);
 
             for (StudentSubjectInterestEntity friendInterest : friendsInterests) {
                 List<Object> interestKey =
@@ -136,7 +132,7 @@ public class StudentSubjectInterestService {
         }
 
         Optional<StudentSubjectInterestEntity> optionalStudentSubjectInterestEntity =
-                studentSubjectInterestRepository.findBySubjectCodeAndStudentId(
+                studentSubjectInterestRepository.findBySubjectCodeAndStudentIdAndDeletedAtIsNull(
                         semesterDTO.subjectCode(), student.getId());
         if (optionalStudentSubjectInterestEntity.isPresent()) {
             throw new InterestInCompletedSubjectException();
@@ -147,6 +143,15 @@ public class StudentSubjectInterestService {
 
     public void deleteInterest(String subjectCode, StudentEntity student) {
         studentSubjectInterestRepository.deleteBySigaaSubjectIdAndStudentId(subjectCode, student.getId());
+    }
+
+    public void softDeleteAllInterestsByYearAndPeriod(Integer year, Integer period) {
+        List<StudentSubjectInterestEntity> interestsToDelete =
+                studentSubjectInterestRepository.findAllByYearAndPeriodAndDeletedAtIsNull(year, period);
+        for (StudentSubjectInterestEntity interest : interestsToDelete) {
+            interest.setDeletedAt(java.time.LocalDateTime.now());
+        }
+        studentSubjectInterestRepository.saveAll(interestsToDelete);
     }
 
     public FriendsInterestsDTO listFriendsInterests(StudentEntity student, Integer period, Integer year) {

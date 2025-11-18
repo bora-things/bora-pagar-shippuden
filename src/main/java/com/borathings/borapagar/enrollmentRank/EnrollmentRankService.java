@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import com.borathings.borapagar.student.interest.StudentSubjectInterestService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,7 @@ public class EnrollmentRankService {
     private static final Comparator<EnrollmentRequestDTO> PRIORITY_SORTER =
             Comparator.comparing(req -> PriorityType.fromId(req.priorityTypeId()));
     private final ComponentService componentService;
+    private final StudentSubjectInterestService studentSubjectInterestService;
 
     public Map<Long, List<EnrollmentRequestDTO>> getEnrollmentRequests(List<Long> studentsIds) {
 
@@ -228,6 +231,8 @@ public class EnrollmentRankService {
 
             List<EnrollmentRankEntity> entitiesToSave = mapRankedRequestsToEntities(rankedMap);
 
+            studentSubjectInterestService.softDeleteAllInterestsByYearAndPeriod(2026, 1);
+
             if (entitiesToSave.isEmpty()) {
                 logger.info("Nenhuma entidade de ranking para salvar.");
                 return;
@@ -354,7 +359,8 @@ public class EnrollmentRankService {
                 .map(item -> {
                     ClassroomDTO classroom = enrollmentClassroomsMap.get(item.getClassId());
                     int participantsCount = reEnrollment ? classroomsParticipants.get(item.getClassId()) : 0;
-                    int remainingSlots = reEnrollment ? classroom.capacity() - participantsCount : classroom.capacity();
+                    int remainingSlots = reEnrollment ? classroom.capacity() - participantsCount : classroom.capacity
+                            ();
                     ComponentResponseDTO component = componentsMap.get(classroom.componentCode());
                     return new EnrollmentResponseDTO(year, period, 0, remainingSlots, item, classroom, component);
                 })
