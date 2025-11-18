@@ -1,9 +1,7 @@
 package com.borathings.borapagar.academicCalendar;
 
 import jakarta.persistence.*;
-
 import java.time.Instant;
-
 import lombok.*;
 
 @Entity
@@ -18,6 +16,7 @@ public class AcademicCalendarEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long calendarId;
     private boolean current;
     private Integer unitId;

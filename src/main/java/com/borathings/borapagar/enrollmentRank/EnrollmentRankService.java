@@ -13,13 +13,12 @@ import com.borathings.borapagar.enrollmentRank.dto.EnrollmentResponseDTO;
 import com.borathings.borapagar.enrollmentRank.enums.PriorityType;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
+import com.borathings.borapagar.student.interest.StudentSubjectInterestService;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import com.borathings.borapagar.student.interest.StudentSubjectInterestService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -359,8 +358,7 @@ public class EnrollmentRankService {
                 .map(item -> {
                     ClassroomDTO classroom = enrollmentClassroomsMap.get(item.getClassId());
                     int participantsCount = reEnrollment ? classroomsParticipants.get(item.getClassId()) : 0;
-                    int remainingSlots = reEnrollment ? classroom.capacity() - participantsCount : classroom.capacity
-                            ();
+                    int remainingSlots = reEnrollment ? classroom.capacity() - participantsCount : classroom.capacity();
                     ComponentResponseDTO component = componentsMap.get(classroom.componentCode());
                     return new EnrollmentResponseDTO(year, period, 0, remainingSlots, item, classroom, component);
                 })

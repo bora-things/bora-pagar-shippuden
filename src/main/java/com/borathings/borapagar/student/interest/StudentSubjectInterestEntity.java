@@ -1,6 +1,5 @@
 package com.borathings.borapagar.student.interest;
 
-import com.borathings.borapagar.core.persistence.AbstractModel;
 import com.borathings.borapagar.core.persistence.SoftDeletableModel;
 import com.borathings.borapagar.student.StudentEntity;
 import jakarta.persistence.*;

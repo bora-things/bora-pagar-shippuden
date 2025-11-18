@@ -23,11 +23,13 @@ public interface StudentSubjectInterestRepository extends AbstractRepository<Stu
 
     List<StudentSubjectInterestEntity> findAllByStudentIdAndDeletedAtIsNull(Long studentId);
 
-    Optional<StudentSubjectInterestEntity> findBySubjectCodeAndStudentIdAndDeletedAtIsNull(String subjectCode, Long studentId);
+    Optional<StudentSubjectInterestEntity> findBySubjectCodeAndStudentIdAndDeletedAtIsNull(
+            String subjectCode, Long studentId);
 
     @Query(
             "SELECT ssi FROM StudentSubjectInterestEntity ssi JOIN FETCH ssi.student WHERE ssi.student.user.id IN :studentIds AND ssi.deletedAt IS NULL")
-    List<StudentSubjectInterestEntity> findAllByStudentIdInAndDeletedAtIsNull(@Param("studentIds") List<Long> studentIds);
+    List<StudentSubjectInterestEntity> findAllByStudentIdInAndDeletedAtIsNull(
+            @Param("studentIds") List<Long> studentIds);
 
     @Query(
             """
@@ -46,6 +48,4 @@ public interface StudentSubjectInterestRepository extends AbstractRepository<Stu
             @Param("subjectCode") String subjectCode, @Param("studentIds") List<Long> studentIds);
 
     List<StudentSubjectInterestEntity> findAllByYearAndPeriodAndDeletedAtIsNull(Integer year, Integer period);
-
-
 }

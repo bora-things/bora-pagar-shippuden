@@ -70,7 +70,8 @@ public class StudentSubjectInterestServiceTest {
         interest.setSubjectCode(subjectCode);
         interest.setYear(2025);
         interest.setPeriod(1);
-        when(studentSubjectInterestRepository.findAllByStudentIdAndDeletedAtIsNull(studentId)).thenReturn(List.of(interest));
+        when(studentSubjectInterestRepository.findAllByStudentIdAndDeletedAtIsNull(studentId))
+                .thenReturn(List.of(interest));
 
         ComponentEntity component = new ComponentEntity();
         component.setCode(subjectCode);
