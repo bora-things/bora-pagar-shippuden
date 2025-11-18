@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS academic_calendar (
     id BIGSERIAL PRIMARY KEY,
     calendar_id BIGINT,
-    is_current BOOLEAN NOT NULL,
+    current BOOLEAN NOT NULL,
     unit_id INTEGER,
     year INTEGER NOT NULL,
     period INTEGER NOT NULL,

@@ -6,7 +6,7 @@ import java.time.Instant;
 
 public record AcademicCalendarDTO(
         @JsonProperty("id-calendario") Long calendarId,
-        @JsonProperty("vigente") boolean isCurrent,
+        @JsonProperty("vigente") boolean current,
         @JsonProperty("id-unidade") Integer unitId,
         @JsonProperty("ano") int year,
         @JsonProperty("periodo") int period,

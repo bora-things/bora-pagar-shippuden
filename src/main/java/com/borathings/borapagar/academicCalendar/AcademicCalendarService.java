@@ -51,7 +51,7 @@ public class AcademicCalendarService {
     }
 
     public AcademicCalendarResponseDTO getCurrentCalendar() {
-        AcademicCalendarEntity calendar = repository.findByIsCurrentTrue();
+        AcademicCalendarEntity calendar = repository.findByCurrentTrue();
         return mapper.toResponseDTO(calendar);
     }
 }
