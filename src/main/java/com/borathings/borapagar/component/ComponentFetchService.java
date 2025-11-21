@@ -56,8 +56,9 @@ public class ComponentFetchService {
             }
         }
 
-        // Salva os components convertidos em entidades
-        componentRepository.saveAll(
-                componentsFetched.stream().map(componentMapper::toEntity).toList());
+        List<ComponentEntity> entitiesToSave =
+                componentsFetched.stream().map(componentMapper::toEntity).toList();
+
+        componentRepository.saveAll(entitiesToSave);
     }
 }

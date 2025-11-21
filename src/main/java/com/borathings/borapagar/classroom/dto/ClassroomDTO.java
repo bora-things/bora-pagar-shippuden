@@ -7,6 +7,7 @@ public record ClassroomDTO(
         @JsonProperty("codigo-turma") String classroomCode,
         @JsonProperty("id-docente") long teacherId,
         @JsonProperty("id-situacao-turma") long classroomStatusId,
+        @JsonProperty("capacidade-aluno") int capacity,
         @JsonProperty("id-turma") long classroomId,
         @JsonProperty("id-unidade") long unitId,
         @JsonProperty("nome-componente") String componentName,

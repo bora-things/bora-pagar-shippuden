@@ -5,7 +5,6 @@ import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
-import com.borathings.borapagar.core.persistence.AbstractModel;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentHelperService;
 import com.borathings.borapagar.student.interest.dto.FriendsInterestsDTO;
@@ -36,20 +35,9 @@ public class StudentSubjectInterestService {
     ComponentService componentService;
     ComponentMapper componentMapper;
 
-    public List<StudentSubjectInterestEntity> getFriendsInterestsInComponent(StudentEntity student, String code) {
-        List<Long> friendsIds = student.getUser().getFriends().stream()
-                .map(AbstractModel::getId)
-                .toList();
-        return studentSubjectInterestRepository.findAllBySubjectCodeAndStudentIn(code, friendsIds);
-    }
-
-    public List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId) {
-        return studentSubjectInterestRepository.findAllByStudentId(studentId);
-    }
-
     public List<StudentSubjectInterestDTO> listInterests(Long studentId) {
         List<StudentSubjectInterestEntity> studentInterests =
-                studentSubjectInterestRepository.findAllByStudentId(studentId);
+                studentSubjectInterestRepository.findAllByStudentIdAndDeletedAtIsNull(studentId);
 
         if (studentInterests.isEmpty()) {
             return Collections.emptyList();
@@ -59,7 +47,7 @@ public class StudentSubjectInterestService {
                 .map(StudentSubjectInterestEntity::getSubjectCode)
                 .toList();
 
-        Map<String, ComponentEntity> componentMap = componentService.findAllByCodeIn(subjectCodes).stream()
+        Map<String, ComponentEntity> componentMap = componentService.findAllDiscinctByCodeIn(subjectCodes).stream()
                 .collect(Collectors.toMap(
                         ComponentEntity::getCode, component -> component, (existingValue, newValue) -> existingValue));
 
@@ -77,7 +65,7 @@ public class StudentSubjectInterestService {
             List<Long> friendIds = new ArrayList<>(friendsDtoMap.keySet());
 
             List<StudentSubjectInterestEntity> friendsInterests =
-                    studentSubjectInterestRepository.findAllByStudentIdIn(friendIds);
+                    studentSubjectInterestRepository.findAllByStudentIdInAndDeletedAtIsNull(friendIds);
 
             for (StudentSubjectInterestEntity friendInterest : friendsInterests) {
                 List<Object> interestKey =
@@ -144,7 +132,7 @@ public class StudentSubjectInterestService {
         }
 
         Optional<StudentSubjectInterestEntity> optionalStudentSubjectInterestEntity =
-                studentSubjectInterestRepository.findBySubjectCodeAndStudentId(
+                studentSubjectInterestRepository.findBySubjectCodeAndStudentIdAndDeletedAtIsNull(
                         semesterDTO.subjectCode(), student.getId());
         if (optionalStudentSubjectInterestEntity.isPresent()) {
             throw new InterestInCompletedSubjectException();
@@ -155,6 +143,15 @@ public class StudentSubjectInterestService {
 
     public void deleteInterest(String subjectCode, StudentEntity student) {
         studentSubjectInterestRepository.deleteBySigaaSubjectIdAndStudentId(subjectCode, student.getId());
+    }
+
+    public void softDeleteAllInterestsByYearAndPeriod(Integer year, Integer period) {
+        List<StudentSubjectInterestEntity> interestsToDelete =
+                studentSubjectInterestRepository.findAllByYearAndPeriodAndDeletedAtIsNull(year, period);
+        for (StudentSubjectInterestEntity interest : interestsToDelete) {
+            interest.setDeletedAt(java.time.LocalDateTime.now());
+        }
+        studentSubjectInterestRepository.saveAll(interestsToDelete);
     }
 
     public FriendsInterestsDTO listFriendsInterests(StudentEntity student, Integer period, Integer year) {
@@ -168,7 +165,7 @@ public class StudentSubjectInterestService {
                 .distinct()
                 .toList();
 
-        List<ComponentEntity> components = componentService.findAllByCodeIn(uniqueSubjectCodes);
+        List<ComponentEntity> components = componentService.findAllDiscinctByCodeIn(uniqueSubjectCodes);
 
         List<ComponentResponseDTO> componentResponseDTOS = components.stream()
                 .map(item -> componentMapper.toResponseDTO(item))

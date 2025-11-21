@@ -3,8 +3,8 @@ CREATE TYPE friend_request_status as ENUM('PENDING','ACCEPTED','REJECTED');
 CREATE TABLE IF NOT EXISTS friend_requests
 (
     id         BIGSERIAL PRIMARY KEY,
-    to_id      INT,
-    from_id    INT,
+    to_id      BIGSERIAL NOT NULL,
+    from_id    BIGSERIAL NOT NULL,
     status     friend_request_status DEFAULT 'PENDING' ,
     created_at TIMESTAMP                                  DEFAULT NOW(),
     updated_at TIMESTAMP                                  DEFAULT NOW(),

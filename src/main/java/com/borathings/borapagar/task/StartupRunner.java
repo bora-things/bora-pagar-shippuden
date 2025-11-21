@@ -2,23 +2,25 @@ package com.borathings.borapagar.task;
 
 import com.borathings.borapagar.academicCalendar.AcademicCalendarService;
 import com.borathings.borapagar.component.ComponentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.borathings.borapagar.enrollmentRank.EnrollmentRankService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class StartupRunner implements ApplicationRunner {
 
-    @Autowired
-    private ComponentService componentService;
+    private final ComponentService componentService;
 
-    @Autowired
-    private AcademicCalendarService calendarService;
+    private final AcademicCalendarService calendarService;
+    private final EnrollmentRankService enrollmentRankService;
 
     @Override
     public void run(ApplicationArguments args) {
         componentService.fetchComponents();
         calendarService.fetchCalendar();
+        //        enrollmentRankService.processAndSaveEnrollmentRanks();
     }
 }

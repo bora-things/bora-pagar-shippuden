@@ -4,6 +4,7 @@ import com.borathings.borapagar.classroom.ClassroomEntity;
 import com.borathings.borapagar.classroom.ClassroomHelperService;
 import com.borathings.borapagar.component.dto.ComponentDTO;
 import com.borathings.borapagar.component.dto.ComponentDetailsDTO;
+import com.borathings.borapagar.component.dto.ComponentResponseDTO;
 import com.borathings.borapagar.component.dto.ComponentResponseDetailsDTO;
 import com.borathings.borapagar.component.mapper.ComponentMapper;
 import com.borathings.borapagar.component.repository.ComponentRepository;
@@ -19,6 +20,7 @@ import com.borathings.borapagar.user.dto.response.UserFriendResponseDto;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
@@ -63,8 +65,42 @@ public class ComponentService {
         return componentRepository.findAll(pageable);
     }
 
-    public List<ComponentEntity> findAllByCodeIn(List<String> codes) {
+    public List<ComponentEntity> findAllDiscinctByCodeIn(List<String> codes) {
         return componentRepository.findDistinctByCodeIn(codes);
+    }
+
+    public Map<String, ComponentResponseDTO> findComponentMapPriorityMatrix(Set<String> codes, Integer studentMatrix) {
+        List<ComponentEntity> allComponents = componentRepository.findAllByCodeIn(codes);
+
+        Map<String, ComponentEntity> prioritizedComponentMap = allComponents.stream()
+                .collect(Collectors.toMap(ComponentEntity::getCode, component -> component, (existing, replacement) -> {
+                    if (studentMatrix == null) {
+                        return existing;
+                    }
+
+                    boolean existingIsPreferred = studentMatrix.equals(existing.getCurricularMatrixId());
+                    boolean replacementIsPreferred = studentMatrix.equals(replacement.getCurricularMatrixId());
+
+                    if (existingIsPreferred && !replacementIsPreferred) {
+                        return existing;
+                    } else if (!existingIsPreferred && replacementIsPreferred) {
+                        return replacement;
+                    } else {
+                        return existing;
+                    }
+                }));
+
+        Map<String, ComponentResponseDTO> componentMap = prioritizedComponentMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+                    ComponentEntity entity = entry.getValue();
+                    boolean mandatorySubject = entity.getCurricularMatrixId().equals(studentMatrix)
+                            ? Boolean.TRUE.equals(entity.getMandatorySubject())
+                            : false;
+                    entity.setMandatorySubject(mandatorySubject);
+                    return componentMapper.toResponseDTO(entity);
+                }));
+
+        return componentMap;
     }
 
     public List<ComponentEntity> findAllByComponentId(List<Integer> ids) {
@@ -73,7 +109,8 @@ public class ComponentService {
 
     @Async
     public void fetchComponents() {
-        List<Integer> curricularMatrixIdList = List.of(134044403, 133795010, 133797961, 133804382);
+        List<Integer> curricularMatrixIdList =
+                List.of(105694093, 165191073, 134044403, 133795010, 133797961, 133804382);
 
         curricularMatrixIdList.forEach(componentFetchService::fetchComponentsByMatrix);
     }

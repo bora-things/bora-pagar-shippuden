@@ -45,4 +45,19 @@ public enum StudentSituation {
     public static String getDescriptionById(int id) {
         return lookup.getOrDefault(id, "");
     }
+
+    public boolean isActive() {
+        switch (this) {
+            case DESCONHECIDO:
+            case CANCELADO:
+            case NAO_CADASTRADO:
+            case TRANCADO:
+            case PENDENTE_CADASTRO:
+            case FORMADO:
+            case CONCLUIDO:
+                return false;
+            default:
+                return true;
+        }
+    }
 }

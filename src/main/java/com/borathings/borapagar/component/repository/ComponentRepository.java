@@ -4,6 +4,7 @@ import com.borathings.borapagar.component.ComponentEntity;
 import com.borathings.borapagar.core.persistence.AbstractRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,17 +13,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface ComponentRepository extends AbstractRepository<ComponentEntity> {
 
-    @Query(
-            value =
-                    """
-    SELECT DISTINCT ON (c.code) *
-    FROM components c
-    WHERE c.code IN (:codes)
-    AND c.curricular_matrix_id=(:matrixId)
-    ORDER BY c.code, c.id DESC
-""",
-            nativeQuery = true)
-    List<ComponentEntity> findAllByCodeInAndCurricularMatrixId(List<String> codes, Integer matrixId);
+    List<ComponentEntity> findAllByCodeIn(Set<String> codes);
 
     @Query("SELECT c FROM components c WHERE c.id IN "
             + "(SELECT MIN(c2.id) FROM components c2 WHERE c2.code IN :codes GROUP BY c2.code)")

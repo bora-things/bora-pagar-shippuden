@@ -26,7 +26,7 @@ public interface FriendRequestRepository extends SoftDeletableRepository<FriendR
             """
                     SELECT r FROM friend_requests r
                     WHERE r.toUser = :toUser
-                    AND (:status IS NULL or r.status = :status)
+                    AND (CAST(:status AS java.lang.String) IS NULL or r.status = :status)
                     AND r.deletedAt IS NULL
                     """)
     List<FriendRequestEntity> findAllByToUserAndOptionalStatus(

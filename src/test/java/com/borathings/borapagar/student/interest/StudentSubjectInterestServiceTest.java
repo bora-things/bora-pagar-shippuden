@@ -70,12 +70,13 @@ public class StudentSubjectInterestServiceTest {
         interest.setSubjectCode(subjectCode);
         interest.setYear(2025);
         interest.setPeriod(1);
-        when(studentSubjectInterestRepository.findAllByStudentId(studentId)).thenReturn(List.of(interest));
+        when(studentSubjectInterestRepository.findAllByStudentIdAndDeletedAtIsNull(studentId))
+                .thenReturn(List.of(interest));
 
         ComponentEntity component = new ComponentEntity();
         component.setCode(subjectCode);
         component.setName("Programação I");
-        when(componentService.findAllByCodeIn(List.of(subjectCode))).thenReturn(List.of(component));
+        when(componentService.findAllDiscinctByCodeIn(List.of(subjectCode))).thenReturn(List.of(component));
 
         ComponentDTO componentDto = null;
         when(componentMapper.toDto(any(ComponentEntity.class))).thenReturn(componentDto);
@@ -104,7 +105,7 @@ public class StudentSubjectInterestServiceTest {
         student.setClassrooms(Set.of());
 
         when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
-        when(studentSubjectInterestRepository.findBySubjectCodeAndStudentId("63313", student.getId()))
+        when(studentSubjectInterestRepository.findBySubjectCodeAndStudentIdAndDeletedAtIsNull("63313", student.getId()))
                 .thenReturn(Optional.empty());
 
         studentSubjectInterestService.createInterest(semesterDTO, student);
@@ -181,7 +182,7 @@ public class StudentSubjectInterestServiceTest {
         student.setTakenComponents(List.of());
 
         when(componentService.findByCode("63313")).thenReturn(Optional.of(component));
-        when(studentSubjectInterestRepository.findBySubjectCodeAndStudentId("63313", student.getId()))
+        when(studentSubjectInterestRepository.findBySubjectCodeAndStudentIdAndDeletedAtIsNull("63313", student.getId()))
                 .thenReturn(Optional.of(mock(StudentSubjectInterestEntity.class)));
 
         assertThrows(

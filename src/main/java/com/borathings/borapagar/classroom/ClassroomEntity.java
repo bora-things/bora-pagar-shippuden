@@ -20,38 +20,20 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class ClassroomEntity extends AbstractModel {
 
-    @Column(name = "classroom_id", nullable = false, unique = true)
     private Long classroomId;
 
-    @Column(nullable = false)
     private int year;
 
-    @Column(name = "component_code", nullable = false)
     private String componentCode;
 
-    @Column(name = "classroom_code", nullable = false)
     private String classroomCode;
 
-    @Column(name = "unit_id")
     private Long unitId;
 
-    @Column
-    private String location;
-
-    @Column(name = "component_name")
     private String componentName;
 
     @Column(nullable = false)
     private int period;
-
-    @Column(name = "level_abbreviation")
-    private String levelAbbreviation;
-
-    @Column(nullable = false)
-    private boolean subgroup;
-
-    @Column(nullable = false)
-    private int type;
 
     @ManyToMany(mappedBy = "classrooms")
     private List<StudentEntity> students = new ArrayList<>();

@@ -17,36 +17,36 @@ import lombok.experimental.SuperBuilder;
 @ToString
 public class ComponentEntity extends AbstractModel {
 
-    @Column(name = "total_workload", nullable = false)
+    @Column(nullable = false)
     private Integer totalWorkload;
 
-    @Column(name = "co_requisites", nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String coRequisites;
 
-    @Column(name = "code", nullable = false)
+    @Column(nullable = false)
     private String code;
 
-    @Column(name = "department", nullable = false)
+    @Column(nullable = false)
     private String department;
 
-    @Column(name = "mandatory_subject", nullable = false)
+    @Column(nullable = false)
     private Boolean mandatorySubject;
 
-    @Column(name = "description", nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "equivalent", nullable = false)
+    @Column(nullable = false)
     private String equivalent;
 
-    @Column(name = "component_id", nullable = false)
+    @Column(nullable = false)
     private Integer componentId;
 
-    @Column(name = "curricular_matrix_id", nullable = false)
+    @Column(nullable = false)
     private Integer curricularMatrixId;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "pre_requisites", nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String preRequisites;
 }

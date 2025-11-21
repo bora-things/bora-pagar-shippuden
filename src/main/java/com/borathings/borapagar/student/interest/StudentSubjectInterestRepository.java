@@ -21,13 +21,15 @@ public interface StudentSubjectInterestRepository extends AbstractRepository<Stu
     void deleteBySigaaSubjectIdAndStudentId(
             @Param("subjectCode") String subjectCode, @Param("studentId") Long studentId);
 
-    List<StudentSubjectInterestEntity> findAllByStudentId(Long studentId);
+    List<StudentSubjectInterestEntity> findAllByStudentIdAndDeletedAtIsNull(Long studentId);
 
-    Optional<StudentSubjectInterestEntity> findBySubjectCodeAndStudentId(String subjectCode, Long studentId);
+    Optional<StudentSubjectInterestEntity> findBySubjectCodeAndStudentIdAndDeletedAtIsNull(
+            String subjectCode, Long studentId);
 
     @Query(
-            "SELECT ssi FROM StudentSubjectInterestEntity ssi JOIN FETCH ssi.student WHERE ssi.student.user.id IN :studentIds")
-    List<StudentSubjectInterestEntity> findAllByStudentIdIn(@Param("studentIds") List<Long> studentIds);
+            "SELECT ssi FROM StudentSubjectInterestEntity ssi JOIN FETCH ssi.student WHERE ssi.student.user.id IN :studentIds AND ssi.deletedAt IS NULL")
+    List<StudentSubjectInterestEntity> findAllByStudentIdInAndDeletedAtIsNull(
+            @Param("studentIds") List<Long> studentIds);
 
     @Query(
             """
@@ -35,12 +37,15 @@ public interface StudentSubjectInterestRepository extends AbstractRepository<Stu
     JOIN FETCH ssi.student
     WHERE ssi.student.user IN :users
     AND ssi.period = :period AND ssi.year = :year
+    AND ssi.deletedAt IS NULL
 """)
     List<StudentSubjectInterestEntity> findAllByUserInAndPeriodAndYear(
             @Param("users") Set<UserEntity> users, @Param("period") Integer period, @Param("year") Integer year);
 
     @Query(
             "SELECT ssi FROM StudentSubjectInterestEntity ssi JOIN FETCH ssi.student WHERE ssi.student.user.id IN :studentIds and ssi.subjectCode=:subjectCode")
-    List<StudentSubjectInterestEntity> findAllBySubjectCodeAndStudentIn(
+    List<StudentSubjectInterestEntity> findAllBySubjectCodeAndStudentInAndDeletedAtIsNull(
             @Param("subjectCode") String subjectCode, @Param("studentIds") List<Long> studentIds);
+
+    List<StudentSubjectInterestEntity> findAllByYearAndPeriodAndDeletedAtIsNull(Integer year, Integer period);
 }

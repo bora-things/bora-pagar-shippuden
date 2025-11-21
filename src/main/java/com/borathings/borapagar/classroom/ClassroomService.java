@@ -4,21 +4,18 @@ import static org.springframework.security.oauth2.client.web.client.RequestAttri
 
 import com.borathings.borapagar.classroom.dto.ClassroomDTO;
 import com.borathings.borapagar.classroom.dto.ClassroomResponseDTO;
-import com.borathings.borapagar.component.ComponentEntity;
+import com.borathings.borapagar.component.ComponentService;
 import com.borathings.borapagar.component.dto.ComponentResponseDTO;
-import com.borathings.borapagar.component.mapper.ComponentMapper;
-import com.borathings.borapagar.component.repository.ComponentRepository;
 import com.borathings.borapagar.student.StudentEntity;
 import com.borathings.borapagar.student.StudentService;
 import com.borathings.borapagar.user.dto.response.UserResponseDTO;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.time.Instant;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
@@ -27,27 +24,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 @Service
+@RequiredArgsConstructor
 public class ClassroomService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
     @Qualifier("serviceRestClient")
-    RestClient serviceRestClient;
+    final RestClient serviceRestClient;
 
-    @Autowired
-    private ClassroomMapper classroomMapper;
+    private final ClassroomMapper classroomMapper;
 
-    @Autowired
-    private StudentService studentService;
+    private final StudentService studentService;
 
-    @Autowired
-    private ClassroomRepository classroomRepository;
+    private final ClassroomRepository classroomRepository;
 
-    @Autowired
-    private ComponentRepository componentRepository;
-
-    @Autowired
-    private ComponentMapper componentMapper;
+    private final ComponentService componentService;
 
     @Async
     public CompletableFuture<Void> fetchClassroomAsync(StudentEntity student) {
@@ -92,25 +82,31 @@ public class ClassroomService {
 
     public List<ClassroomResponseDTO> findClassroomByStudent(String login) {
         StudentEntity student = studentService.findByUserLoginOrError(login);
-
         Set<ClassroomEntity> classrooms = student.getClassrooms();
-        List<String> componentCodes =
-                classrooms.stream().map(ClassroomEntity::getComponentCode).toList();
-        List<ComponentEntity> components =
-                componentRepository.findAllByCodeInAndCurricularMatrixId(componentCodes, student.getCurricularMatrix());
+        Set<String> componentCodes =
+                classrooms.stream().map(ClassroomEntity::getComponentCode).collect(Collectors.toSet());
 
-        Map<String, ComponentResponseDTO> componentMap = components.stream()
-                .collect(Collectors.toMap(
-                        ComponentEntity::getCode,
-                        component -> componentMapper.toResponseDTO(component),
-                        (existing, replacement) -> existing));
+        final Integer studentMatrix = student.getCurricularMatrix();
+
+        Map<String, ComponentResponseDTO> componentMap =
+                componentService.findComponentMapPriorityMatrix(componentCodes, studentMatrix);
+
         try {
             List<CompletableFuture<ClassroomResponseDTO>> futures = classrooms.stream()
                     .map(item -> {
                         if (item.getComponentCode() != null) {
                             CompletableFuture<List<UserResponseDTO>> friendsFuture = studentService.findFriendsInClass(
                                     student.getUser(), item, student.getUser().getFriends());
+
                             ComponentResponseDTO component = componentMap.get(item.getComponentCode());
+
+                            if (component == null) {
+                                logger.warn(
+                                        "Componente com código {} não encontrado para a turma {}",
+                                        item.getComponentCode(),
+                                        item.getId());
+                                return CompletableFuture.completedFuture((ClassroomResponseDTO) null);
+                            }
 
                             return friendsFuture.thenApply(
                                     friends -> classroomMapper.toResponseDTO(item, component, friends));
@@ -120,9 +116,11 @@ public class ClassroomService {
                     .toList();
 
             CompletableFuture<List<ClassroomResponseDTO>> allDoneFuture = sequence(futures);
-            return allDoneFuture.get();
+
+            return allDoneFuture.get().stream().filter(Objects::nonNull).toList();
+
         } catch (Exception ex) {
-            logger.error("Erro", ex.getMessage());
+            logger.error("Erro ao buscar turmas do aluno: {}", ex.getMessage(), ex);
             return null;
         }
     }
@@ -135,5 +133,88 @@ public class ClassroomService {
     public List<ClassroomResponseDTO> findClassroomByStudentId(Long studentId) {
         StudentEntity student = studentService.findByIdWithClassrooms(studentId);
         return findClassroomByStudent(student.getUser().getLogin());
+    }
+
+    public List<ClassroomDTO> fetchClassrooms(Set<Long> classroomIds) {
+
+        List<ClassroomDTO> classrooms = new ArrayList<>();
+
+        for (Long classroomId : classroomIds) {
+            ClassroomDTO classroomDTO = serviceRestClient
+                    .get()
+                    .uri("/turma/v1/turmas/" + classroomId)
+                    .attributes(clientRegistrationId("sigaa"))
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<ClassroomDTO>() {});
+            if (classroomDTO != null) {
+                classrooms.add(classroomDTO);
+            }
+        }
+        return classrooms;
+    }
+
+    public Map<Long, Integer> fetchClassroomsParticipants(Set<Long> classroomIds, Instant reenrollmentStart) {
+
+        Map<Long, Integer> participantCounts = new HashMap<>();
+
+        ParameterizedTypeReference<List<Map<String, Object>>> responseType = new ParameterizedTypeReference<>() {};
+
+        final long reenrollmentStartMillis = reenrollmentStart.toEpochMilli();
+
+        for (Long classroomId : classroomIds) {
+            try {
+                List<Map<String, Object>> participantsList = serviceRestClient
+                        .get()
+                        .uri(uriBuilder -> uriBuilder
+                                .path("/turma/v1/participantes")
+                                .queryParam("id-turma", classroomId)
+                                .queryParam("id-tipo-participante", 4)
+                                .queryParam("limit", 100)
+                                .build())
+                        .attributes(clientRegistrationId("sigaa"))
+                        .retrieve()
+                        .body(responseType);
+
+                if (participantsList != null) {
+                    long count = participantsList.stream()
+                            .filter(participant -> {
+                                Object entryDateObj = participant.get("data-entrada-participante");
+
+                                if (entryDateObj == null) {
+                                    return false;
+                                }
+
+                                try {
+                                    long entryDateMillis;
+                                    if (entryDateObj instanceof Number) {
+                                        entryDateMillis = ((Number) entryDateObj).longValue();
+                                    } else {
+                                        entryDateMillis = Long.parseLong(entryDateObj.toString());
+                                    }
+
+                                    return entryDateMillis < reenrollmentStartMillis;
+
+                                } catch (Exception e) {
+                                    logger.warn(
+                                            "Não foi possível parsear 'data-entrada-participante': {} para turma {}",
+                                            entryDateObj,
+                                            classroomId);
+                                    return false;
+                                }
+                            })
+                            .count();
+
+                    participantCounts.put(classroomId, (int) count);
+
+                } else {
+                    participantCounts.put(classroomId, 0);
+                }
+
+            } catch (Exception e) {
+                logger.error("Erro ao buscar participantes da turma {}: {}", classroomId, e.getMessage());
+                participantCounts.put(classroomId, 0);
+            }
+        }
+        return participantCounts;
     }
 }

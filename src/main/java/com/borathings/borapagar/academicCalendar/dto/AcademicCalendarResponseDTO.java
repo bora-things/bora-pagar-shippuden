@@ -5,7 +5,7 @@ import java.time.Instant;
 import lombok.*;
 
 public record AcademicCalendarResponseDTO(
-        boolean isCurrent,
+        boolean current,
         Integer unitId,
         int year,
         int period,
